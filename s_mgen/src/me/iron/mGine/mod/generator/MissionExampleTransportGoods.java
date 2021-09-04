@@ -1,5 +1,6 @@
-import com.sun.javafx.geom.Vec3f;
+package me.iron.mGine.mod.generator;
 
+import javax.vecmath.Vector3f;
 import java.util.Random;
 
 /**
@@ -8,24 +9,24 @@ import java.util.Random;
  * DATE: 03.09.2021
  * TIME: 14:10
  */
-public class MissionTransportGoods extends Mission {
-    public Vec3f getStartPos() {
-        return new Vec3f(startPos);
+public class MissionExampleTransportGoods extends Mission {
+    public Vector3f getStartPos() {
+        return new Vector3f(startPos);
     }
 
-    public Vec3f getEndPos() {
-        return new Vec3f(endPos);
+    public Vector3f getEndPos() {
+        return new Vector3f(endPos);
     }
 
-    private Vec3f startPos;
-    private Vec3f endPos;
+    private Vector3f startPos;
+    private Vector3f endPos;
     int cargoAmount;
     float completionRadius;
 
-    public MissionTransportGoods(Random rand, long seed) {
+    public MissionExampleTransportGoods(Random rand, long seed) {
         super(rand,seed);
-        startPos = new Vec3f(100,0,0); //new Vec3f(rand.nextInt()%100,rand.nextInt()%100,rand.nextInt()%100);
-        endPos = new Vec3f(200,0,0);//new Vec3f(rand.nextInt()%100,rand.nextInt()%100,rand.nextInt()%100);
+        startPos = new Vector3f(100,0,0); //new Vec3f(rand.nextInt()%100,rand.nextInt()%100,rand.nextInt()%100);
+        endPos = new Vector3f(200,0,0);//new Vec3f(rand.nextInt()%100,rand.nextInt()%100,rand.nextInt()%100);
         cargoAmount = 20 + Math.abs(rand.nextInt())%80;
         completionRadius = 0.5f;
         description = "Transport cargo";
@@ -37,7 +38,7 @@ public class MissionTransportGoods extends Mission {
 
             @Override
             public void update() {
-                visited = (visited||main.getDistance(main.getPlayerPos(),startPos)< 0.5f);
+        //       visited = (visited|| mGineCore.getDistance(mGineCore.getPlayerPos(),startPos)< 0.5f);
                 super.update();
             }
 
@@ -52,7 +53,7 @@ public class MissionTransportGoods extends Mission {
 
             @Override
             public void update() {
-                visited = (visited||main.getDistance(main.getPlayerPos(),endPos)< 0.5f);
+        //        visited = (visited|| mGineCore.getDistance(mGineCore.getPlayerPos(),endPos)< 0.5f);
                 super.update();
             }
 
@@ -61,7 +62,7 @@ public class MissionTransportGoods extends Mission {
                 return visited;
             }
         };
-        final Vec3f grandma = new Vec3f(0,100,0);
+        final Vector3f grandma = new Vector3f(0,100,0);
         MissionTask optional = new MissionTask(this,"grandma","visit grandma for 3 minutes at " + grandma,true) {
             int timeVisited = 0;
             @Override
@@ -71,9 +72,9 @@ public class MissionTransportGoods extends Mission {
 
             @Override
             public void update() {
-                if (currentState == MissionState.SUCCESS || main.getDistance(main.getPlayerPos(),grandma)< 0.5f) {
-                    timeVisited ++;
-                }
+        //        if (currentState == MissionState.SUCCESS || mGineCore.getDistance(mGineCore.getPlayerPos(),grandma)< 0.5f) {
+        //            timeVisited ++;
+        //        }
                 super.update();
             }
         };

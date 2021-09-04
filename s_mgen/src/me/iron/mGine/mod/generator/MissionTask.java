@@ -1,4 +1,4 @@
-/**
+package me.iron.mGine.mod.generator; /**
  * STARMADE MOD
  * CREATOR: Max1M
  * DATE: 03.09.2021
@@ -9,12 +9,12 @@
  * has to be completed in order to fullfill mission/reach other checkpoints.
  */
 public class MissionTask {
-    MissionState currentState = MissionState.OPEN;
-    Mission mission;
-    String name;
-    String info;
-    boolean optional; //failing will not result in mission fail
-    int id; //mission dependent ID (index in array)
+    protected MissionState currentState = MissionState.OPEN;
+    protected Mission mission;
+    protected String name;
+    protected String info;
+    protected boolean optional; //failing will not result in mission fail
+    protected int id; //mission dependent ID (index in array)
     //checkpoints that have to be passed in order to unlock this checkpoint
     private MissionTask[] preconditions = new MissionTask[0];
 
@@ -37,8 +37,9 @@ public class MissionTask {
         this.mission = mission;
         this.optional = optional;
         this.name = name;
+        onInit();
     }
-
+    protected void onInit() {};
     protected boolean successCondition() {return false;}
     protected boolean failureCondition() {return false;}
     protected boolean preconditionsSatisfied() {
@@ -86,9 +87,13 @@ public class MissionTask {
             out.append(" (optional)");
         if (preconditions.length >0) {
             out.append("[");
+            int length = preconditions.length;
             for (int i = 0; i<preconditions.length;i++) {
                 if (i!=0)
                     out.append(",");
+                if (preconditions[i]==null){
+                    System.out.println("error");
+                }
                out.append(preconditions[i].id);
             }
             out.append("]");

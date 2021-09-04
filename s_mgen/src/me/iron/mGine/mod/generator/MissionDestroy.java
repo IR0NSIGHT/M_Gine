@@ -1,3 +1,5 @@
+package me.iron.mGine.mod.generator;
+
 import java.util.Random;
 
 /**
