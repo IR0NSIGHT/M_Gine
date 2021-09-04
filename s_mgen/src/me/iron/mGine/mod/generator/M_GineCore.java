@@ -42,6 +42,10 @@ public class M_GineCore {
     }
     private HashSet<Mission> missions = new HashSet<>();
 
+    public HashSet<Mission> getMissions() {
+        return missions;
+    }
+
     public static Mission generateMission(long seed) {
         Random rand = new Random(seed);
         //select random type

@@ -1,10 +1,12 @@
 package me.iron.mGine.mod.GUI;
 
 import api.ModPlayground;
+import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
 import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.controller.observer.DrawerObserver;
 import org.schema.schine.graphicsengine.core.MouseEvent;
+import org.schema.schine.graphicsengine.forms.font.FontLibrary;
 import org.schema.schine.graphicsengine.forms.gui.*;
 import org.schema.schine.input.InputState;
 
@@ -43,14 +45,26 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
         list.setScrollPane(this);
         this.setContent(list);
         //debug add a single button
-        addButtonRow(list,"hello world");
+        for (Mission m: M_GineCore.instance.getMissions()) {
+            addTextRow(list,m.getDescription());
+        }
         list.updateDim();
         //TODO "add code" button
         super.onInit();
     }
 
-    private void addButtonRow(GUIElementList list, String name) {
-        final GUITextButton button = new GUITextButton(getState(), bWidth, bHeight, name, new GUICallback() {
+
+
+    private void addTextRow(GUIElementList list, String missioninfo) {
+        //create a text element
+        GUITextOverlay textElement = new GUITextOverlay(10,10, FontLibrary.FontSize.MEDIUM, getState());
+        textElement.onInit();
+        textElement.getText().add(missioninfo);
+        textElement.autoHeight = true;
+        GUIListElement listElement = new GUIListElement(textElement,getState());
+        list.add(listElement);
+
+        final GUITextButton button = new GUITextButton(getState(), bWidth, bHeight, "activate", new GUICallback() {
             @Override
             public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
                 if (!mouseEvent.pressedLeftMouse())
