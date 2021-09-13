@@ -20,10 +20,10 @@ import org.schema.game.common.data.player.PlayerState;
  * TIME: 15:00
  * 100% clientside
  */
-public class ScriptControlManager extends GUIControlManager {
+public class MissionGUIControlManager extends GUIControlManager {
     public static GUIMenuPanel p;
-    public static ScriptControlManager instance;
-    public ScriptControlManager (GameClientState state) {
+    public static MissionGUIControlManager instance;
+    public MissionGUIControlManager(GameClientState state) {
         super(state);
         instance = this;
         initListener();
@@ -50,8 +50,8 @@ public class ScriptControlManager extends GUIControlManager {
                     }
                     //TODO disable all others
                     setActive(true);
-                    if (ScriptControlManager.p != null)
-                        ScriptControlManager.p.recreateTabs();
+                    if (MissionGUIControlManager.p != null)
+                        MissionGUIControlManager.p.recreateTabs();
                     event.setCanceled(true);
                 }
             }
@@ -66,9 +66,9 @@ public class ScriptControlManager extends GUIControlManager {
                         manager.setActive(false);
                     }
                     setActive(true);
-                    if (ScriptControlManager.p != null)
-                        ScriptControlManager.p.recreateTabs();
-                    ModPlayground.broadcastMessage("CTRL + Q = MENU");
+                    if (MissionGUIControlManager.p != null)
+                        MissionGUIControlManager.p.recreateTabs();
+                //    ModPlayground.broadcastMessage("CTRL + M = MENU");
                 }
 
             }

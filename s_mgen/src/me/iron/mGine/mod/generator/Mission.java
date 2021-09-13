@@ -1,9 +1,13 @@
 package me.iron.mGine.mod.generator;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
 import org.schema.game.server.data.PlayerNotFountException;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,7 +19,7 @@ import java.util.Random;
  * DATE: 02.09.2021
  * TIME: 18:12
  */
-public class Mission {
+public class Mission extends DrawerObservable implements Serializable {
     //active "quest party members"
     private HashSet<String> party = new HashSet<>();
 
@@ -43,6 +47,10 @@ public class Mission {
         return active;
     }
 
+    public MissionType getType() {
+        return type;
+    }
+
     //generation parameters
     protected MissionType type;
     protected int duration;
@@ -52,6 +60,15 @@ public class Mission {
 
     //runtime values
     protected long startTime;
+
+    public MissionState getState() {
+        return state;
+    }
+
+    public void setState(MissionState state) {
+        this.state = state;
+    }
+
     protected MissionState state = MissionState.OPEN;
     protected int remainingTime;
 
@@ -77,13 +94,15 @@ public class Mission {
         this.rewardCredits = Math.abs(rand.nextInt())%1000;
     }
 
-    private void onSuccess() {
+    protected void onSuccess() {
         System.out.println("MISSION COMPLETE");
+        notifyObservers(this);
         state = MissionState.SUCCESS;
     }
 
-    private void onFailure() {
+    protected void onFailure() {
         System.out.println("MISSION FAILED");
+        notifyObservers(this);
         state = MissionState.FAILED;
     }
 
@@ -132,7 +151,7 @@ public class Mission {
         return out.toString();
     }
 
-    boolean successCondition() {
+    protected boolean successCondition() {
         //success if all non-optional checkpoints are complete.
         for (MissionTask c: missionTasks) {
             if (!c.optional && !c.currentState.equals(MissionState.SUCCESS))
@@ -145,7 +164,7 @@ public class Mission {
      * tests if the mission is being failed
      * @return
      */
-    boolean failureCondition() {
+    protected boolean failureCondition() {
         if (remainingTime <= 0)
             return true;
         for (MissionTask c: missionTasks) {
@@ -155,8 +174,10 @@ public class Mission {
         return false;
     }
 
-    void onTaskStateChanged(MissionTask checkpoint, MissionState oldState, MissionState newState) {
+    protected void onTaskStateChanged(MissionTask checkpoint, MissionState oldState, MissionState newState) {
+        notifyObservers(this);
         System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
     }
+
 }
 

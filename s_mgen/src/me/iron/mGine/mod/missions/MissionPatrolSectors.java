@@ -2,6 +2,7 @@ package me.iron.mGine.mod.missions;
 
 
 import me.iron.mGine.mod.generator.Mission;
+import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
@@ -66,10 +67,18 @@ public class MissionPatrolSectors extends Mission {
     @Override
     public void update(long time) {
         super.update(time);
-        for (PlayerState p: this.getActiveParty()) {
-            String s = this.getDescription();
-            p.sendServerMessage(Lng.astr(s),0);
+    }
+
+    @Override
+    protected void onTaskStateChanged(MissionTask checkpoint, MissionState oldState, MissionState newState) {
+        super.onTaskStateChanged(checkpoint, oldState, newState);
+        for (PlayerState p: getActiveParty()) {
+            //inform about checkpoint
+            for (int i = 0; i < 6; i++) {
+                p.sendServerMessage(Lng.astr("Task '"+checkpoint.getName() +"' complete."),2);
+            }
         }
+        notifyObservers();
     }
 
     @Override

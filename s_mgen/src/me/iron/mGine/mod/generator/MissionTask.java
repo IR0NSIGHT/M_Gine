@@ -11,6 +11,39 @@ package me.iron.mGine.mod.generator; /**
 public class MissionTask {
     protected MissionState currentState = MissionState.OPEN;
     protected Mission mission;
+
+    public MissionState getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(MissionState currentState) {
+        this.currentState = currentState;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     protected String name;
     protected String info;
     protected boolean optional; //failing will not result in mission fail

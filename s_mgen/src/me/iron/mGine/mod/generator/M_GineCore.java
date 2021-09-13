@@ -19,7 +19,7 @@ public class M_GineCore {
 
     public M_GineCore() {
         instance = this;
-        updateLoop(2);
+        updateLoop(30);
     }
 
     public void updateLoop(final int intervallSeconds) {
@@ -32,7 +32,7 @@ public class M_GineCore {
                     updateAll();
                 }
             }
-        }.runTimer(ModMain.instance,5);
+        }.runTimer(ModMain.instance,1);
     }
 
     private void updateAll() {
