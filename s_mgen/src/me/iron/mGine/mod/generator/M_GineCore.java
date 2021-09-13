@@ -16,10 +16,14 @@ import java.util.Random;
  */
 public class M_GineCore {
     public static M_GineCore instance;
+    private static int nextID = 0; //load mechanism from persistent
 
+    public static int getNextID() {
+        return nextID++;
+    }
     public M_GineCore() {
         instance = this;
-        updateLoop(30);
+        updateLoop(1);
     }
 
     public void updateLoop(final int intervallSeconds) {
@@ -38,6 +42,7 @@ public class M_GineCore {
     private void updateAll() {
         for(Mission m: missions) {
             m.update(System.currentTimeMillis());
+            m.notifyObservers(m);
         }
     }
     private HashSet<Mission> missions = new HashSet<>();

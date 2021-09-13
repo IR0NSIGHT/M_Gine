@@ -20,6 +20,10 @@ import java.util.Random;
  * TIME: 18:12
  */
 public class Mission extends DrawerObservable implements Serializable {
+    private int missionID;
+    public String getIDString() {
+        return Integer.toOctalString(missionID);
+    }
     //active "quest party members"
     private HashSet<String> party = new HashSet<>();
 
@@ -92,6 +96,7 @@ public class Mission extends DrawerObservable implements Serializable {
         this.duration = 120+Math.abs(rand.nextInt())%500;
         this.remainingTime = duration;
         this.rewardCredits = Math.abs(rand.nextInt())%1000;
+        missionID = M_GineCore.getNextID();
     }
 
     protected void onSuccess() {
@@ -102,8 +107,9 @@ public class Mission extends DrawerObservable implements Serializable {
 
     protected void onFailure() {
         System.out.println("MISSION FAILED");
-        notifyObservers(this);
         state = MissionState.FAILED;
+
+        notifyObservers(this);
     }
 
     /**
@@ -136,7 +142,7 @@ public class Mission extends DrawerObservable implements Serializable {
 
     public String getDescription() {
         StringBuilder out = new StringBuilder();
-        out.append(description).append(" reward: ").append(rewardCredits);
+        out.append(description).append("(").append(getIDString()).append(")").append(" reward: ").append(rewardCredits);
         if (state.equals(MissionState.SUCCESS)) {
             out.append(" SUCCESS\n");
         } else if (state.equals(MissionState.FAILED)) {

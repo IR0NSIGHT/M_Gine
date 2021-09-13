@@ -1,22 +1,16 @@
 package me.iron.mGine.mod.GUI;
 
 import api.ModPlayground;
-import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
-import org.schema.game.client.data.GameClientState;
-import org.schema.game.client.view.gui.GUIButton;
 import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.controller.observer.DrawerObserver;
 import org.schema.schine.graphicsengine.core.MouseEvent;
 import org.schema.schine.graphicsengine.forms.font.FontLibrary;
 import org.schema.schine.graphicsengine.forms.gui.*;
-import org.schema.schine.graphicsengine.forms.gui.newgui.ScrollableTableList;
 import org.schema.schine.input.InputState;
 
-import javax.vecmath.Vector4f;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * STARMADE MOD
@@ -29,14 +23,21 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
     private GUIElementList list;
     private GUICallback callbackActivate;
 
-    private Collection<Mission> missions = new ArrayList<>();
+    private ArrayList<Mission> missions = new ArrayList<>();
 
     public GUIScrollabeElementList(float width, float height, GUIElement dependent, InputState inputState) {
         super(width, height, dependent, inputState);
     }
 
     public void setMissions(Collection<Mission> missions) {
-        this.missions = missions;
+        for (Mission m: this.missions) {
+            m.deleteObserver(this);
+        }
+        this.missions = (ArrayList<Mission>) missions;
+        for (Mission m: missions) {
+            m.addObserver(this);
+        }
+        updateList();
     }
     public void setCallBackActivation (GUICallback callBack) {
         this.callbackActivate = callBack;
@@ -53,65 +54,56 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
         //add a callback for selection and highlighting
         list.setCallback(this);
 
-        rebuildList();
+        for (int i = 0; i < 100; i++) {
+            addTextRow(list,"","select");
+        }
         list.height = 10000; //doesnt autoresize, idk what //TODO
         super.onInit();
 
     }
 
-    private void rebuildList() {
+    private void updateList() {
         try {
-           list.clear();
-           list.deleteObservers();
-           for (Mission m: missions) {
-               m.clearObservers();
-               m.addObserver(this);
-               //todo make small text contain name,reward,time
-               addTextRow(list,m.getDescription(),m.getType().name());
-           }
+            if (list == null)
+                return;
+            //TODO button with "navigate to"
+            for (int i = 0; i < list.size(); i++) {
+                //overwrite the text of each mission
+                GUIListElement listEl = list.get(i);
+                if (listEl.getContent() instanceof GUITextOverlay) {
+                    GUITextOverlay content = (GUITextOverlay) listEl.getContent();
+                    content.getText().clear();
+                    String text = (i< missions.size())?missions.get(i).getDescription():"";
+                    content.getText().add(text);
+                }
+            }
+
+        //   list.clear();
+        //   list.deleteObservers();
+        //   for (Mission m: missions) {
+        //       m.clearObservers();
+        //       m.addObserver(this);
+        //       //todo make small text contain name,reward,time
+        //       addTextRow(list,m.getDescription(),m.getType().name());
+        //   }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        list.updateDim();
+
     }
 
-    private void addTextRow(GUIElementList list, String missioninfo, String missionname) {
+    private void addTextRow(GUIElementList list, String missioninfo, String buttonText) {
         //create a text element
         final GUITextOverlay fullText = new GUITextOverlay(10,10, FontLibrary.FontSize.MEDIUM, getState());
         fullText.onInit();
         fullText.getText().add(missioninfo);
         fullText.autoHeight = true;
 
-        final GUITextOverlay smallText = new GUITextOverlay(10,10, FontLibrary.FontSize.MEDIUM, getState());
-        smallText.onInit();
-        smallText.getText().add(missionname);
-        smallText.autoHeight = true;
-
-        GUITextButton b = new GUITextButton(getState(), (int) this.getWidth(), 30, fullText,this) {
-            public GUITextOverlay full = fullText;
-            public GUITextOverlay small = smallText;
-            public GUITextOverlay active = smallText;
-            public void displayText(boolean useFull) {
-                if (useFull) {
-                    active = full;
-                } else {
-                    active = small;
-                }
-                this.height=active.getHeight();
-            }
-
-            @Override
-            public void onResize() {
-                super.onResize();
-                displayText(this.equals(selected));
-            }
-        };
+        GUITextButton b = new GUITextButton(getState(), (int) this.getWidth(), 30, buttonText,this) ;
         b.onInit();
 
-        GUIListElement listElement = new GUIListElement(smallText,fullText,getState()) {
-
-        };
+        GUIListElement listElement = new GUIListElement(fullText,fullText,getState());
         listElement.onInit(); //TODO resize list element?
 
         list.addWithoutUpdate(listElement);
@@ -142,7 +134,7 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
 
     @Override
     public void update(DrawerObservable drawerObservable, Object o, Object o1) {
-    //    rebuildList();
+        updateList();
     }
 
     @Override

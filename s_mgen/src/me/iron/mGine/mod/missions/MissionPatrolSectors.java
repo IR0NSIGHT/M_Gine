@@ -7,6 +7,7 @@ import me.iron.mGine.mod.generator.MissionTask;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.schine.common.language.Lng;
+import org.schema.schine.network.server.ServerMessage;
 
 import javax.vecmath.Vector3f;
 import java.util.Random;
@@ -72,15 +73,30 @@ public class MissionPatrolSectors extends Mission {
     @Override
     protected void onTaskStateChanged(MissionTask checkpoint, MissionState oldState, MissionState newState) {
         super.onTaskStateChanged(checkpoint, oldState, newState);
+        if (!newState.equals(MissionState.SUCCESS))
+            return;
+
         for (PlayerState p: getActiveParty()) {
             //inform about checkpoint
             for (int i = 0; i < 6; i++) {
-                p.sendServerMessage(Lng.astr("Task '"+checkpoint.getName() +"' complete."),2);
+                p.sendServerMessage(Lng.astr("Task '"+checkpoint.getName() +"' complete ("+this.getIDString()+")."),2);
             }
         }
         notifyObservers();
     }
 
+    @Override
+    protected void onSuccess() {
+        StringBuilder b = new StringBuilder();
+        b.append("You have completed Patrol ").append(getIDString()).append(".").append(rewardCredits)
+        .append(" credits have been added to your account. Thank you for your service");
+        String mssg = b.toString();
+        for (PlayerState p: getActiveParty()) {
+            MissionUtil.giveMoney(rewardCredits,p);
+            p.sendServerMessage(Lng.astr(mssg), ServerMessage.MESSAGE_TYPE_DIALOG);
+        }
+        super.onSuccess();
+    }
     @Override
     public String toString() {
         return "MissionTransportGoods{" +"\n"+

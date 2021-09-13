@@ -69,6 +69,7 @@ public class MissionMenuPanel extends GUIMenuPanel {
         background.onInit();
         tab.getContent(0).attach(background);
         final GUIScrollabeElementList list = new GUIScrollabeElementList(width,height,tab,getState());
+        list.onInit();
         list.setMissions(missionCollection);
         list.setCallBackActivation(new GUICallback() {
             @Override
@@ -81,7 +82,7 @@ public class MissionMenuPanel extends GUIMenuPanel {
                 return false;
             }
         });
-        list.onInit();
+
         list.dependent = background;
         background.attach(list);
 

@@ -38,6 +38,8 @@ public class ModMain extends StarMod {
 
     @Override
     public void onClientCreated(ClientInitializeEvent clientInitializeEvent) {
+        DebugUI.localInit();
+
         super.onClientCreated(clientInitializeEvent);
         new StarRunnable() {
             @Override
