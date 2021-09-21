@@ -1,6 +1,7 @@
-package me.iron.mGine.mod.GUI;
+package me.iron.mGine.mod.clientside.GUI;
 
 import api.ModPlayground;
+import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.controller.observer.DrawerObserver;
@@ -11,6 +12,8 @@ import org.schema.schine.input.InputState;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * STARMADE MOD
@@ -23,17 +26,17 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
     private GUIElementList list;
     private GUICallback callbackActivate;
 
-    private ArrayList<Mission> missions = new ArrayList<>();
+    private HashSet<Mission> missions = new HashSet<>();
 
     public GUIScrollabeElementList(float width, float height, GUIElement dependent, InputState inputState) {
         super(width, height, dependent, inputState);
     }
 
-    public void setMissions(Collection<Mission> missions) {
+    public void setMissions(HashSet<Mission> missions) {
         for (Mission m: this.missions) {
             m.deleteObserver(this);
         }
-        this.missions = (ArrayList<Mission>) missions;
+        this.missions = missions;
         for (Mission m: missions) {
             m.addObserver(this);
         }
@@ -67,32 +70,28 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
             if (list == null)
                 return;
             //TODO button with "navigate to"
-            for (int i = 0; i < list.size(); i++) {
+            int i = 0;
+            for (Mission m: missions) {
+                if (i>=list.size())
+                    break;
                 //overwrite the text of each mission
                 GUIListElement listEl = list.get(i);
                 if (listEl.getContent() instanceof GUITextOverlay) {
                     GUITextOverlay content = (GUITextOverlay) listEl.getContent();
                     content.getText().clear();
-                    String text = (i< missions.size())?missions.get(i).getDescription():"";
+                    String text = (i< missions.size())?m.getDescription():"";
                     content.getText().add(text);
+                    LIST_TO_MISSION.put(listEl,m);
                 }
+                i++;
             }
-
-        //   list.clear();
-        //   list.deleteObservers();
-        //   for (Mission m: missions) {
-        //       m.clearObservers();
-        //       m.addObserver(this);
-        //       //todo make small text contain name,reward,time
-        //       addTextRow(list,m.getDescription(),m.getType().name());
-        //   }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-
+    private HashMap<GUITextButton, GUIListElement> BUTTON_TO_LIST = new HashMap<>();
+    private HashMap<GUIListElement, Mission> LIST_TO_MISSION = new HashMap<>();
     private void addTextRow(GUIElementList list, String missioninfo, String buttonText) {
         //create a text element
         final GUITextOverlay fullText = new GUITextOverlay(10,10, FontLibrary.FontSize.MEDIUM, getState());
@@ -109,22 +108,7 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
         list.addWithoutUpdate(listElement);
         list.addWithoutUpdate(new GUIListElement(b,getState()));
 
-    //   final GUITextButton button = new GUITextButton(getState(), bWidth, bHeight, "activate", new GUICallback() {
-    //       @Override
-    //       public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
-    //           if (!mouseEvent.pressedLeftMouse())
-    //               return;
-    //           ModPlayground.broadcastMessage("clicky clicky");
-    //       }
-
-    //       @Override
-    //       public boolean isOccluded() {
-    //           return false;
-    //       }
-    //   });
-    //   button.setColorPalette(GUITextButton.ColorPalette.NEUTRAL);
-    //   button.onInit();
-    //   list.addWithoutUpdate(new GUIListElement(button,getState()));
+        BUTTON_TO_LIST.put(b,listElement);
     }
 
     @Override
@@ -140,25 +124,14 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
     @Override
     public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
         if (mouseEvent.pressedLeftMouse()) {
-            if (selected != null)
-                selected.setSelected(false);
-            if (guiElement.getUserPointer() instanceof GUIListElement) {
-                guiElement = (GUIListElement)guiElement.getUserPointer();
-            }
-            if (guiElement instanceof GUIListElement) {
-                ((GUIListElement) guiElement).setSelected(true);
-            }
-            ModPlayground.broadcastMessage("clicked" + guiElement.getClass().getSimpleName());
-        } else {
-            if (guiElement instanceof GUIListElement) {
-                if (highlight != null) {
-                    highlight.setHighlighted(false);
+            if (guiElement instanceof GUITextButton) {
+                GUIListElement listElement = BUTTON_TO_LIST.get(guiElement);
+                if (listElement != null) {
+                    Mission m = LIST_TO_MISSION.get(listElement);
+                    if (m != null) {
+                        MissionClient.instance.selectedMission = m;
+                    }
                 }
-                highlight = (GUIListElement) guiElement;
-                if (highlight.getContent() instanceof GUIResizableElement) {
-                    ((GUIResizableElement) highlight.getContent()).setWidth(this.getWidth());
-                }
-                highlight.setHighlighted(true);
             }
         }
     }

@@ -6,6 +6,7 @@ import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
+import org.schema.game.common.data.world.VoidSystem;
 import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.server.ServerMessage;
 
@@ -21,31 +22,33 @@ import java.util.Random;
 public class MissionPatrolSectors extends Mission {
     int cargoAmount;
     float completionRadius;
-
-    public MissionPatrolSectors(final Random rand, long seed) {
+    float distanceTotal;
+    Vector3i center;
+    public MissionPatrolSectors(final Random rand, long seed, Vector3i center) {
         super(rand,seed);
+        this.center = center;
         cargoAmount = 20 + Math.abs(rand.nextInt())%80;
         completionRadius = 0.5f;
         description = "Patrol sectors";
-        int waypoints = 3 + rand.nextInt()%3;
-        MissionTask[] tasks = new MissionTask[waypoints];
+        int waypoints = 4 + Math.abs(rand.nextInt())%6;
+        final MissionTask[] tasks = new MissionTask[waypoints];
 
         for (int i = 0; i < waypoints;i++) {
-            final Vector3i sectorTemp = new Vector3i(
-                    rand.nextInt()%10,
-                    rand.nextInt()%10,
-                    rand.nextInt()%10
+            Vector3i sectorTemp = new Vector3i(
+                    rand.nextInt()%VoidSystem.SYSTEM_SIZE,
+                    rand.nextInt()%VoidSystem.SYSTEM_SIZE,
+                    rand.nextInt()%VoidSystem.SYSTEM_SIZE
              );
+            sectorTemp.add(center);
             MissionTask move = new MissionTask(this,"move","go to sector " + sectorTemp.toString()) {
                boolean visited;
-               final Vector3i sector = sectorTemp;
 
                 @Override
                protected boolean successCondition() {
                    if (visited)
                        return true;
                    for (PlayerState p: mission.getActiveParty()) {
-                       if (p.getCurrentSector().equals(sector)) {
+                       if (getTaskSector() != null && p.getCurrentSector().equals(getTaskSector())) {
                            visited = true;
                            return true;
                        }
@@ -53,15 +56,22 @@ public class MissionPatrolSectors extends Mission {
                    return false;
                }
             };
+            move.setTaskSector(sectorTemp);
             if (i > 0) {
-                MissionTask[] precond = new MissionTask[i];
-                System.arraycopy(tasks, 0, precond, 0, i);
+                MissionTask[] precond = new MissionTask[]{tasks[i-1]};
                 move.setPreconditions(precond);
             }
             tasks[i] = move;
+            if (i > 0) {
+                Vector3f dist = tasks[i].getTaskSector().toVector3f();
+                dist.sub(tasks[i-1].getTaskSector().toVector3f());
+                distanceTotal += dist.length()* VoidSystem.SYSTEM_SIZE;
+            }
+
         }
-
-
+        int minutesNeeded = (int) (distanceTotal/36);
+        this.rewardCredits = minutesNeeded * (50000 + Math.abs(rand.nextInt())%50000);
+        this.duration = (int) (minutesNeeded * 60 * (2+Math.abs(rand.nextFloat())%3));
         this.setMissionTasks(tasks);
     }
 
@@ -97,6 +107,12 @@ public class MissionPatrolSectors extends Mission {
         }
         super.onSuccess();
     }
+
+    @Override
+    public String getDescription() {
+        return super.getDescription() + "\ntotal distance: " + Math.round(distanceTotal) + "km";
+    }
+
     @Override
     public String toString() {
         return "MissionTransportGoods{" +"\n"+

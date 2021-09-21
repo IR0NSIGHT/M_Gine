@@ -7,6 +7,7 @@ import api.listener.fastevents.FastListenerCommon;
 import api.listener.fastevents.GameMapDrawListener;
 import api.mod.StarLoader;
 import me.iron.mGine.mod.ModMain;
+import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.MissionState;
@@ -64,6 +65,7 @@ public class DebugUI {
                 } else { //SERVER SIDE
 
                 if (txt.contains("new m")) {
+                    M_GineCore.instance.getMissions().clear();
                     generateExampleMissions(seedSpawn,event.getMessage().sender);
                     return;
                 }
@@ -72,6 +74,10 @@ public class DebugUI {
                     for (PlayerState p: GameServerState.instance.getPlayerStatesByName().values()) {
                         p.setCredits(0);
                     }
+                }
+
+                if (txt.contains("fail")) {
+                    MissionClient.instance.selectedTask.setCurrentState(MissionState.FAILED);
                 }
             }
 
@@ -105,14 +111,14 @@ public class DebugUI {
 
             @Override
             public void galaxy_DrawLines(GameMapDrawer gameMapDrawer) {
-                Vector3f start = new Vector3f(0,0,0);
-                Vector3f end = GameClientState.instance.getPlayer().getCurrentSector().toVector3f();
-                end.scale(VoidSystem.SYSTEM_SIZE_HALF);
-
-                Vector4f color = new Vector4f(1,1,1,1);
-                Vector4f endColor = new Vector4f(color);
-                float thickness = 1;
-                DrawUtils.drawFTLLine(start,end,color,endColor);
+             //   Vector3f start = new Vector3f(0,0,0);
+             //   Vector3f end = GameClientState.instance.getPlayer().getCurrentSector().toVector3f();
+             //   end.scale(VoidSystem.SYSTEM_SIZE_HALF);
+//
+             //   Vector4f color = new Vector4f(1,1,1,1);
+             //   Vector4f endColor = new Vector4f(color);
+             //   float thickness = 1;
+             //   DrawUtils.drawFTLLine(start,end,color,endColor);
             }
 
             @Override
@@ -131,7 +137,9 @@ public class DebugUI {
     private static void generateExampleMissions(Random rand, String playerName) {
         for (int i = 0; i < 15; i++) {
             //generate a new mission
-            Mission m = M_GineCore.generateMission(rand.nextLong());
+            Vector3i playerSector = GameClientState.instance.getPlayer().getCurrentSector();
+            Mission m = M_GineCore.generateMission(rand.nextLong(),playerSector);
+
             if (rand.nextBoolean()) {
                 //make active
                 PlayerState p = GameServerState.instance.getPlayerFromNameIgnoreCaseWOException(playerName);

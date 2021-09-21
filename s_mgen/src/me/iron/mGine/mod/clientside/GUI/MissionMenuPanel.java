@@ -1,7 +1,8 @@
-package me.iron.mGine.mod.GUI;
+package me.iron.mGine.mod.clientside.GUI;
 
 import api.utils.gui.GUIMenuPanel;
 
+import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
 import org.schema.schine.graphicsengine.core.MouseEvent;
@@ -13,6 +14,7 @@ import org.schema.schine.input.InputState;
 import javax.vecmath.Vector4f;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 
 /**
@@ -37,29 +39,14 @@ public class MissionMenuPanel extends GUIMenuPanel {
     @Override
     public void recreateTabs() {
         guiWindow.clearTabs();
-        ArrayList<Mission> active = new ArrayList<>();
-        ArrayList<Mission> available = new ArrayList<>();
-        ArrayList<Mission> finished = new ArrayList<>();
-        for (Mission m: M_GineCore.instance.getMissions()) {
-            switch (m.getState()) {
-                case IN_PROGRESS:
-                    active.add(m);
-                case OPEN:
-                    available.add(m);
-                default:
-                    finished.add(m);
-            }
-        }
-        //active missions
-        addMissionTab(active,"ACTIVE");
-        addMissionTab(available,"AVAILABLE");
-        addMissionTab(finished,"FINISHED");
-        //available missions
 
-        //finished missions
+        addMissionTab(MissionClient.instance.active,"ACTIVE");
+        addMissionTab(MissionClient.instance.available,"AVAILABLE");
+        addMissionTab(MissionClient.instance.finished,"FINISHED");
+
     }
 
-    private void addMissionTab(Collection<Mission> missionCollection, String tabName) {
+    private void addMissionTab(HashSet<Mission> missionCollection, String tabName) {
         GUIContentPane tab = guiWindow.addTab(tabName);
         triggers = tab;
         tab.setTextBoxHeightLast(500);

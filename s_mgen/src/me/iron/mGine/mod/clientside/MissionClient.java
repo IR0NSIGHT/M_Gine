@@ -1,0 +1,135 @@
+package me.iron.mGine.mod.clientside;
+
+import api.common.GameClient;
+import api.listener.fastevents.FastListenerCommon;
+import api.listener.fastevents.GameMapDrawListener;
+import api.mod.StarLoader;
+import api.utils.StarRunnable;
+import api.utils.gui.ModGUIHandler;
+import me.iron.mGine.mod.ModMain;
+import me.iron.mGine.mod.clientside.GUI.MissionGUIControlManager;
+import me.iron.mGine.mod.generator.M_GineCore;
+import me.iron.mGine.mod.generator.Mission;
+import me.iron.mGine.mod.generator.MissionState;
+import me.iron.mGine.mod.generator.MissionTask;
+import org.schema.common.util.linAlg.Vector3i;
+import org.schema.game.client.controller.GameClientController;
+import org.schema.game.client.data.GameClientState;
+import org.schema.game.client.view.gamemap.GameMapDrawer;
+import org.schema.game.common.data.world.VoidSystem;
+
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
+import java.util.HashSet;
+
+/**
+ * STARMADE MOD
+ * CREATOR: Max1M
+ * DATE: 14.09.2021
+ * TIME: 16:33
+ */
+public class MissionClient {
+    public static MissionClient instance;
+    public HashSet<Mission> active = new HashSet<>();
+    public HashSet<Mission> available = new HashSet<>();
+    public HashSet<Mission> finished = new HashSet<>();
+    public HashSet <MissionTask> currentTasks = new HashSet<>();
+
+    public static boolean autoNav = true;
+    public Mission selectedMission;
+    public MissionTask selectedTask;
+    public MissionClient() {
+        instance = this;
+        FastListenerCommon.gameMapListeners.add(new MissionMapDrawer(this));
+        new StarRunnable(){
+            @Override
+            public void run() {
+                update();
+            }
+        }.runTimer(ModMain.instance,5);
+
+        //register the GUI window controller
+        new StarRunnable() {
+            @Override
+            public void run() {
+                MissionGUIControlManager controlManager = new MissionGUIControlManager(GameClientState.instance);
+                ModGUIHandler.registerNewControlManager(ModMain.instance.getSkeleton(), controlManager);
+            }
+        }.runLater(ModMain.instance,100);
+    }
+
+    public void update() {
+        updateAllMissions();
+        updateSelectedMission();
+        updateSelectedTask();
+        updateCurrentTasks();
+
+        //set navpoint to current task
+        if (autoNav && selectedTask!=null && selectedTask.getTaskSector() != null) {
+            GameClient.getClientController().getClientGameData().setWaypoint(selectedTask.getTaskSector());
+        }
+    }
+
+    private void updateSelectedMission() {
+        if (selectedMission != null && !selectedMission.getState().equals(MissionState.IN_PROGRESS) && !selectedMission.getState().equals(MissionState.OPEN)) {
+            selectedMission = null;
+        }
+    }
+
+    private void updateSelectedTask() {
+        if (selectedMission == null) {
+            selectedTask = null;
+            return;
+        }
+        if (selectedTask == null || selectedTask.mission != selectedMission || !selectedTask.getCurrentState().equals(MissionState.IN_PROGRESS)) {
+            selectedTask = getNextActiveTask(selectedMission);
+        }
+    }
+
+    private void updateCurrentTasks() {
+        //clear tasks
+        currentTasks.clear();
+        //rebuild if theres a mission
+        if (selectedMission != null) {
+            for (MissionTask t : selectedMission.getMissionTasks()) {
+                if (t.getCurrentState().equals(MissionState.IN_PROGRESS))
+                    currentTasks.add(t);
+            }
+        }
+    }
+
+    private void updateAllMissions() {
+        //TODO get missions from server
+        available.clear();
+        active.clear();
+        finished.clear();
+
+        for (Mission m: M_GineCore.instance.getMissions()) {
+            switch (m.getState()) {
+                case OPEN:
+                {
+                    available.add(m);
+                    break;
+                }
+                case IN_PROGRESS: {
+                    active.add(m);
+                    break;
+                }
+                default:
+                {
+                    finished.add(m);
+                    break;
+                }
+            }
+        }
+    }
+
+    private MissionTask getNextActiveTask(Mission m) {
+        for (MissionTask t: m.getMissionTasks()) {
+            if (t.getCurrentState().equals(MissionState.IN_PROGRESS)) {
+                return t;
+            }
+        }
+        return null;
+    }
+}

@@ -1,6 +1,8 @@
 package me.iron.mGine.mod.generator;
 
 import me.iron.mGine.mod.missions.MissionPatrolSectors;
+import org.lwjgl.util.vector.Vector;
+import org.schema.common.util.linAlg.Vector3i;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -30,11 +32,11 @@ public enum MissionType {
     }
 
     //generate a mission from this type
-    public Mission generate(Random rand, long seed) {
+    public Mission generate(Random rand, long seed, Vector3i center) {
         switch (this) {
             case PATROL: {
                 //System.out.println("transport stuff");
-                return new MissionPatrolSectors(rand,seed);
+                return new MissionPatrolSectors(rand,seed, center);
             }
         }
         return null;

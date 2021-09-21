@@ -14,6 +14,7 @@ import org.schema.schine.graphicsengine.core.settings.EngineSettings;
 
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
+import java.text.DecimalFormat;
 
 /**
  * STARMADE MOD
@@ -32,5 +33,11 @@ public class MissionUtil {
            giveMoney(amount,p);
        }
     }
+    public static String formatMoney(int credits) {
 
+        double amount = Double.parseDouble(""+credits);
+        DecimalFormat formatter = new DecimalFormat("#,###");
+
+        return formatter.format(amount);
+    }
 }

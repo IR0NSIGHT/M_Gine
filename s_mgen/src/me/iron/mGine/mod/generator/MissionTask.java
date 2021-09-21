@@ -5,45 +5,17 @@ package me.iron.mGine.mod.generator; /**
  * TIME: 16:54
  */
 
+import org.schema.common.util.linAlg.Vector3i;
+
+import javax.annotation.Nullable;
+
 /**
  * has to be completed in order to fullfill mission/reach other checkpoints.
  */
 public class MissionTask {
     protected MissionState currentState = MissionState.OPEN;
-    protected Mission mission;
-
-    public MissionState getCurrentState() {
-        return currentState;
-    }
-
-    public void setCurrentState(MissionState currentState) {
-        this.currentState = currentState;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    public Mission mission;
+    private Vector3i taskSector;
     protected String name;
     protected String info;
     protected boolean optional; //failing will not result in mission fail
@@ -51,13 +23,7 @@ public class MissionTask {
     //checkpoints that have to be passed in order to unlock this checkpoint
     private MissionTask[] preconditions = new MissionTask[0];
 
-    public MissionTask[] getPreconditions() {
-        return preconditions;
-    }
 
-    public void setPreconditions(MissionTask[] preconditions) {
-        this.preconditions = preconditions;
-    }
 
     public MissionTask(Mission mission, String name, String info) {
         this.info = info;
@@ -72,9 +38,13 @@ public class MissionTask {
         this.name = name;
         onInit();
     }
+
     protected void onInit() {};
+
     protected boolean successCondition() {return false;}
+
     protected boolean failureCondition() {return false;}
+
     protected boolean preconditionsSatisfied() {
         for (MissionTask x: preconditions) {
             if (x.currentState != MissionState.SUCCESS)
@@ -132,5 +102,62 @@ public class MissionTask {
             out.append("]");
         }
         return out.toString();
+    }
+
+
+
+    //getters and setters #########################################
+
+    /**
+     * gets the tasks sector, may be null!
+     * not all tasks have a sector
+     * @return
+     */
+    public Vector3i getTaskSector() {
+        return taskSector;
+    }
+
+    public void setTaskSector(Vector3i taskSector) {
+        this.taskSector = taskSector;
+    }
+
+    public MissionState getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(MissionState currentState) {
+        this.currentState = currentState;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public MissionTask[] getPreconditions() {
+        return preconditions;
+    }
+
+    public void setPreconditions(MissionTask[] preconditions) {
+        this.preconditions = preconditions;
     }
 }

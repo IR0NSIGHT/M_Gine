@@ -5,7 +5,8 @@ import api.listener.events.controller.ServerInitializeEvent;
 import api.mod.StarMod;
 import api.utils.StarRunnable;
 import api.utils.gui.ModGUIHandler;
-import me.iron.mGine.mod.GUI.MissionGUIControlManager;
+import me.iron.mGine.mod.clientside.GUI.MissionGUIControlManager;
+import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.debug.DebugUI;
 import me.iron.mGine.mod.generator.M_GineCore;
 import org.schema.game.client.data.GameClientState;
@@ -38,15 +39,10 @@ public class ModMain extends StarMod {
 
     @Override
     public void onClientCreated(ClientInitializeEvent clientInitializeEvent) {
-        DebugUI.localInit();
+        new MissionClient();
+        //DebugUI.localInit();
+
 
         super.onClientCreated(clientInitializeEvent);
-        new StarRunnable() {
-            @Override
-            public void run() {
-                MissionGUIControlManager controlManager = new MissionGUIControlManager(GameClientState.instance);
-                ModGUIHandler.registerNewControlManager(getSkeleton(), controlManager);
-            }
-        }.runLater(instance,100);
     }
 }

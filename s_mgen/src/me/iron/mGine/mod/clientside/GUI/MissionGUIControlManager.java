@@ -1,6 +1,5 @@
-package me.iron.mGine.mod.GUI;
+package me.iron.mGine.mod.clientside.GUI;
 
-import api.ModPlayground;
 import api.listener.Listener;
 import api.listener.events.input.KeyPressEvent;
 import api.listener.events.player.PlayerChatEvent;

@@ -4,6 +4,7 @@ package me.iron.mGine.mod.generator;
 
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
+import org.schema.common.util.linAlg.Vector3i;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -51,12 +52,12 @@ public class M_GineCore {
         return missions;
     }
 
-    public static Mission generateMission(long seed) {
+    public static Mission generateMission(long seed, Vector3i center) {
         Random rand = new Random(seed);
         //select random type
         MissionType type = MissionType.getByIdx(rand.nextInt());
         //generate that type
-        Mission m = type.generate(rand, seed);
+        Mission m = type.generate(rand, seed, center);
         M_GineCore.instance.missions.add(m);
         return m;
     }
