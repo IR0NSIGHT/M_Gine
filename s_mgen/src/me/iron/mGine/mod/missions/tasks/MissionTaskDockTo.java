@@ -16,8 +16,17 @@ import org.schema.game.server.data.GameServerState;
  */
 public class MissionTaskDockTo extends MissionTask {
     private String targetUID; //UID of target to dock to
-    private SegmentController target;
-    private boolean wasDocked;
+    private SegmentController target; //runtime reference to target ship/station.
+    private boolean wasDocked; //task was completed at some point
+
+    /**
+     * will create task that completes once on of the missionparty docks to the target. non reversible.
+     * @param m mission
+     * @param name name of task
+     * @param info info of task
+     * @param optional is optional
+     * @param targetUID UID of target to dock to
+     */
     public MissionTaskDockTo(Mission m, String name, String info, boolean optional, String targetUID) {
         super(m,name,info,optional);
         this.targetUID = targetUID;
@@ -25,13 +34,10 @@ public class MissionTaskDockTo extends MissionTask {
 
     @Override
     protected boolean successCondition() {
-        if (wasDocked)
-            return true;
-
         if (target == null) {
             target = getTargetSC();
         }
-        
+
         if (target == null)
             return false;
 
@@ -49,6 +55,19 @@ public class MissionTaskDockTo extends MissionTask {
             }
         }
         return false;
+    }
+
+    @Override
+    protected boolean failureCondition() {
+        //TODO target was destroyed
+        return false;
+    }
+
+    @Override
+    public void update() {
+        if (wasDocked) //dont update anymore once task completed (non-reversible)
+            return;
+        super.update();
     }
 
     private SegmentController getTargetSC() {
