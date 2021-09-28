@@ -1,6 +1,7 @@
 package me.iron.mGine.mod.missions;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
@@ -37,7 +38,11 @@ public class MissionUtil {
 
         double amount = Double.parseDouble(""+credits);
         DecimalFormat formatter = new DecimalFormat("#,###");
-
-        return formatter.format(amount);
+        String out = formatter.format(amount);
+        return formatter.format(amount)+"c";
+    }
+    public static void main(String[] args) {
+        int MONE= 35981312;
+        System.out.println(formatMoney(MONE));
     }
 }
