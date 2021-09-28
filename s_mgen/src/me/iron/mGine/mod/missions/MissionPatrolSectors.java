@@ -100,8 +100,9 @@ public class MissionPatrolSectors extends Mission {
     @Override
     protected void onSuccess() {
         StringBuilder b = new StringBuilder();
-        b.append("You have completed Patrol ").append(getIDString()).append(".").append(rewardCredits)
-        .append(" credits have been added to your account. Thank you for your service");
+        b.append("You have completed Patrol ").append(getIDString()).append(". \n");
+        b.append("Your reward of ").append(MissionUtil.formatMoney(rewardCredits))
+        .append(" has been added to your account. Thank you for your service");
         String mssg = b.toString();
         for (PlayerState p: getActiveParty()) {
             MissionUtil.giveMoney(rewardCredits,p);
