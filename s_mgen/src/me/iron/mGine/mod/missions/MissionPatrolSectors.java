@@ -1,6 +1,7 @@
 package me.iron.mGine.mod.missions;
 
 
+import me.iron.mGine.mod.clientside.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
@@ -56,6 +57,7 @@ public class MissionPatrolSectors extends Mission {
                    return false;
                }
             };
+            move.setIcon(MapIcon.WP_MOVE);
             move.setTaskSector(sectorTemp);
             if (i > 0) {
                 MissionTask[] precond = new MissionTask[]{tasks[i-1]};

@@ -77,7 +77,8 @@ public class DebugUI {
                 }
 
                 if (txt.contains("fail")) {
-                    MissionClient.instance.selectedTask.setCurrentState(MissionState.FAILED);
+
+                    MissionClient.instance.getSelectedTask().setCurrentState(MissionState.FAILED);
                 }
             }
 

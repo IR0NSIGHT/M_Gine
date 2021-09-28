@@ -31,7 +31,7 @@ public class MissionTaskScanObject extends MissionTask {
     private String targetUID;
     public MissionTaskScanObject(Mission mission, String name, String info, boolean optional) {
         super(mission, name, info, optional);
-        setIcon(MapIcon.WAYPOINT_MOVE);
+        setIcon(MapIcon.WP_SCAN);
         try {
             PlayerState p = GameServerState.instance.getPlayerStatesByName().values().iterator().next();
             Sector s = GameServerState.instance.getUniverse().getSector(p.getCurrentSector());

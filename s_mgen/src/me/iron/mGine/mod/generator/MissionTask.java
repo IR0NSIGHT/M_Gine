@@ -5,6 +5,7 @@ package me.iron.mGine.mod.generator; /**
  * TIME: 16:54
  */
 
+import me.iron.mGine.mod.clientside.MapIcon;
 import org.schema.common.util.linAlg.Vector3i;
 
 import javax.annotation.Nullable;
@@ -20,6 +21,8 @@ public class MissionTask {
     protected String info;
     protected boolean optional; //failing will not result in mission fail
     protected int id; //mission dependent ID (index in array)
+    private MapIcon icon; //subsprite that gets displayed on map
+
     //checkpoints that have to be passed in order to unlock this checkpoint
     private MissionTask[] preconditions = new MissionTask[0];
 
@@ -159,5 +162,13 @@ public class MissionTask {
 
     public void setPreconditions(MissionTask[] preconditions) {
         this.preconditions = preconditions;
+    }
+
+    public MapIcon getIcon() {
+        return icon;
+    }
+
+    public void setIcon(MapIcon icon) {
+        this.icon = icon;
     }
 }

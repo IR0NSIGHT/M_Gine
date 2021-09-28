@@ -2,6 +2,7 @@ package me.iron.mGine.mod.generator;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import me.iron.mGine.mod.clientside.MapIcon;
 import me.iron.mGine.mod.missions.MissionUtil;
 import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.data.player.PlayerState;
@@ -22,43 +23,13 @@ import java.util.Random;
  */
 public class Mission extends DrawerObservable implements Serializable {
     private int missionID;
-    public String getIDString() {
-        return Integer.toOctalString(missionID);
-    }
+
     //active "quest party members"
     private HashSet<String> party = new HashSet<>();
 
-    public HashSet<String> getParty() {
-        return party;
-    }
-
-    public void addPartyMember(String playerName) {
-        party.add(playerName);
-    }
-
-    public void removePartyMember(String playerName) {
-        party.remove(playerName);
-    }
-
-    public HashSet<PlayerState> getActiveParty() {
-        HashSet<PlayerState> active = new HashSet();
-        Iterator<String> i = party.iterator();
-        PlayerState p = null;
-        while (i.hasNext()) {
-            p = GameServerState.instance.getPlayerFromNameIgnoreCaseWOException(i.next());
-            if (p!=null)
-                active.add(p);
-        }
-        return active;
-    }
-
-    public MissionType getType() {
-        return type;
-    }
-
     //generation parameters
     protected MissionType type;
-    protected int duration;
+    protected int duration; //in seconds
     protected int rewardCredits;
     protected long seed;
     protected String description = "-";
@@ -184,6 +155,39 @@ public class Mission extends DrawerObservable implements Serializable {
     protected void onTaskStateChanged(MissionTask checkpoint, MissionState oldState, MissionState newState) {
         notifyObservers(this);
         System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
+    }
+
+    //getters and setters
+    public String getIDString() {
+        return Integer.toOctalString(missionID);
+    }
+
+    public HashSet<String> getParty() {
+        return party;
+    }
+
+    public void addPartyMember(String playerName) {
+        party.add(playerName);
+    }
+
+    public void removePartyMember(String playerName) {
+        party.remove(playerName);
+    }
+
+    public HashSet<PlayerState> getActiveParty() {
+        HashSet<PlayerState> active = new HashSet();
+        Iterator<String> i = party.iterator();
+        PlayerState p = null;
+        while (i.hasNext()) {
+            p = GameServerState.instance.getPlayerFromNameIgnoreCaseWOException(i.next());
+            if (p!=null)
+                active.add(p);
+        }
+        return active;
+    }
+
+    public MissionType getType() {
+        return type;
     }
 
 }

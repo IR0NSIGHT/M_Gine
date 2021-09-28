@@ -36,11 +36,29 @@ public class MissionClient {
     public HashSet <MissionTask> currentTasks = new HashSet<>();
 
     public static boolean autoNav = true;
-    public Mission selectedMission;
-    public MissionTask selectedTask;
+    private Mission selectedMission;
+
+    public void setSelectedMission(Mission selectedMission) {
+        this.selectedMission = selectedMission;
+        MissionMapDrawer.instance.getMapMarkers().clear();
+        for (MissionTask task: selectedMission.getMissionTasks()) {
+            MissionMapDrawer.instance.addMarker(new TaskMarker(task));
+        }
+        MissionMapDrawer.instance.updateInternalList();
+    }
+
+    public Mission getSelectedMission() {
+        return selectedMission;
+    }
+
+    public MissionTask getSelectedTask() {
+        return selectedTask;
+    }
+
+    private MissionTask selectedTask;
     public MissionClient() {
         instance = this;
-        FastListenerCommon.gameMapListeners.add(new MissionMapDrawer(this));
+        MissionMapDrawer drawer = new MissionMapDrawer();
         new StarRunnable(){
             @Override
             public void run() {
@@ -71,8 +89,8 @@ public class MissionClient {
     }
 
     private void updateSelectedMission() {
-        if (selectedMission != null && !selectedMission.getState().equals(MissionState.IN_PROGRESS) && !selectedMission.getState().equals(MissionState.OPEN)) {
-            selectedMission = null;
+        if (selectedMission != null) {
+
         }
     }
 

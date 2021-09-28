@@ -129,7 +129,7 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
                 if (listElement != null) {
                     Mission m = LIST_TO_MISSION.get(listElement);
                     if (m != null) {
-                        MissionClient.instance.selectedMission = m;
+                        MissionClient.instance.setSelectedMission(m);
                     }
                 }
             }
