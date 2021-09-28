@@ -10,7 +10,12 @@
 ##map
 - waypoint
  - ~~lines~~
- - automatic navigation to next task
+ - ~~automatic navigation to next task~~
+ - button to toggle automatic navigation
+ - button to hide waypoints
+ - ~~selectable sprites~~
+    - ~~give info~~
+    - ~~clicking centers on their pos~~
  - sprites 
 - ~~coloring waypoints for active/finished/failed~~
    
