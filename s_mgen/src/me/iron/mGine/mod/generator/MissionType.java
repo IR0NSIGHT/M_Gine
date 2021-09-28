@@ -35,15 +35,19 @@ public enum MissionType {
 
     //generate a mission from this type
     public Mission generate(Random rand, long seed, Vector3i center) {
+        return new MissionScout(rand, seed, center); //TODO debugger
+        /*
         switch (this) {
             case PATROL: {
                 //System.out.println("transport stuff");
                 return new MissionPatrolSectors(rand,seed, center);
             }
             case SCOUT:
-                return new MissionScout(rand, seed, center);
+
         }
         return null;
+        */
+
     }
 
     /**

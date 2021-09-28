@@ -47,7 +47,6 @@ public class DebugUI {
         StarLoader.registerListener(PlayerChatEvent.class, new Listener<PlayerChatEvent>() {
             @Override
             public void onEvent(PlayerChatEvent event) {
-                Random seedSpawn = new Random(420);
                 String txt = event.getText();
 
                 if (!event.isServer()) { //CLIENT SIDE
@@ -66,7 +65,18 @@ public class DebugUI {
 
                 if (txt.contains("new m")) {
                     M_GineCore.instance.getMissions().clear();
-                    generateExampleMissions(seedSpawn,event.getMessage().sender);
+                    String rest = txt.replace("new m ","");
+                    String[] args = rest.split(" ",2);
+                    int seed = 420;
+                    int amount = 20;
+
+                    try {
+                        if (args.length>0)
+                            seed = Integer.parseInt(args[0]);
+                        if (args.length>1)
+                            amount = Integer.parseInt(args[1]);
+                    } catch (NumberFormatException ex) {}
+                    generateExampleMissions(seed,event.getMessage().sender,amount);
                     return;
                 }
 
@@ -135,8 +145,10 @@ public class DebugUI {
 
     }
 
-    private static void generateExampleMissions(Random rand, String playerName) {
-        for (int i = 0; i < 15; i++) {
+    private static void generateExampleMissions(int seed, String playerName, int amount) {
+        Random rand = new Random(seed);
+        M_GineCore.instance.getMissions().clear();
+        for (int i = 0; i < amount; i++) {
             //generate a new mission
             Vector3i playerSector = GameClientState.instance.getPlayer().getCurrentSector();
             Mission m = M_GineCore.generateMission(rand.nextLong(),playerSector);
@@ -146,6 +158,7 @@ public class DebugUI {
                 PlayerState p = GameServerState.instance.getPlayerFromNameIgnoreCaseWOException(playerName);
                 m.addPartyMember(p.getName());
                 m.start(System.currentTimeMillis());
+
             } else if (rand.nextBoolean()) {
                 //make availalbe
                 m.setState(MissionState.OPEN);

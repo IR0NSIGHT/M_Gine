@@ -47,7 +47,7 @@ public class MissionTaskScanObject extends MissionTask {
             e.printStackTrace();
         }
         if (target == null) {
-            ModPlayground.broadcastMessage("NO TARGET FOR SCAN TASK");
+        //    ModPlayground.broadcastMessage("NO TARGET FOR SCAN TASK");
         }
         init();
     }
@@ -76,6 +76,8 @@ public class MissionTaskScanObject extends MissionTask {
 
     @Override
     public void update() {
+        super.update();
+
         //update position
         if (target != null) {
             setTaskSector(target.getSector(new Vector3i()));
@@ -109,7 +111,10 @@ public class MissionTaskScanObject extends MissionTask {
 
     protected boolean scannerRunByParty(EntityScanEvent event) {
         for (PlayerState p: mission.getActiveParty()) {
-            if (p.equals(event.getOwner()) && p.getCurrentSector().equals(target.getSector(new Vector3i())) && !target.isCloakedFor(event.getEntity())) {
+            if (p == null)
+                continue;
+
+            if (p.equals(event.getOwner())) {
                 return true;
             }
         }

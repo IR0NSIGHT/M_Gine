@@ -8,12 +8,10 @@ import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
 import org.schema.game.server.data.PlayerNotFountException;
+import org.schema.schine.network.server.ServerMessage;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 /**
  * STARMADE MOD
@@ -33,6 +31,7 @@ public class Mission extends DrawerObservable implements Serializable {
     protected int rewardCredits;
     protected long seed;
     protected String description = "-";
+    protected UUID uuid = UUID.randomUUID();
 
     //runtime values
     protected long startTime;
@@ -136,6 +135,9 @@ public class Mission extends DrawerObservable implements Serializable {
 
     protected void onTaskStateChanged(MissionTask checkpoint, MissionState oldState, MissionState newState) {
         notifyObservers(this);
+        if (!oldState.equals(MissionState.SUCCESS) && newState.equals(MissionState.SUCCESS)) {
+            MissionUtil.notifyParty(getActiveParty(),"Task complete: " + checkpoint.getName(), ServerMessage.MESSAGE_TYPE_INFO);
+        }
         System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
     }
 
@@ -194,6 +196,19 @@ public class Mission extends DrawerObservable implements Serializable {
         for(int i = 0; i < missionTasks.length; i++) {
             missionTasks[i].id = i;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Mission mission = (Mission) o;
+        return uuid.equals(mission.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
     }
 }
 

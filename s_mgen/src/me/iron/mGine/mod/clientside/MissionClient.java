@@ -42,7 +42,8 @@ public class MissionClient {
         this.selectedMission = selectedMission;
         MissionMapDrawer.instance.getMapMarkers().clear();
         for (MissionTask task: selectedMission.getMissionTasks()) {
-            MissionMapDrawer.instance.addMarker(new TaskMarker(task));
+            if (task.getTaskSector() != null)
+                MissionMapDrawer.instance.addMarker(new TaskMarker(task));
         }
         MissionMapDrawer.instance.updateInternalList();
     }

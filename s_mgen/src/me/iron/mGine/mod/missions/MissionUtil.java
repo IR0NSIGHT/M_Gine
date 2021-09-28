@@ -8,14 +8,17 @@ import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.world.FTLConnection;
 import org.schema.game.common.data.world.VoidSystem;
 import org.schema.game.server.data.GameServerState;
+import org.schema.schine.common.language.Lng;
 import org.schema.schine.graphicsengine.core.Controller;
 import org.schema.schine.graphicsengine.core.GLFrame;
 import org.schema.schine.graphicsengine.core.GlUtil;
 import org.schema.schine.graphicsengine.core.settings.EngineSettings;
+import org.schema.schine.network.server.ServerMessage;
 
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 import java.text.DecimalFormat;
+import java.util.Collection;
 
 /**
  * STARMADE MOD
@@ -34,12 +37,19 @@ public class MissionUtil {
            giveMoney(amount,p);
        }
     }
+
     public static String formatMoney(int credits) {
 
         double amount = Double.parseDouble(""+credits);
         DecimalFormat formatter = new DecimalFormat("#,###");
         String out = formatter.format(amount);
         return formatter.format(amount)+"c";
+    }
+
+    public static void notifyParty(Collection<PlayerState> players, String message, int type) {
+        for (PlayerState p: players) {
+            p.sendServerMessage(Lng.astr(message),type);
+        }
     }
     public static void main(String[] args) {
         int MONE= 35981312;
