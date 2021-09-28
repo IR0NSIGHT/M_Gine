@@ -67,7 +67,7 @@ public class MissionTaskScanObject extends MissionTask {
         }
     }
 
-    private void unregisterListener() {
+    protected void unregisterListener() {
         if (listener == null)
             return;
         StarLoader.getListeners(EntityScanEvent.class).remove(listener);
@@ -93,19 +93,27 @@ public class MissionTaskScanObject extends MissionTask {
         if (target == null)
             return;
 
+        if (!scannerRunByParty(event))
+            return;
+
+        //this is the droid you are looking for
+        scanned = true;
+        setCurrentState(MissionState.SUCCESS);
+        new StarRunnable(){
+            @Override
+            public void run() {
+                unregisterListener(); //TODO use starloader method once PR is through
+            }
+        }.runLater(ModMain.instance,10);
+    }
+
+    protected boolean scannerRunByParty(EntityScanEvent event) {
         for (PlayerState p: mission.getActiveParty()) {
-        if (p.equals(event.getOwner()) && p.getCurrentSector().equals(target.getSector(new Vector3i())) && !target.isCloakedFor(event.getEntity())) {
-                //this is the droid you are looking for
-                scanned = true;
-                setCurrentState(MissionState.SUCCESS);
-                new StarRunnable(){
-                    @Override
-                    public void run() {
-                        unregisterListener(); //TODO use starloader method once PR is through
-                    }
-                }.runLater(ModMain.instance,10);
+            if (p.equals(event.getOwner()) && p.getCurrentSector().equals(target.getSector(new Vector3i())) && !target.isCloakedFor(event.getEntity())) {
+                return true;
             }
         }
+        return false;
     }
 
     /**

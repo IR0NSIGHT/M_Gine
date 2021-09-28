@@ -1,6 +1,7 @@
 package me.iron.mGine.mod.generator;
 
 import me.iron.mGine.mod.missions.MissionPatrolSectors;
+import me.iron.mGine.mod.missions.MissionScout;
 import org.lwjgl.util.vector.Vector;
 import org.schema.common.util.linAlg.Vector3i;
 
@@ -12,7 +13,8 @@ import java.util.Random;
  */
 public enum MissionType {
     //TRANSPORT_GOODS(MissionExampleTransportGoods.class, "transport goods");
-    PATROL(MissionPatrolSectors.class,"patrol");
+    PATROL(MissionPatrolSectors.class,"patrol"),
+    SCOUT(MissionScout.class,"scout");
     /*
     FERRY_PASSENGER(null,"Ferry passengers"),
     DELIVER_GOODS(null,"deliver goods"),
@@ -38,6 +40,8 @@ public enum MissionType {
                 //System.out.println("transport stuff");
                 return new MissionPatrolSectors(rand,seed, center);
             }
+            case SCOUT:
+                return new MissionScout(rand, seed, center);
         }
         return null;
     }
