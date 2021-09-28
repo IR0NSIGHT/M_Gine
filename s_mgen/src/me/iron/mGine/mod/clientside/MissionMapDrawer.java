@@ -46,24 +46,18 @@ public class MissionMapDrawer implements GameMapDrawListener {
 
     private HashSet<MapMarker> mapMarkers = new HashSet<>(); //list of all markers to draw, provided by server
     private Vector3i centerOn;
+    public MapMarker selected;
     public MissionMapDrawer() {
         super();
         instance = this;
         FastListenerCommon.gameMapListeners.add(this);
         StarLoader.registerListener(MousePressEvent.class, new Listener<MousePressEvent>() {
-
             @Override
             public void onEvent(MousePressEvent mouseEvent) {
-                if (mouseEvent.getRawEvent().pressedLeftMouse()) {
-                    for (MapMarker m: mapMarkers) {
-                        if (m.getSelected()) {
-                            centerOn = m.getSector();
-                            break;
-                        }
-                    }
+                if (mouseEvent.getRawEvent().pressedLeftMouse() && selected != null) {
+                    centerOn = selected.getSector();
                 }
             }
-
         }, ModMain.instance);
     }
 
