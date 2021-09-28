@@ -94,8 +94,7 @@ public class MissionTaskScanObject extends MissionTask {
             return;
 
         for (PlayerState p: mission.getActiveParty()) {
-        if (p.equals(event.getOwner()) && !target.isCloakedFor(event.getEntity())) {
-
+        if (p.equals(event.getOwner()) && p.getCurrentSector().equals(target.getSector(new Vector3i())) && !target.isCloakedFor(event.getEntity())) {
                 //this is the droid you are looking for
                 scanned = true;
                 setCurrentState(MissionState.SUCCESS);
