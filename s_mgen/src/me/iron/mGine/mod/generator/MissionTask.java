@@ -60,6 +60,10 @@ public class MissionTask {
         mission.onTaskStateChanged(this,oldState,newState);
     }
 
+    /**
+     * update method for the task. best not touch, unless you know EXCATLY what you are doing.
+     * try chaning the success and failure conditions instead.
+     */
     public void update() {
         MissionState previous = currentState;
         if (!preconditionsSatisfied()) {
