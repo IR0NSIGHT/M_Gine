@@ -36,31 +36,13 @@ public class Mission extends DrawerObservable implements Serializable {
 
     //runtime values
     protected long startTime;
-
-    public MissionState getState() {
-        return state;
-    }
-
-    public void setState(MissionState state) {
-        this.state = state;
-    }
+    private HashSet<PlayerState> activeParty = new HashSet<>();
 
     protected MissionState state = MissionState.OPEN;
     protected int remainingTime;
 
     //checkpoints
     protected MissionTask[] missionTasks = new MissionTask[0];
-
-    public MissionTask[] getMissionTasks() {
-        return missionTasks;
-    }
-
-    public void setMissionTasks(MissionTask[] missionTasks) {
-        this.missionTasks = missionTasks;
-        for(int i = 0; i < missionTasks.length; i++) {
-            missionTasks[i].id = i;
-        }
-    }
 
     public Mission(Random rand, long seed) {
         this.type = MissionType.getByClass(this.getClass());
@@ -157,6 +139,27 @@ public class Mission extends DrawerObservable implements Serializable {
         System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
     }
 
+    public void addPartyMember(String playerName) {
+        party.add(playerName);
+        updateActiveParty();
+    }
+
+    public void removePartyMember(String playerName) {
+        party.remove(playerName);
+        updateActiveParty();
+    }
+
+    private void updateActiveParty() {
+        activeParty.clear();
+        Iterator<String> i = party.iterator();
+        PlayerState p;
+        while (i.hasNext()) {
+            p = GameServerState.instance.getPlayerFromNameIgnoreCaseWOException(i.next());
+            if (p!=null)
+                activeParty.add(p);
+        }
+    }
+
     //getters and setters
     public String getIDString() {
         return Integer.toOctalString(missionID);
@@ -166,29 +169,31 @@ public class Mission extends DrawerObservable implements Serializable {
         return party;
     }
 
-    public void addPartyMember(String playerName) {
-        party.add(playerName);
-    }
-
-    public void removePartyMember(String playerName) {
-        party.remove(playerName);
-    }
-
     public HashSet<PlayerState> getActiveParty() {
-        HashSet<PlayerState> active = new HashSet();
-        Iterator<String> i = party.iterator();
-        PlayerState p = null;
-        while (i.hasNext()) {
-            p = GameServerState.instance.getPlayerFromNameIgnoreCaseWOException(i.next());
-            if (p!=null)
-                active.add(p);
-        }
-        return active;
+        return activeParty;
     }
 
     public MissionType getType() {
         return type;
     }
 
+    public MissionState getState() {
+        return state;
+    }
+
+    public void setState(MissionState state) {
+        this.state = state;
+    }
+
+    public MissionTask[] getMissionTasks() {
+        return missionTasks;
+    }
+
+    public void setMissionTasks(MissionTask[] missionTasks) {
+        this.missionTasks = missionTasks;
+        for(int i = 0; i < missionTasks.length; i++) {
+            missionTasks[i].id = i;
+        }
+    }
 }
 
