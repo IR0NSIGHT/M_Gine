@@ -1,25 +1,20 @@
 package me.iron.mGine.mod.clientside;
 
 import api.common.GameClient;
-import api.listener.fastevents.FastListenerCommon;
-import api.listener.fastevents.GameMapDrawListener;
-import api.mod.StarLoader;
 import api.utils.StarRunnable;
 import api.utils.gui.ModGUIHandler;
 import me.iron.mGine.mod.ModMain;
+import me.iron.mGine.mod.clientside.GUI.GUIActiveMissionTab;
 import me.iron.mGine.mod.clientside.GUI.MissionGUIControlManager;
+import me.iron.mGine.mod.clientside.map.MissionMapDrawer;
+import me.iron.mGine.mod.clientside.map.TaskMarker;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
-import org.schema.common.util.linAlg.Vector3i;
-import org.schema.game.client.controller.GameClientController;
 import org.schema.game.client.data.GameClientState;
-import org.schema.game.client.view.gamemap.GameMapDrawer;
-import org.schema.game.common.data.world.VoidSystem;
+import org.schema.game.common.controller.observer.DrawerObservable;
 
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
 import java.util.HashSet;
 
 /**
@@ -28,7 +23,7 @@ import java.util.HashSet;
  * DATE: 14.09.2021
  * TIME: 16:33
  */
-public class MissionClient {
+public class MissionClient extends DrawerObservable {
     public static MissionClient instance;
     public HashSet<Mission> active = new HashSet<>();
     public HashSet<Mission> available = new HashSet<>();
@@ -46,6 +41,7 @@ public class MissionClient {
                 MissionMapDrawer.instance.addMarker(new TaskMarker(task));
         }
         MissionMapDrawer.instance.updateInternalList();
+        GUIActiveMissionTab.instance.getSelectedMissionFromClient();
     }
 
     public Mission getSelectedMission() {
@@ -98,10 +94,12 @@ public class MissionClient {
     private void updateSelectedTask() {
         if (selectedMission == null) {
             selectedTask = null;
+            notifyObservers();
             return;
         }
         if (selectedTask == null || selectedTask.mission != selectedMission || !selectedTask.getCurrentState().equals(MissionState.IN_PROGRESS)) {
             selectedTask = getNextActiveTask(selectedMission);
+            notifyObservers();
         }
     }
 

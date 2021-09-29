@@ -1,4 +1,4 @@
-package me.iron.mGine.mod.clientside;
+package me.iron.mGine.mod.clientside.map;
 
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.gamemap.entry.SelectableMapEntry;

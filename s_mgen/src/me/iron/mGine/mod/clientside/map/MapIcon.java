@@ -1,4 +1,4 @@
-package me.iron.mGine.mod.clientside;
+package me.iron.mGine.mod.clientside.map;
 
 import org.schema.schine.graphicsengine.forms.Sprite;
 

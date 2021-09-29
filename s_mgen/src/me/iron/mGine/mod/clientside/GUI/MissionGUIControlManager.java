@@ -1,5 +1,6 @@
 package me.iron.mGine.mod.clientside.GUI;
 
+import api.DebugFile;
 import api.listener.Listener;
 import api.listener.events.input.KeyPressEvent;
 import api.listener.events.player.PlayerChatEvent;
@@ -20,6 +21,7 @@ import org.schema.game.common.data.player.PlayerState;
  * 100% clientside
  */
 public class MissionGUIControlManager extends GUIControlManager {
+    private static int created = 0;
     public static GUIMenuPanel p;
     public static MissionGUIControlManager instance;
     public MissionGUIControlManager(GameClientState state) {
@@ -29,7 +31,9 @@ public class MissionGUIControlManager extends GUIControlManager {
     }
 
     @Override
-    public GUIMenuPanel createMenuPanel() {
+    public GUIMenuPanel createMenuPanel() { //gets called twice
+        created ++;
+        DebugFile.log("GUIControlManager created menu panel: " + created);
         p = new MissionMenuPanel(getState());
         p.onInit();
         p.recreateTabs();
@@ -37,25 +41,6 @@ public class MissionGUIControlManager extends GUIControlManager {
     }
 
     private void initListener() {
-        StarLoader.registerListener(PlayerChatEvent.class, new Listener<PlayerChatEvent>() {
-            @Override
-            public void onEvent(PlayerChatEvent event) {
-                PlayerState p = GameClientState.instance.getPlayer();
-                if (!p.isAdmin())
-                    return;
-                if (event.getText().contains("!menu")) {
-                    for (GUIControlManager manager: ModGUIHandler.getAllModControlManagers()) {
-                        manager.setActive(false);
-                    }
-                    //TODO disable all others
-                    setActive(true);
-                    if (MissionGUIControlManager.p != null)
-                        MissionGUIControlManager.p.recreateTabs();
-                    event.setCanceled(true);
-                }
-            }
-        }, ModMain.instance);
-
         StarLoader.registerListener(KeyPressEvent.class, new Listener<KeyPressEvent>() {
             @Override
             public void onEvent(KeyPressEvent keyPressEvent) {

@@ -5,10 +5,8 @@ package me.iron.mGine.mod.generator; /**
  * TIME: 16:54
  */
 
-import me.iron.mGine.mod.clientside.MapIcon;
+import me.iron.mGine.mod.clientside.map.MapIcon;
 import org.schema.common.util.linAlg.Vector3i;
-
-import javax.annotation.Nullable;
 
 /**
  * has to be completed in order to fullfill mission/reach other checkpoints.

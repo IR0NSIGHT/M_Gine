@@ -1,13 +1,9 @@
 package me.iron.mGine.mod.generator;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import me.iron.mGine.mod.clientside.MapIcon;
 import me.iron.mGine.mod.missions.MissionUtil;
 import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
-import org.schema.game.server.data.PlayerNotFountException;
 import org.schema.schine.network.server.ServerMessage;
 
 import java.io.Serializable;
@@ -72,6 +68,7 @@ public class Mission extends DrawerObservable implements Serializable {
     public void update(long time) {
         if (state != MissionState.IN_PROGRESS)
             return;
+
         //update countdown
         long runningFor = (time - startTime)/1000;
         remainingTime = (int)(duration-runningFor);
@@ -96,13 +93,8 @@ public class Mission extends DrawerObservable implements Serializable {
     public String getDescription() {
         StringBuilder out = new StringBuilder();
         out.append(description).append("(").append(getIDString()).append(")").append(" reward: ").append(MissionUtil.formatMoney(rewardCredits));
-        if (state.equals(MissionState.SUCCESS)) {
-            out.append(" SUCCESS\n");
-        } else if (state.equals(MissionState.FAILED)) {
-            out.append(" FAILED\n");
-        } else {
-            out.append(", remaining time: ").append(String.format("%02d:%02d:%02d",(remainingTime % (60*60*60))/(60*60),(remainingTime % 3600) / 60,remainingTime % 60)).append("\n");
-        }
+        out.append(" state: ").append(state).append("\n");
+        out.append("remaining time: ").append(String.format("%02d:%02d:%02d",(remainingTime % (60*60*60))/(60*60),(remainingTime % 3600) / 60,remainingTime % 60)).append("\n");
         out.append("tasks:\n");
         for (MissionTask task: missionTasks) {
             out.append(task.getTaskSummary()).append("\n");

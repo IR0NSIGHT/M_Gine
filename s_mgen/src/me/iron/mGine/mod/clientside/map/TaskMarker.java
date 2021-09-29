@@ -1,12 +1,10 @@
-package me.iron.mGine.mod.clientside;
+package me.iron.mGine.mod.clientside.map;
 
 import me.iron.mGine.mod.generator.MissionTask;
-import org.lwjgl.util.vector.Vector;
 import org.schema.common.util.linAlg.Vector3i;
 
 import javax.vecmath.Vector4f;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 
 /**

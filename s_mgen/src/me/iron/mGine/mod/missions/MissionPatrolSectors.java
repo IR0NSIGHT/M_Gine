@@ -1,7 +1,7 @@
 package me.iron.mGine.mod.missions;
 
 
-import me.iron.mGine.mod.clientside.MapIcon;
+import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;

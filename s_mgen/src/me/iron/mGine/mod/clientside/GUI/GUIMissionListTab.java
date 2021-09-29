@@ -1,6 +1,5 @@
 package me.iron.mGine.mod.clientside.GUI;
 
-import api.ModPlayground;
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import org.schema.game.common.controller.observer.DrawerObservable;
@@ -10,8 +9,6 @@ import org.schema.schine.graphicsengine.forms.font.FontLibrary;
 import org.schema.schine.graphicsengine.forms.gui.*;
 import org.schema.schine.input.InputState;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -22,13 +19,24 @@ import java.util.HashSet;
  * TIME: 16:42
  * a list which is scrollable and displays GUI elements, like text / buttons
  */
-public class GUIScrollabeElementList extends GUIScrollablePanel implements DrawerObserver, GUICallback {
+public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObserver, GUICallback {
     private GUIElementList list;
-    private GUICallback callbackActivate;
+    protected enum ListType {
+        ACTIVE("Active"),
+        OPEN("Open"),
+        FINISHED("Finished");
+        private String name;
+        ListType(String name) {
+            this.name = name;
+        }
 
+        public String getName() {
+            return name;
+        }
+    }
     private HashSet<Mission> missions = new HashSet<>();
 
-    public GUIScrollabeElementList(float width, float height, GUIElement dependent, InputState inputState) {
+    public GUIMissionListTab(float width, float height, GUIElement dependent, InputState inputState, ListType type) {
         super(width, height, dependent, inputState);
     }
 
@@ -42,11 +50,7 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
         }
         updateList();
     }
-    public void setCallBackActivation (GUICallback callBack) {
-        this.callbackActivate = callBack;
-    }
-    GUIListElement selected;
-    GUIListElement highlight;
+
     @Override
     public void onInit() {
         //create a list
@@ -90,6 +94,7 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
         }
 
     }
+
     private HashMap<GUITextButton, GUIListElement> BUTTON_TO_LIST = new HashMap<>();
     private HashMap<GUIListElement, Mission> LIST_TO_MISSION = new HashMap<>();
     private void addTextRow(GUIElementList list, String missioninfo, String buttonText) {
@@ -109,11 +114,6 @@ public class GUIScrollabeElementList extends GUIScrollablePanel implements Drawe
         list.addWithoutUpdate(new GUIListElement(b,getState()));
 
         BUTTON_TO_LIST.put(b,listElement);
-    }
-
-    @Override
-    public void draw() {
-        super.draw();
     }
 
     @Override

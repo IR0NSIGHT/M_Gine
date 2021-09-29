@@ -1,16 +1,14 @@
 package me.iron.mGine.mod.missions.tasks;
 
-import api.ModPlayground;
 import api.listener.Listener;
 import api.listener.events.entity.EntityScanEvent;
 import api.mod.StarLoader;
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
-import me.iron.mGine.mod.clientside.MapIcon;
+import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
-import me.iron.mGine.mod.missions.MissionScout;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.SegmentController;
 import org.schema.game.common.controller.SpaceStation;
@@ -20,7 +18,6 @@ import org.schema.game.common.data.world.SimpleTransformableSendableObject;
 import org.schema.game.server.data.GameServerState;
 
 import java.io.IOException;
-import java.util.HashSet;
 
 public class MissionTaskScanObject extends MissionTask {
 

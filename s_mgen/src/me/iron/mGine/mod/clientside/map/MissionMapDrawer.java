@@ -1,27 +1,19 @@
-package me.iron.mGine.mod.clientside;
+package me.iron.mGine.mod.clientside.map;
 
-import api.ModPlayground;
 import api.listener.Listener;
-import api.listener.events.input.KeyPressEvent;
 import api.listener.events.input.MousePressEvent;
 import api.listener.fastevents.FastListenerCommon;
 import api.listener.fastevents.GameMapDrawListener;
 import api.mod.StarLoader;
 import com.bulletphysics.linearmath.Transform;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.generator.MissionState;
 import org.schema.common.util.linAlg.Vector3i;
-import org.schema.game.client.data.GameClientState;
-import org.schema.game.client.view.camera.GameMapCamera;
 import org.schema.game.client.view.effects.ConstantIndication;
 import org.schema.game.client.view.gamemap.GameMapDrawer;
 import org.schema.game.client.view.gui.shiphud.HudIndicatorOverlay;
-import org.schema.game.common.data.player.SavedCoordinate;
 import org.schema.game.common.data.world.VoidSystem;
 import org.schema.schine.common.language.Lng;
-import org.schema.schine.graphicsengine.core.MouseButton;
-import org.schema.schine.graphicsengine.core.MouseEvent;
 import org.schema.schine.graphicsengine.forms.Sprite;
 
 import javax.vecmath.Vector3f;

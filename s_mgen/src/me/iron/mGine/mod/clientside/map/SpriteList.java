@@ -1,4 +1,4 @@
-package me.iron.mGine.mod.clientside;
+package me.iron.mGine.mod.clientside.map;
 
 import api.utils.textures.StarLoaderTexture;
 import me.iron.mGine.mod.ModMain;
