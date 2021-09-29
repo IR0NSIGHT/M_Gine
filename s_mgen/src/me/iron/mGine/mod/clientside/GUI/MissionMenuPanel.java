@@ -20,15 +20,7 @@ import java.util.HashSet;
  * TIME: 15:01
  */
 public class MissionMenuPanel extends GUIMenuPanel {
-
-
-    private GUITextOverlay triggerText;
-
-    static int width = 400;
-    static int height = 400;
-    FontLibrary.FontSize fontSize =  FontLibrary.FontSize.MEDIUM;
-
-    public MissionMenuPanel(InputState state) {
+    public MissionMenuPanel(InputState state,String name, int width, int height) {
         super(state,"MyMenuPanel",width,height);
     }
 
@@ -49,10 +41,10 @@ public class MissionMenuPanel extends GUIMenuPanel {
         tab.setTextBoxHeightLast(500);
 
         //background colored instantiation, so it can be used as a parent for auto resizing
-        final GUIColoredRectangle background = new GUIColoredRectangle(getState(),height,width, tab.getContent(0),new Vector4f(0.3f,0.3f,0.3f,1));
+        final GUIColoredRectangle background = new GUIColoredRectangle(getState(),MissionGUIControlManager.windowWidth,MissionGUIControlManager.windowHeight, tab.getContent(0),new Vector4f(0.3f,0.3f,0.3f,1));
         background.onInit();
         tab.getContent(0).attach(background);
-        final GUIMissionListTab list = new GUIMissionListTab(width,height,tab,getState(), type);
+        final GUIMissionListTab list = new GUIMissionListTab(MissionGUIControlManager.windowWidth,MissionGUIControlManager.windowHeight,tab,getState(), type);
         list.onInit();
         list.setMissions(missionCollection);
 
@@ -63,13 +55,14 @@ public class MissionMenuPanel extends GUIMenuPanel {
 
     private void addSelectedMissionTab() {
         GUIContentPane tab = guiWindow.addTab("Selected");
-        tab.setTextBoxHeightLast(500); //?
+        int tabWidth = (int) tab.getWidth();
+        int tabHeight = (int) tab.getHeight();
 
         //background colored instantiation, so it can be used as a parent for auto resizing
-        final GUIColoredRectangle background = new GUIColoredRectangle(getState(),height,width, tab.getContent(0),new Vector4f(0.3f,0.3f,0.3f,1));
+        final GUIColoredRectangle background = new GUIColoredRectangle(getState(),MissionGUIControlManager.windowWidth,MissionGUIControlManager.windowHeight, tab.getContent(0),new Vector4f(0.3f,0.3f,0.3f,1));
         background.onInit();
         tab.getContent(0).attach(background);
-        GUIActiveMissionTab selected = new GUIActiveMissionTab(width,height,tab, getState());
+        GUIActiveMissionTab selected = new GUIActiveMissionTab(MissionGUIControlManager.windowWidth,MissionGUIControlManager.windowHeight,tab, getState());
         selected.onInit();
 
         selected.dependent=background;

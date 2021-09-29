@@ -3,7 +3,10 @@ package me.iron.mGine.mod.clientside.GUI;
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
+import org.schema.game.client.data.GameClientState;
+import org.schema.game.common.data.player.PlayerState;
 import org.schema.schine.graphicsengine.core.MouseEvent;
+import org.schema.schine.graphicsengine.forms.font.FontLibrary;
 import org.schema.schine.graphicsengine.forms.gui.*;
 import org.schema.schine.input.InputState;
 
@@ -24,14 +27,17 @@ public class GUIActiveMissionTab extends GUIScrollablePanel {
 
     @Override
     public void onInit() {
-
-        GUIAncor testPanel = new GUIAncor(getState(),getWidth(),90);
+        GUIAncor testPanel = new GUIAncor(getState(),getWidth(),getHeight());
         testPanel.onInit();
 
-        //text field that shows mission description
-        GUITextOverlay text = new GUITextOverlay((int) (getWidth()/2),45,getState());
-        text.onInit();
-        text.getText().add(new Object(){
+        //width and height stuff for sizing and playing objects
+        int buttonX = (int) getWidth()/2;
+        int buttonY = 90;
+
+        //missionTextOverlay field that shows mission description
+        GUITextOverlay missionTextOverlay = new GUITextOverlay(buttonX, (int) testPanel.getHeight()/2,FontLibrary.getBlenderProMedium18(),getState());
+        missionTextOverlay.onInit();
+        missionTextOverlay.getText().add(new Object(){
             @Override
             public String toString() {
                 if (activeMission == null)
@@ -40,12 +46,30 @@ public class GUIActiveMissionTab extends GUIScrollablePanel {
             }
         });
 
-        //button to abort/accept mission. auto updates text, calls back to onToggleButtonClicked.
-        GUITextButton button = new GUITextButton(getState(), (int) (getWidth() / 2), 90, new Object(){
+        GUITextOverlay partyTextOverlay = new GUITextOverlay(buttonX, (int) (testPanel.getHeight()/2), FontLibrary.getBlenderProMedium18(),getState());
+        partyTextOverlay.onInit();
+        partyTextOverlay.getText().add(new Object(){
+            @Override
+            public String toString() {
+                if (activeMission == null) {
+                    return "Party: \n" + GameClientState.instance.getPlayer().getName();
+                } else {
+                    StringBuilder out = new StringBuilder();
+                    out.append("Party: \n");
+                    for (String playername: activeMission.getParty()) {
+                        out.append(playername).append("\n");
+                    }
+                    return out.toString();
+                }
+            }
+        });
+
+        //acceptAndAbortButton to abort/accept mission. auto updates text, calls back to onToggleButtonClicked.
+        GUITextButton acceptAndAbortButton = new GUITextButton(getState(), buttonX, (int) (buttonY*0.95f), new Object(){
             @Override
             public String toString() {
                 if (activeMission == null)
-                    return "";
+                    return "accept mission";
                 return getButtonText(activeMission.getState());
             }
         }, new GUICallback() {
@@ -60,19 +84,57 @@ public class GUIActiveMissionTab extends GUIScrollablePanel {
                 return false;
             }
         });
-        button.onInit();
 
+        GUITextButton inviteToPartyButton = new GUITextButton(getState(), buttonX, (int) (buttonY * 0.95f), new Object() {
+            @Override
+            public String toString() {
+                return "invite player to party";
+            }
+        }, new GUICallback() {
+            @Override
+            public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
+                //TODO invite player stuff
+            }
 
-        text.setPos(new Vector3f(getWidth()/2,0,0));
-        button.setPos(new Vector3f(0,0,0));
-        testPanel.attach(text);
-        testPanel.attach(button);
+            @Override
+            public boolean isOccluded() {
+                return false;
+            }
+        });
+        GUITextButton removeFromPartyButton = new GUITextButton(getState(), buttonX, (int) (buttonY * 0.95f), new Object() {
+            @Override
+            public String toString() {
+                return "remove player from party";
+            }
+        }, new GUICallback() {
+            @Override
+            public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
+                //TODO invite player stuff
+            }
+
+            @Override
+            public boolean isOccluded() {
+                return false;
+            }
+        });
+
+        missionTextOverlay.setPos(0,0,0);
+        partyTextOverlay.setPos(0,(int) (testPanel.getHeight()/2),0);
+        acceptAndAbortButton.setPos(buttonX,0,0);
+        inviteToPartyButton.setPos(buttonX,testPanel.getHeight()/2,0);
+        removeFromPartyButton.setPos(buttonX,testPanel.getHeight()/2+buttonY,0);
+
+        testPanel.attach(missionTextOverlay);
+        testPanel.attach(partyTextOverlay);
+        testPanel.attach(acceptAndAbortButton);
+        testPanel.attach(inviteToPartyButton);
+        testPanel.attach(removeFromPartyButton);
         setContent(testPanel);
 
 
         //make textfield placeholder for later
-        missionText = text;
-        buttonToggleActivation = button;
+        missionText = missionTextOverlay;
+        buttonToggleActivation = acceptAndAbortButton;
 
         super.onInit();
     }

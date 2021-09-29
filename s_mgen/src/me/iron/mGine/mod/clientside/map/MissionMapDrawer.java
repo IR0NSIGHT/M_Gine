@@ -14,6 +14,7 @@ import org.schema.game.client.view.gamemap.GameMapDrawer;
 import org.schema.game.client.view.gui.shiphud.HudIndicatorOverlay;
 import org.schema.game.common.data.world.VoidSystem;
 import org.schema.schine.common.language.Lng;
+import org.schema.schine.graphicsengine.core.GLFrame;
 import org.schema.schine.graphicsengine.forms.Sprite;
 
 import javax.vecmath.Vector3f;
@@ -117,7 +118,6 @@ public class MissionMapDrawer implements GameMapDrawListener {
 
     @Override
     public void system_PostDraw(GameMapDrawer gameMapDrawer, Vector3i vector3i, boolean b) {
-
     }
 
     @Override
