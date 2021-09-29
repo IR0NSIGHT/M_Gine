@@ -2,21 +2,26 @@
 #CLIENT
 ##GUI window
 - ~~window that lists mission~~
-- ~~button for mission selection~~
-- button for mission activation
-- button for mission abortion
-- button to ask for more time
+- mission management
+    - select
+    - ~~accept~~
+    - ~~abort~~
+    - ask for more time
+- party management
+    - invite player
+    - kick player
+    - become captain
     
 ##map
 - waypoint
  - ~~lines~~
  - ~~automatic navigation to next task~~
- - button to toggle automatic navigation
  - button to hide waypoints
  - ~~selectable sprites~~
     - ~~give info~~
     - ~~clicking centers on their pos~~
- - sprites 
+    - ~~set waypoint to sprite (rightclick)~~
+ - decent looking waypoint icon
 - ~~coloring waypoints for active/finished/failed~~
    
 #SERVER
@@ -30,7 +35,9 @@
 - mission UID
 
 ## missions
-- patrol mission
+- ~~patrol mission~~
+- ~~scan sectors mission~~
+- scan objects mission
 - escort mission
 - search and destroy mission
 - defense mission
