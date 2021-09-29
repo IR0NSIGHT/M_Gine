@@ -7,6 +7,7 @@ import api.listener.fastevents.GameMapDrawListener;
 import api.mod.StarLoader;
 import com.bulletphysics.linearmath.Transform;
 import me.iron.mGine.mod.ModMain;
+import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.MissionState;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.view.effects.ConstantIndication;
@@ -49,6 +50,9 @@ public class MissionMapDrawer implements GameMapDrawListener {
             public void onEvent(MousePressEvent mouseEvent) {
                 if (mouseEvent.getRawEvent().pressedLeftMouse() && selected != null) {
                     centerOn = selected.getSector();
+                }
+                if (mouseEvent.getRawEvent().pressedRightMouse() && selected != null) {
+                    MissionClient.instance.navigateTo(selected.getSector());
                 }
             }
         }, ModMain.instance);

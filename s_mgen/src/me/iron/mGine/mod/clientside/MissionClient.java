@@ -12,6 +12,7 @@ import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
+import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.GameClientState;
 import org.schema.game.common.controller.observer.DrawerObservable;
 
@@ -23,7 +24,7 @@ import java.util.HashSet;
  * DATE: 14.09.2021
  * TIME: 16:33
  */
-public class MissionClient extends DrawerObservable {
+public class MissionClient {
     public static MissionClient instance;
     public HashSet<Mission> active = new HashSet<>();
     public HashSet<Mission> available = new HashSet<>();
@@ -78,11 +79,6 @@ public class MissionClient extends DrawerObservable {
         updateSelectedMission();
         updateSelectedTask();
         updateCurrentTasks();
-
-        //set navpoint to current task
-        if (autoNav && selectedTask!=null && selectedTask.getTaskSector() != null) {
-            GameClient.getClientController().getClientGameData().setWaypoint(selectedTask.getTaskSector());
-        }
     }
 
     private void updateSelectedMission() {
@@ -94,15 +90,19 @@ public class MissionClient extends DrawerObservable {
     private void updateSelectedTask() {
         if (selectedMission == null) {
             selectedTask = null;
-            notifyObservers();
             return;
         }
         if (selectedTask == null || selectedTask.mission != selectedMission || !selectedTask.getCurrentState().equals(MissionState.IN_PROGRESS)) {
             selectedTask = getNextActiveTask(selectedMission);
-            notifyObservers();
         }
     }
+    private void onSelectedMissionChange() {
 
+    }
+
+    public void navigateTo(Vector3i sector) {
+        GameClient.getClientController().getClientGameData().setWaypoint(sector);
+    }
     private void updateCurrentTasks() {
         //clear tasks
         currentTasks.clear();
