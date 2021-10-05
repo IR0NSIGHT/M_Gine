@@ -1,11 +1,13 @@
 package me.iron.mGine.mod.missions;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import me.iron.mGine.mod.generator.Mission;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.world.FTLConnection;
+import org.schema.game.common.data.world.SimpleTransformableSendableObject;
 import org.schema.game.common.data.world.VoidSystem;
 import org.schema.game.server.data.GameServerState;
 import org.schema.schine.common.language.Lng;
@@ -17,7 +19,9 @@ import org.schema.schine.network.server.ServerMessage;
 
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -51,8 +55,9 @@ public class MissionUtil {
             p.sendServerMessage(Lng.astr(message),type);
         }
     }
+
     public static void main(String[] args) {
-        int MONE= 35981312;
-        System.out.println(formatMoney(MONE));
+
     }
+
 }

@@ -2,6 +2,7 @@ package me.iron.mGine.mod.generator;
 
 import me.iron.mGine.mod.missions.MissionPatrolSectors;
 import me.iron.mGine.mod.missions.MissionScout;
+import me.iron.mGine.mod.missions.TransportMission;
 import org.lwjgl.util.vector.Vector;
 import org.schema.common.util.linAlg.Vector3i;
 
@@ -35,7 +36,7 @@ public enum MissionType {
 
     //generate a mission from this type
     public Mission generate(Random rand, long seed, Vector3i center) {
-        return new MissionScout(rand, seed, center); //TODO debugger
+        return new TransportMission(rand, seed, new Vector3i(4,4,4)); //TODO debugger
         /*
         switch (this) {
             case PATROL: {

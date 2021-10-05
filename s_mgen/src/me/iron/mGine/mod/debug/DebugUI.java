@@ -1,6 +1,7 @@
 package me.iron.mGine.mod.debug;
 
 import api.DebugFile;
+import api.ModPlayground;
 import api.listener.Listener;
 import api.listener.events.player.PlayerChatEvent;
 import api.listener.fastevents.FastListenerCommon;
@@ -11,11 +12,13 @@ import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.MissionState;
+import me.iron.mGine.mod.missions.DataBaseManager;
 import me.iron.mGine.mod.missions.MissionUtil;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.GameClientState;
 import org.schema.game.client.view.gamemap.GameMapDrawer;
 import org.schema.game.common.data.player.PlayerState;
+import org.schema.game.common.data.world.SimpleTransformableSendableObject;
 import org.schema.game.common.data.world.VoidSystem;
 import org.schema.game.server.data.GameServerState;
 import org.schema.schine.common.language.Lng;
@@ -23,7 +26,10 @@ import org.schema.schine.graphicsengine.forms.gui.GUIColoredRectangle;
 
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Random;
+import me.iron.mGine.mod.missions.wrappers.*;
 
 /**
  * STARMADE MOD
@@ -57,9 +63,6 @@ public class DebugUI {
                             p.sendServerMessage(Lng.astr(txt),1);
                             //    }
                         }
-
-
-
                     }
                 } else { //SERVER SIDE
 
@@ -89,6 +92,10 @@ public class DebugUI {
                 if (txt.contains("fail")) {
 
                     MissionClient.instance.getSelectedTask().setCurrentState(MissionState.FAILED);
+                }
+
+                if (txt.contains("sql")) {
+                    printEntities();
                 }
             }
 
@@ -169,4 +176,27 @@ public class DebugUI {
         }
     }
 
+    private static void printEntities() {
+        try {
+            DataBaseManager dbm = new DataBaseManager();
+            int start = -100;
+            int end = 100;
+            ArrayList<DataBaseStation> ents = dbm.getEntitiesNear(new Vector3i(start,start,start),new Vector3i(end,end,end), SimpleTransformableSendableObject.EntityType.SPACE_STATION, null);
+            StringBuilder out = new StringBuilder();
+            int rows = 0;
+            for (DataBaseStation ent: ents) {
+                out.append(ent).append("\n");
+                rows ++;
+                if (rows > 10) {
+                    ModPlayground.broadcastMessage(out.toString());
+                    out = new StringBuilder();
+                }
+            }
+            ModPlayground.broadcastMessage(out.toString());
+            DebugFile.log(out.toString());
+        } catch (SQLException throwables) {
+            ModPlayground.broadcastMessage("failed");
+            throwables.printStackTrace();
+        }
+    }
 }
