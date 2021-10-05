@@ -47,7 +47,7 @@ public class MissionTaskDockTo extends MissionTask {
                 Ship playerShip = ((Ship)p.getFirstControlledTransformableWOExc());
                 if (!playerShip.isDocked())
                     continue;
-                if (playerShip.getDockingController().isDockedTo(target)) {
+                if (playerShip.railController.isAnyChildOf(target)) {
                     wasDocked = true;
                     return true;
                 }

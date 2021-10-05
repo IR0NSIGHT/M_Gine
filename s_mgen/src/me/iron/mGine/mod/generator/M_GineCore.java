@@ -4,8 +4,10 @@ package me.iron.mGine.mod.generator;
 
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
+import me.iron.mGine.mod.missions.DataBaseManager;
 import org.schema.common.util.linAlg.Vector3i;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -32,6 +34,7 @@ public class M_GineCore {
             long last = 0;
             @Override
             public void run() {
+
                 if (last + intervallSeconds*1000<System.currentTimeMillis()) {
                     last = System.currentTimeMillis();
                     updateAll();

@@ -3,6 +3,7 @@ package me.iron.mGine.mod.missions;
 import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionTask;
+import me.iron.mGine.mod.missions.tasks.MissionTaskDockTo;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.world.Sector;
@@ -35,7 +36,7 @@ public class TransportMission extends Mission {
             ArrayList<DataBaseStation> potentialTargets = DataBaseManager.instance.getEntitiesNear(startSearch,endSearch, SimpleTransformableSendableObject.EntityType.SPACE_STATION,null);
             to = potentialTargets.get(rand.nextInt(potentialTargets.size()));
 
-            MissionTask pick_up_cargo = new MissionTask(this,"pick up cargo","pick up the cargo at station " + from.getName());
+            MissionTask pick_up_cargo = new MissionTaskDockTo(this,"pick up cargo","pick up the cargo at station " + from.getName(),false,from.getUID());
             pick_up_cargo.setIcon(MapIcon.WP_PICKUP);
             pick_up_cargo.setTaskSector(from.getPosition());
 

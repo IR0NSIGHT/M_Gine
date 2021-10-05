@@ -2,6 +2,7 @@ package me.iron.mGine.mod.missions;
 
 import org.schema.common.FastMath;
 import org.schema.common.util.linAlg.Vector3i;
+import org.schema.game.common.controller.database.DatabaseEntry;
 import org.schema.game.common.controller.database.DatabaseIndex;
 import org.schema.game.common.data.world.SimpleTransformableSendableObject;
 import org.schema.game.server.data.ServerConfig;
@@ -40,7 +41,7 @@ public class DataBaseManager {
     public ArrayList<DataBaseStation> getEntitiesNear(Vector3i from, Vector3i to,@Nullable SimpleTransformableSendableObject.EntityType type,@Nullable Integer faction) throws SQLException {
         Statement s = connection.createStatement();
         //TODO entity type selection.
-        String query = "SELECT UID, NAME, X, Y, Z, FACTION FROM ENTITIES WHERE X >= "+from.x+"AND X <= "+to.x+ " AND Y >= " + from.y +" AND Y <= " + to.y + " AND Z >= " + from.z + " AND Y <= " + to.y;
+        String query = "SELECT UID, NAME, X, Y, Z, FACTION, TYPE FROM ENTITIES WHERE X >= "+from.x+"AND X <= "+to.x+ " AND Y >= " + from.y +" AND Y <= " + to.y + " AND Z >= " + from.z + " AND Y <= " + to.y;
         if (faction != null) {
             query += " AND FACTION = " + faction;
         }
@@ -51,7 +52,8 @@ public class DataBaseManager {
         ResultSet result = s.executeQuery(query);
         ArrayList<DataBaseStation> entities = new ArrayList<>();
         while (result.next()) {
-            DataBaseStation entity = new DataBaseStation(result.getString(1),result.getString(2),new Vector3i(result.getInt(3),result.getInt(4),result.getInt(5)),result.getInt(6), type.dbTypeId);
+            String UID = DatabaseEntry.getWithFilePrefix(result.getString(1), result.getByte(7));
+            DataBaseStation entity = new DataBaseStation(UID,result.getString(2),new Vector3i(result.getInt(3),result.getInt(4),result.getInt(5)),result.getInt(6), type.dbTypeId);
             entities.add(entity);
         }
         return entities;

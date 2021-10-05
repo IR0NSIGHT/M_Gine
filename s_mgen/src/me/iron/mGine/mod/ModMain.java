@@ -7,7 +7,10 @@ import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.clientside.map.SpriteList;
 import me.iron.mGine.mod.debug.DebugUI;
 import me.iron.mGine.mod.generator.M_GineCore;
+import me.iron.mGine.mod.missions.DataBaseManager;
 import org.schema.schine.resource.ResourceLoader;
+
+import java.sql.SQLException;
 
 /**
  * STARMADE MOD
@@ -33,6 +36,11 @@ public class ModMain extends StarMod {
     public void onServerCreated(ServerInitializeEvent serverInitializeEvent) {
         super.onServerCreated(serverInitializeEvent);
         DebugUI.init();
+        try {
+            new DataBaseManager();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
