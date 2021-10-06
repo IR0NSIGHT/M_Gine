@@ -175,6 +175,7 @@ public class GUIActiveMissionTab extends GUIScrollablePanel {
             }
             case OPEN: {
                 //accept
+                m.addPartyMember(GameClientState.instance.getPlayerName()); //TODO network stuff
                 m.start(System.currentTimeMillis());
                 return;
             }

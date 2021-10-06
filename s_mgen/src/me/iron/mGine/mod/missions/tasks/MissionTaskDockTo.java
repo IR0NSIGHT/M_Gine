@@ -16,7 +16,7 @@ import org.schema.game.server.data.GameServerState;
  */
 public class MissionTaskDockTo extends MissionTask {
     private String targetUID; //UID of target to dock to
-    private SegmentController target; //runtime reference to target ship/station.
+    private SegmentController targetObject; //runtime reference to target ship/station.
     private boolean wasDocked; //task was completed at some point
 
     /**
@@ -34,11 +34,11 @@ public class MissionTaskDockTo extends MissionTask {
 
     @Override
     protected boolean successCondition() {
-        if (target == null) {
-            target = getTargetSC();
+        if (targetObject == null) {
+            targetObject = getTargetSC();
         }
 
-        if (target == null)
+        if (targetObject == null)
             return false;
 
         //test for all active quest members if they are in a ship, docked to the target
@@ -47,7 +47,7 @@ public class MissionTaskDockTo extends MissionTask {
                 Ship playerShip = ((Ship)p.getFirstControlledTransformableWOExc());
                 if (!playerShip.isDocked())
                     continue;
-                if (playerShip.railController.isAnyChildOf(target)) {
+                if (playerShip.railController.isAnyChildOf(targetObject)) {
                     wasDocked = true;
                     return true;
                 }
@@ -72,5 +72,12 @@ public class MissionTaskDockTo extends MissionTask {
 
     private SegmentController getTargetSC() {
         return GameServerState.instance.getSegmentControllersByName().get(targetUID);
+    }
+    public void setTargetUID(String UID) {
+        targetUID = UID;
+    }
+
+    public String getTargetUID() {
+        return targetUID;
     }
 }

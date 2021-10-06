@@ -9,6 +9,9 @@ import api.listener.fastevents.GameMapDrawListener;
 import api.mod.StarLoader;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.clientside.MissionClient;
+import me.iron.mGine.mod.clientside.map.MapIcon;
+import me.iron.mGine.mod.clientside.map.MapMarker;
+import me.iron.mGine.mod.clientside.map.MissionMapDrawer;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.MissionState;
@@ -17,7 +20,10 @@ import me.iron.mGine.mod.missions.MissionUtil;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.GameClientState;
 import org.schema.game.client.view.gamemap.GameMapDrawer;
+import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.player.PlayerState;
+import org.schema.game.common.data.world.Sector;
+import org.schema.game.common.data.world.SectorInformation;
 import org.schema.game.common.data.world.SimpleTransformableSendableObject;
 import org.schema.game.common.data.world.VoidSystem;
 import org.schema.game.server.data.GameServerState;
@@ -26,6 +32,7 @@ import org.schema.schine.graphicsengine.forms.gui.GUIColoredRectangle;
 
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -94,9 +101,16 @@ public class DebugUI {
                     MissionClient.instance.getSelectedTask().setCurrentState(MissionState.FAILED);
                 }
 
+                /* //only works in SP
                 if (txt.contains("sql")) {
-                    printEntities();
+                    printTraderStations();
                 }
+                if (txt.contains("clear")) {
+                    MissionMapDrawer.instance.getMapMarkers().clear();
+                    MissionMapDrawer.instance.updateInternalList();
+                }
+                */
+
             }
 
 
@@ -160,7 +174,7 @@ public class DebugUI {
             Vector3i playerSector = GameClientState.instance.getPlayer().getCurrentSector();
             Mission m = M_GineCore.generateMission(rand.nextLong(),playerSector);
 
-            if (rand.nextBoolean()) {
+            if (false) {
                 //make active
                 PlayerState p = GameServerState.instance.getPlayerFromNameIgnoreCaseWOException(playerName);
                 m.addPartyMember(p.getName());
@@ -196,6 +210,39 @@ public class DebugUI {
             DebugFile.log(out.toString());
         } catch (SQLException throwables) {
             ModPlayground.broadcastMessage("failed");
+            throwables.printStackTrace();
+        }
+    }
+
+    private static void printTraderStations() {
+        try {
+            ArrayList<DataBaseSystem> traderSystems = DataBaseManager.instance.getSystems(-10000000);
+            int index = 0;
+            if (traderSystems != null) {
+                ModPlayground.broadcastMessage("traders have " + traderSystems.size()+ "systems.");
+                for (DataBaseSystem system: traderSystems) {
+                    //ModPlayground.broadcastMessage("traders own system: " + system.getPos());
+                    ArrayList<DataBaseSector> stationSectors = DataBaseManager.instance.getSectorsWithStations(
+                            GameServerState.instance.getUniverse().getStellarSystemFromStellarPos(system.getPos()),
+                            SectorInformation.SectorType.SPACE_STATION,
+                            SpaceStation.SpaceStationType.FACTION);
+                    if (stationSectors == null) {
+                        return;
+                    }
+                    for (DataBaseSector s: stationSectors) {
+                   //    Sector sector =GameServerState.instance.getUniverse().getSector(s.getPos());
+                   //    sector.populate(GameServerState.instance);
+                        MapMarker m = new MapMarker(s.getPos(),"traders"+index, MapIcon.WP_COMM,new Vector4f(0,1,0,1));
+                        m.setScale(0.1f);
+                        m.addToDrawList(true);
+                        index ++;
+                    }
+
+                }
+                ModPlayground.broadcastMessage(index+" stations total.");
+                MissionMapDrawer.instance.updateInternalList();
+            }
+        } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         }
     }

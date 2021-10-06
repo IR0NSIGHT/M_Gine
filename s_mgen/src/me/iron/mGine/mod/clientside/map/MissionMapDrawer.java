@@ -139,11 +139,16 @@ public class MissionMapDrawer implements GameMapDrawListener {
 
     @Override
     public void galaxy_DrawLines(GameMapDrawer gameMapDrawer) {
-        for (MapMarker m: mapMarkers) {
-            if (m instanceof TaskMarker) {
-                ((TaskMarker)m).drawLines(this);
+        try {
+            for (MapMarker m: mapMarkers) {
+                if (m instanceof TaskMarker) {
+                    ((TaskMarker)m).drawLines(this);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override

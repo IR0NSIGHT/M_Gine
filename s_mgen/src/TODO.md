@@ -1,5 +1,9 @@
 //TODO
 #CLIENT
+##HUD
+- mission overview
+    - currenttask
+- HUD markers (HUD Indicators)    
 ##GUI window
 - ~~window that lists mission~~
 - mission management
@@ -48,5 +52,8 @@
 - synch missions between client and server
    -update mission server->client
    -send GUI interaction client->server
+    
+# BUGS
+- aborted mission in "active" tab of GUI
        
    
