@@ -3,11 +3,13 @@ package me.iron.mGine.mod;
 import api.listener.events.controller.ClientInitializeEvent;
 import api.listener.events.controller.ServerInitializeEvent;
 import api.mod.StarMod;
+import api.network.packets.PacketUtil;
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.clientside.map.SpriteList;
 import me.iron.mGine.mod.debug.DebugUI;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.missions.DataBaseManager;
+import me.iron.mGine.mod.network.PacketMissionSynch;
 import org.schema.schine.resource.ResourceLoader;
 
 import java.sql.SQLException;
@@ -23,7 +25,7 @@ public class ModMain extends StarMod {
     @Override
     public void onEnable() {
         instance = this;
-        new M_GineCore();
+        PacketUtil.registerPacket(PacketMissionSynch.class);
         super.onEnable();
     }
 
@@ -35,6 +37,7 @@ public class ModMain extends StarMod {
     @Override
     public void onServerCreated(ServerInitializeEvent serverInitializeEvent) {
         super.onServerCreated(serverInitializeEvent);
+        new M_GineCore();
         DebugUI.init();
         try {
             new DataBaseManager();

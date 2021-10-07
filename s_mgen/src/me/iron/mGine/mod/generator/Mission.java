@@ -1,11 +1,15 @@
 package me.iron.mGine.mod.generator;
 
+import api.DebugFile;
+import api.network.PacketReadBuffer;
+import api.network.PacketWriteBuffer;
 import me.iron.mGine.mod.missions.MissionUtil;
 import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
 import org.schema.schine.network.server.ServerMessage;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -26,20 +30,21 @@ public class Mission extends DrawerObservable implements Serializable {
     protected int duration; //in seconds
     protected int rewardCredits;
     protected long seed;
-    protected String description = "-";
-    protected UUID uuid = UUID.randomUUID();
+    protected String description;
+    protected final UUID uuid;
 
     //runtime values
     protected long startTime;
-    private HashSet<PlayerState> activeParty = new HashSet<>();
+    private transient HashSet<PlayerState> activeParty = new HashSet<>();
 
     protected MissionState state = MissionState.OPEN;
     protected int remainingTime;
 
     //checkpoints
-    protected MissionTask[] missionTasks = new MissionTask[0];
+    protected transient MissionTask[] missionTasks = new MissionTask[0];
 
     public Mission(Random rand, long seed) {
+        this.uuid = UUID.randomUUID();
         this.type = MissionType.getByClass(this.getClass());
         this.seed = seed;
         this.duration = 120+Math.abs(rand.nextInt())%500;
@@ -151,6 +156,44 @@ public class Mission extends DrawerObservable implements Serializable {
             p = GameServerState.instance.getPlayerFromNameIgnoreCaseWOException(i.next());
             if (p!=null)
                 activeParty.add(p);
+        }
+    }
+
+    /**
+     * write this mission object into the buffer for serialization.
+     * @param buffer
+     */
+    public void writeToBuffer(PacketWriteBuffer buffer) throws IOException {
+        //write self with primitive values
+        buffer.writeString(getClass().getName());
+        buffer.writeObject(this);
+
+        DebugFile.log("buffer wrote mission class" + getClass().getSimpleName());
+        DebugFile.log("buffer wrote mission obj" + uuid);
+
+        //write non primitive objects
+        buffer.writeInt(missionTasks.length);
+        DebugFile.log("buffer wrote task list size" + missionTasks.length);
+        for (MissionTask task: missionTasks) {
+            task.writeToBuffer(buffer);
+        }
+    }
+
+    public void readFromBuffer(PacketReadBuffer buffer) throws IOException, ClassNotFoundException {
+        //primitive values exist
+        int size = buffer.readInt();
+
+        //get mission tasks from buffer
+        missionTasks = new MissionTask[size];
+        for (int i = 0; i < size; i++) {
+            Class clazz = Class.forName(buffer.readString());
+            Object taskObj = buffer.readObject(clazz);
+            if (!(taskObj instanceof MissionTask))
+                continue;
+            MissionTask task =(MissionTask) taskObj;
+            task.readFromBuffer(buffer);
+            task.mission = this;
+            missionTasks[i] = task;
         }
     }
 

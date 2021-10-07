@@ -70,10 +70,13 @@ public class MissionTransportCargo extends Mission {
                 }
             };
             deliver_cargo.setIcon(MapIcon.WP_DROPOFF);
-            deliver_cargo.setPreconditions(new MissionTask[]{pick_up_cargo});
             deliver_cargo.setTaskSector(to.getPosition());
 
-            this.setMissionTasks(new MissionTask[]{pick_up_cargo,deliver_cargo});
+            this.setMissionTasks(new MissionTask[2]);
+            this.missionTasks[0] = pick_up_cargo;
+            this.missionTasks[1] = deliver_cargo;
+
+            deliver_cargo.setPreconditions(new int[]{0});
 
             Vector3i distance = new Vector3i(fromSector); distance.sub(to.getPosition());
             float difficulty = rand.nextFloat();

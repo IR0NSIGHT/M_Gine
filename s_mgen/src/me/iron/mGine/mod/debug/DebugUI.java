@@ -169,9 +169,10 @@ public class DebugUI {
     private static void generateExampleMissions(int seed, String playerName, int amount) {
         Random rand = new Random(seed);
         M_GineCore.instance.getMissions().clear();
+        amount = 2;
         for (int i = 0; i < amount; i++) {
             //generate a new mission
-            Vector3i playerSector = GameClientState.instance.getPlayer().getCurrentSector();
+            Vector3i playerSector = GameServerState.instance.getPlayerStatesByDbId().values().iterator().next().getCurrentSector();
             Mission m = M_GineCore.generateMission(rand.nextLong(),playerSector);
 
             if (false) {
@@ -180,7 +181,7 @@ public class DebugUI {
                 m.addPartyMember(p.getName());
                 m.start(System.currentTimeMillis());
 
-            } else if (rand.nextBoolean()) {
+            } else if (true) {
                 //make availalbe
                 m.setState(MissionState.OPEN);
             } else {

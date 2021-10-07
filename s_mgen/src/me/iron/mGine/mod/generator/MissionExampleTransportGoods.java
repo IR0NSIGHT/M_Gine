@@ -80,7 +80,7 @@ public class MissionExampleTransportGoods extends Mission {
         };
 
         tasks[0] = pickUp;
-        tasks[1] = deliver; deliver.setPreconditions(new MissionTask[]{pickUp});
+        tasks[1] = deliver; deliver.setPreconditions(new int[]{0});
         tasks[2] = optional;
         this.setMissionTasks(tasks);
     }

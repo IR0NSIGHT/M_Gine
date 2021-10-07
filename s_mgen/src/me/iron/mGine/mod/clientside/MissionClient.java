@@ -16,6 +16,7 @@ import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.GameClientState;
 import org.schema.game.common.controller.observer.DrawerObservable;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -75,7 +76,6 @@ public class MissionClient {
     }
 
     public void update() {
-        updateAllMissions();
         updateSelectedMission();
         updateSelectedTask();
         updateCurrentTasks();
@@ -115,13 +115,13 @@ public class MissionClient {
         }
     }
 
-    private void updateAllMissions() {
+    public void updateAllMissions(Collection<Mission> missions) {
         //TODO get missions from server
         available.clear();
         active.clear();
         finished.clear();
 
-        for (Mission m: M_GineCore.instance.getMissions()) {
+        for (Mission m: missions) {
             switch (m.getState()) {
                 case OPEN:
                 {

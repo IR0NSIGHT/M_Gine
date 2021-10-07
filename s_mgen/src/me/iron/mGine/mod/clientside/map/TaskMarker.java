@@ -28,7 +28,8 @@ public class TaskMarker extends MapMarker {
         name = task.getTaskSummary();
         icon = task.getIcon();
         lineTargets.clear();
-        for (MissionTask task: this.task.getPreconditions()) {
+        for (int idx: this.task.getPreconditions()) {
+            MissionTask task = this.task.mission.getMissionTasks()[idx];
             if (task.getTaskSector() != null) {
                 lineTargets.add(task.getTaskSector());
             }

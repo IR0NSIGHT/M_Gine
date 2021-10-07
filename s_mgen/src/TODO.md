@@ -39,6 +39,7 @@
 - mission UID
 
 ## missions
+##### guarantee that the mission can be recreated with seed and minimal values!
 - ~~patrol mission~~
 - ~~scan sectors mission~~
 - scan objects mission
@@ -50,8 +51,9 @@
 
 #NETWORK
 - synch missions between client and server
-   -update mission server->client
-   -send GUI interaction client->server
+   - update mission server->client
+    - only send relevant missions to each client (joined, owned, avaialbe.)
+   - send GUI interaction client->server
     
 # BUGS
 - aborted mission in "active" tab of GUI

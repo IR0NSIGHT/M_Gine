@@ -5,6 +5,7 @@ package me.iron.mGine.mod.generator;
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.missions.DataBaseManager;
+import me.iron.mGine.mod.network.PacketMissionSynch;
 import org.schema.common.util.linAlg.Vector3i;
 
 import java.sql.SQLException;
@@ -48,7 +49,15 @@ public class M_GineCore {
             m.update(System.currentTimeMillis());
             m.notifyObservers(m);
         }
+        if (missions.size() != 0) {
+            synchMissions();
+        }
     }
+
+    private void synchMissions() {
+        new PacketMissionSynch(getMissions()).sendToAll();
+    }
+
     private HashSet<Mission> missions = new HashSet<>();
 
     public HashSet<Mission> getMissions() {

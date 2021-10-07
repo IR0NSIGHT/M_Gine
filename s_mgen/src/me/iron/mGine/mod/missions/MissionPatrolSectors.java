@@ -5,6 +5,7 @@ import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
+import me.iron.mGine.mod.missions.tasks.MissionTaskMoveTo;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.world.VoidSystem;
@@ -12,6 +13,7 @@ import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.server.ServerMessage;
 
 import javax.vecmath.Vector3f;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -41,26 +43,9 @@ public class MissionPatrolSectors extends Mission {
                     rand.nextInt()%VoidSystem.SYSTEM_SIZE
              );
             sectorTemp.add(center);
-            MissionTask move = new MissionTask(this,"move","go to sector " + sectorTemp.toString()) {
-               boolean visited;
-
-                @Override
-               protected boolean successCondition() {
-                   if (visited)
-                       return true;
-                   for (PlayerState p: mission.getActiveParty()) {
-                       if (getTaskSector() != null && p.getCurrentSector().equals(getTaskSector())) {
-                           visited = true;
-                           return true;
-                       }
-                   }
-                   return false;
-               }
-            };
-            move.setIcon(MapIcon.WP_MOVE);
-            move.setTaskSector(sectorTemp);
+            MissionTask move = new MissionTaskMoveTo(this,"move","go to sector " + sectorTemp.toString(),sectorTemp,false);
             if (i > 0) {
-                MissionTask[] precond = new MissionTask[]{tasks[i-1]};
+                int[] precond = new int[]{i-1};
                 move.setPreconditions(precond);
             }
             tasks[i] = move;
@@ -118,16 +103,21 @@ public class MissionPatrolSectors extends Mission {
 
     @Override
     public String toString() {
-        return "MissionTransportGoods{" +"\n"+
-                ", cargoAmount=" + cargoAmount +"\n"+
-                ", completionRadius=" + completionRadius +"\n"+
-                ", type=" + type +"\n"+
-                ", duration=" + duration +"\n"+
-                ", rewardCredits=" + rewardCredits +"\n"+
-                ", seed=" + seed +"\n"+
-                ", startTime=" + startTime +"\n"+
-                ", state=" + state +"\n"+
-                ", remainingTime=" + remainingTime +"\n"+
+        return "MissionPatrolSectors{" +
+                "cargoAmount=" + cargoAmount +
+                ", completionRadius=" + completionRadius +
+                ", distanceTotal=" + distanceTotal +
+                ", center=" + center +
+                ", type=" + type +
+                ", duration=" + duration +
+                ", rewardCredits=" + rewardCredits +
+                ", seed=" + seed +
+                ", description='" + description + '\'' +
+                ", uuid=" + uuid +
+                ", startTime=" + startTime +
+                ", state=" + state +
+                ", remainingTime=" + remainingTime +
+                ", missionTasks=" + Arrays.toString(missionTasks) +
                 '}';
     }
 }

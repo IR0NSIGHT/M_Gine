@@ -5,26 +5,32 @@ package me.iron.mGine.mod.generator; /**
  * TIME: 16:54
  */
 
+import api.DebugFile;
+import api.network.PacketReadBuffer;
+import api.network.PacketWriteBuffer;
 import me.iron.mGine.mod.clientside.map.MapIcon;
 import org.schema.common.util.linAlg.Vector3i;
+
+import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * has to be completed in order to fullfill mission/reach other checkpoints.
  */
-public class MissionTask {
+public class MissionTask implements Serializable {
     protected MissionState currentState = MissionState.OPEN;
-    public Mission mission;
+    public transient Mission mission;
     private Vector3i taskSector;
     protected String name;
     protected String info;
     protected boolean optional; //failing will not result in mission fail
     protected int id; //mission dependent ID (index in array)
-    private MapIcon icon; //subsprite that gets displayed on map
+    private MapIcon icon; //subsprite enum that gets displayed on map
 
     //checkpoints that have to be passed in order to unlock this checkpoint
-    private MissionTask[] preconditions = new MissionTask[0];
+    private int[] preconditions = new int[0]; //TODO is this sendable?
 
-
+    public MissionTask() {};
 
     public MissionTask(Mission mission, String name, String info) {
         this.info = info;
@@ -47,7 +53,12 @@ public class MissionTask {
     protected boolean failureCondition() {return false;}
 
     protected boolean preconditionsSatisfied() {
-        for (MissionTask x: preconditions) {
+        for (int idx: preconditions) {
+            if (idx>mission.getMissionTasks().length) {
+                new IndexOutOfBoundsException().printStackTrace();
+                continue;
+            }
+            MissionTask x = mission.getMissionTasks()[idx];
             if (x.currentState != MissionState.SUCCESS)
                 return false; //can not be done yet bc condition isnt met
         }
@@ -63,6 +74,11 @@ public class MissionTask {
      * try chaning the success and failure conditions instead.
      */
     public void update() {
+        if (mission == null) {
+            new NullPointerException().printStackTrace();
+            return;
+        }
+
         MissionState previous = currentState;
         if (!preconditionsSatisfied()) {
             currentState = MissionState.OPEN;
@@ -99,17 +115,23 @@ public class MissionTask {
             for (int i = 0; i<preconditions.length;i++) {
                 if (i!=0)
                     out.append(",");
-                if (preconditions[i]==null){
-                    System.out.println("error");
-                }
-               out.append(preconditions[i].id);
+                out.append(mission.getMissionTasks()[i].id);
             }
             out.append("]");
         }
         return out.toString();
     }
 
+    public void writeToBuffer(PacketWriteBuffer buffer) throws IOException {
+        buffer.writeString(getClass().getName());
+        buffer.writeObject(this);
+        DebugFile.log("buffer wrote task class" + this.getClass());
+        DebugFile.log("buffer wrote task obj"+ id) ;
+    }
 
+    public void readFromBuffer(PacketReadBuffer buffer) {
+
+    }
 
     //getters and setters #########################################
 
@@ -158,11 +180,11 @@ public class MissionTask {
         this.id = id;
     }
 
-    public MissionTask[] getPreconditions() {
+    public int[] getPreconditions() {
         return preconditions;
     }
 
-    public void setPreconditions(MissionTask[] preconditions) {
+    public void setPreconditions(int[] preconditions) {
         this.preconditions = preconditions;
     }
 
@@ -173,4 +195,6 @@ public class MissionTask {
     public void setIcon(MapIcon icon) {
         this.icon = icon;
     }
+
+
 }
