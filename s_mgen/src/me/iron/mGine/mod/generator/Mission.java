@@ -271,6 +271,10 @@ public class Mission extends DrawerObservable implements Serializable {
         return missionTasks;
     }
 
+    /**
+     * set tasks for this mission
+     * @param missionTasks array with non-null elements. fill array before using this method!
+     */
     public void setMissionTasks(MissionTask[] missionTasks) {
         this.missionTasks = missionTasks;
         for(int i = 0; i < missionTasks.length; i++) {

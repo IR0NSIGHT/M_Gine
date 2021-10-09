@@ -29,6 +29,7 @@ public class MissionTransportCargo extends Mission {
     private DataBaseStation to;
     public MissionTransportCargo(Random rand, long seed, Vector3i fromSector) {
         super(rand, seed);
+        this.description = "Transport cargo";
         //get station in from sector
         try {
             //get origin

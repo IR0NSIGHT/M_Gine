@@ -90,7 +90,6 @@ public class MissionClient {
     }
 
     public void update() {
-        ModPlayground.broadcastMessage("UPDATE CLEINT");
         updateSelectedMission();
         updateSelectedTask();
         updateCurrentTasks();

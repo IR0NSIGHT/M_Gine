@@ -60,14 +60,11 @@ public class PacketMissionSynch extends Packet {
 
     @Override
     public void writePacketData(PacketWriteBuffer packetWriteBuffer) throws IOException {
-    //    DebugFile.log("buffer start writing missions ---------------------");
         packetWriteBuffer.writeBoolean(clearClient);
-    //    DebugFile.log("buffer wrote mission list size" + missions.size());
         packetWriteBuffer.writeInt(missions.size());
         for (Mission m: missions) {
             m.writeToBuffer(packetWriteBuffer);
         }
-    //    DebugFile.log("buffer done writing ---------------------------------");
     }
 
     @Override

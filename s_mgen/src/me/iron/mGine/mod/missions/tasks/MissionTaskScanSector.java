@@ -19,40 +19,16 @@ import org.schema.game.server.data.GameServerState;
 
 import java.io.IOException;
 
-public class MissionTaskScanObject extends MissionTask {
+public class MissionTaskScanSector extends MissionTask {
 
-    private Listener<EntityScanEvent> listener;
+    private transient Listener<EntityScanEvent> listener;
     private boolean scanned;
-    private SegmentController target;
 
-    private String targetUID;
-    public MissionTaskScanObject(Mission mission, String name, String info, boolean optional) {
+    public MissionTaskScanSector(Mission mission, String name, String info, Vector3i sector, boolean optional) {
         super(mission, name, info, optional);
+        setTaskSector(sector);
         setIcon(MapIcon.WP_SCAN);
-        try {
-            PlayerState p = GameServerState.instance.getPlayerStatesByName().values().iterator().next();
-            Sector s = GameServerState.instance.getUniverse().getSector(p.getCurrentSector());
-            for (SimpleTransformableSendableObject obj: s.getEntities()) {
-                if (obj instanceof SpaceStation) {
-                    targetUID = obj.getUniqueIdentifier();
-                    setTarget((SegmentController)obj);
-                    this.info = "Scan spacestation"+obj.getName() +" at " + obj.getSector(new Vector3i());
-                    break;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (target == null) {
-        //    ModPlayground.broadcastMessage("NO TARGET FOR SCAN TASK");
-        }
         init();
-    }
-
-    public void setTarget(SegmentController target) {
-        this.target = target;
-        this.setTaskSector(target.getSector(new Vector3i()));
-        targetUID = target.getUniqueIdentifier();
     }
 
     /**
@@ -67,33 +43,20 @@ public class MissionTaskScanObject extends MissionTask {
     protected void unregisterListener() {
         if (listener == null)
             return;
-        StarLoader.getListeners(EntityScanEvent.class).remove(listener);
+        StarLoader.unregisterListener(EntityScanEvent.class,listener);
         listener = null; //kill reference, garbagecollector goes woosh
-    }
-
-    @Override
-    public void update() {
-        super.update();
-
-        //update position
-        if (target != null) {
-            setTaskSector(target.getSector(new Vector3i()));
-        }
     }
 
     public void onScan(EntityScanEvent event) {
         if (!event.isSuccess() || scanned)
             return;
 
-        if (target == null && targetUID != null) {
-            target = GameServerState.instance.getSegmentControllersByName().get(targetUID);
-        }
-
-        if (target == null)
+        if (!event.getEntity().getSector(new Vector3i()).equals(getTaskSector()))
             return;
 
         if (!scannerRunByParty(event))
             return;
+
 
         //this is the droid you are looking for
         scanned = true;

@@ -12,7 +12,7 @@ import java.util.Random;
  * available missiontypes, lists their classes
  */
 public enum MissionType {
-    //TRANSPORT_GOODS(MissionExampleTransportGoods.class, "transport goods");
+    TRANSPORT_CARGO(MissionTransportCargo.class, "transport cargo"),
     PATROL(MissionPatrolSectors.class,"patrol"),
     SCOUT(MissionScout.class,"scout");
     /*
@@ -35,20 +35,21 @@ public enum MissionType {
 
     //generate a mission from this type
     public Mission generate(Random rand, long seed, Vector3i center) {
-        //return new MissionPatrolSectors(rand,seed, center);
+        //
         //return new Mission(rand, seed); //TODO debug for network synch
-        return new MissionTransportCargo(rand, seed, new Vector3i(4,4,4)); //TODO debugger
-        /*
+
+
         switch (this) {
             case PATROL: {
-                //System.out.println("transport stuff");
-
+                return new MissionPatrolSectors(rand,seed, center);
             }
             case SCOUT:
-
+                return new MissionScout(rand,seed, new Vector3i(rand.nextInt()%120,rand.nextInt()%120,rand.nextInt()%120));
+            case TRANSPORT_CARGO:
+                return new MissionTransportCargo(rand, seed, new Vector3i(4,4,4)); //TODO debugger
         }
         return null;
-        */
+
 
     }
 

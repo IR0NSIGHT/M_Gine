@@ -175,7 +175,7 @@ public class DebugUI {
     private static void generateExampleMissions(int seed, String playerName, int amount) {
         Random rand = new Random(seed);
         M_GineCore.instance.clearMissions();
-        amount = 5;
+        amount = 15;
         for (int i = 0; i < amount; i++) {
             //generate a new mission
             Vector3i playerSector = GameServerState.instance.getPlayerStatesByDbId().values().iterator().next().getCurrentSector();
