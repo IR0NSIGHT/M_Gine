@@ -115,28 +115,38 @@ public class MissionClient {
         }
     }
 
-    public void updateAllMissions(Collection<Mission> missions) {
+    public void overwriteMissions(Collection<Mission> missions) {
         //TODO get missions from server
         available.clear();
         active.clear();
         finished.clear();
 
         for (Mission m: missions) {
-            switch (m.getState()) {
-                case OPEN:
-                {
-                    available.add(m);
-                    break;
-                }
-                case IN_PROGRESS: {
-                    active.add(m);
-                    break;
-                }
-                default:
-                {
-                    finished.add(m);
-                    break;
-                }
+            addMission(m);
+        }
+    }
+
+    public void addMissions(Collection<Mission> missions) {
+        for (Mission m : missions) {
+            addMission(m);
+        }
+    }
+
+    public void addMission(Mission m) {
+        switch (m.getState()) {
+            case OPEN:
+            {
+                available.add(m);
+                break;
+            }
+            case IN_PROGRESS: {
+                active.add(m);
+                break;
+            }
+            default:
+            {
+                finished.add(m);
+                break;
             }
         }
     }

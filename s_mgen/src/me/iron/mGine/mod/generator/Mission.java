@@ -23,6 +23,7 @@ public class Mission extends DrawerObservable implements Serializable {
     private int missionID;
 
     //active "quest party members"
+    private String captain; //captain of mission who controls party.
     private HashSet<String> party = new HashSet<>();
 
     //generation parameters
@@ -53,17 +54,38 @@ public class Mission extends DrawerObservable implements Serializable {
         missionID = M_GineCore.getNextID();
     }
 
+    /**
+     * sets state to success, runs extra code for special stuff: reward payments etc
+     */
     protected void onSuccess() {
         System.out.println("MISSION COMPLETE");
         notifyObservers(this);
         state = MissionState.SUCCESS;
     }
 
+    /**
+     * sets state to failed, runs extra code for special stuff: negative relations with questgiver etc
+     */
     protected void onFailure() {
         System.out.println("MISSION FAILED");
         state = MissionState.FAILED;
 
         notifyObservers(this);
+    }
+
+    /**
+     * mission gets abandoned <=> no more party members left. runs onFailure.
+     */
+    public void onAbandon() {
+        onFailure();
+    }
+
+    /**
+     * interaction called by party captain: asks for more time in mission. gives 20% extra time for 30% less pay (default)
+     */
+    public void requestDelay() {
+        duration *= 1.02f;
+        rewardCredits *= 0.7f;
     }
 
     /**
@@ -138,7 +160,14 @@ public class Mission extends DrawerObservable implements Serializable {
         System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
     }
 
+    /**
+     * add player to this missions party. first member becomes captain.
+     * @param playerName
+     */
     public void addPartyMember(String playerName) {
+        if (party.size()==0) {
+            setCaptain(playerName);
+        }
         party.add(playerName);
         updateActiveParty();
     }
@@ -148,7 +177,7 @@ public class Mission extends DrawerObservable implements Serializable {
         updateActiveParty();
     }
 
-    private void updateActiveParty() {
+    public void updateActiveParty() {
         activeParty.clear();
         Iterator<String> i = party.iterator();
         PlayerState p;
@@ -198,6 +227,18 @@ public class Mission extends DrawerObservable implements Serializable {
     }
 
     //getters and setters
+    public String getCaptain() {
+        return captain;
+    }
+
+    public void setCaptain(String captain) {
+        this.captain = captain;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
     public String getIDString() {
         return Integer.toOctalString(missionID);
     }

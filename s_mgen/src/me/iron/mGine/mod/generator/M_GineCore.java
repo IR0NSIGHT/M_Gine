@@ -7,10 +7,11 @@ import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.missions.DataBaseManager;
 import me.iron.mGine.mod.network.PacketMissionSynch;
 import org.schema.common.util.linAlg.Vector3i;
+import org.schema.game.common.data.player.PlayerState;
 
+import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Random;
+import java.util.*;
 
 /**
  * STARMADE MOD
@@ -18,13 +19,13 @@ import java.util.Random;
  * DATE: 02.09.2021
  * TIME: 18:10
  */
-public class M_GineCore {
+public class M_GineCore implements Serializable { //TODO make serializable
     public static M_GineCore instance;
     private static int nextID = 0; //load mechanism from persistent
 
-    public static int getNextID() {
-        return nextID++;
-    }
+    private HashSet<Mission> missions = new HashSet<>();
+    private transient HashMap<UUID,Mission> uuidMissionHashMap = new HashMap<>();
+
     public M_GineCore() {
         instance = this;
         updateLoop(1);
@@ -58,10 +59,45 @@ public class M_GineCore {
         new PacketMissionSynch(getMissions()).sendToAll();
     }
 
-    private HashSet<Mission> missions = new HashSet<>();
+    public void synchMissionTo(ArrayList<UUID> ids, ArrayList<PlayerState> receivers) {
+       Collection<Mission> missions = new ArrayList<Mission>();
+       for (UUID id: ids) {
+            if (uuidMissionHashMap.containsKey(id))
+                missions.add(this.uuidMissionHashMap.get(id));
+       }
+       new PacketMissionSynch(missions).sendTo(receivers);
+    }
 
-    public HashSet<Mission> getMissions() {
+
+    public void addMission(Mission m) {
+        missions.add(m);
+        uuidMissionHashMap.put(m.uuid,m);
+    }
+
+    public void removeMission(Mission m) {
+        missions.remove(m);
+        uuidMissionHashMap.remove(m.uuid);
+    }
+
+    private HashSet<Mission> getMissions() {
         return missions;
+    }
+
+    public void clearMissions() {
+        missions.clear();
+        uuidMissionHashMap.clear();
+    }
+    /**
+     * @param uuid
+     * @return mission or null
+     */
+    public Mission getMissionByUUID(UUID uuid) {
+        return uuidMissionHashMap.get(uuid);
+    }
+
+//static shit
+    public static int getNextID() {
+        return nextID++;
     }
 
     public static Mission generateMission(long seed, Vector3i center) {

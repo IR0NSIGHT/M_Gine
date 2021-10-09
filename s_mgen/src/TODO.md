@@ -39,6 +39,15 @@
 - mission UID
 
 ## missions
+### Mp structure:
+mission has
+    - max. one captain
+    - can have multiple members ("party")
+    - captain can invite and kick members
+    - mission is either "claimed" or "unclaimed"
+        - unclaimed: avaialbe for everyone (nearby)
+        - claimed: captain can invite others
+        - switch: someone accepts the mission
 ##### guarantee that the mission can be recreated with seed and minimal values!
 - ~~patrol mission~~
 - ~~scan sectors mission~~
@@ -52,10 +61,12 @@
 #NETWORK
 - synch missions between client and server
    - update mission server->client
+    - ~~make missions & tasks serializable~~ 
+    - ~~synch on update~~
     - only send relevant missions to each client (joined, owned, avaialbe.)
    - send GUI interaction client->server
     
 # BUGS
 - aborted mission in "active" tab of GUI
-       
+- selected mission doesnt show up in "selected tab", only after re-selecting
    

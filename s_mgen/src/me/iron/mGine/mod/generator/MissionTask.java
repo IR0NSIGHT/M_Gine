@@ -129,7 +129,12 @@ public class MissionTask implements Serializable {
         DebugFile.log("buffer wrote task obj"+ id) ;
     }
 
-    public void readFromBuffer(PacketReadBuffer buffer) {
+    /**
+     * method for this class to reconstruct itself from the buffer.
+     * subclasses should overwrite this, always leaving (super.readFromBuffer(()) in the first line.
+     * @param buffer
+     */
+     public void readFromBuffer(PacketReadBuffer buffer) {
 
     }
 

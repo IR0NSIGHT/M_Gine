@@ -74,7 +74,6 @@ public class DebugUI {
                 } else { //SERVER SIDE
 
                 if (txt.contains("new m")) {
-                    M_GineCore.instance.getMissions().clear();
                     String rest = txt.replace("new m ","");
                     String[] args = rest.split(" ",2);
                     int seed = 420;
@@ -168,7 +167,7 @@ public class DebugUI {
 
     private static void generateExampleMissions(int seed, String playerName, int amount) {
         Random rand = new Random(seed);
-        M_GineCore.instance.getMissions().clear();
+        M_GineCore.instance.clearMissions();
         amount = 2;
         for (int i = 0; i < amount; i++) {
             //generate a new mission
