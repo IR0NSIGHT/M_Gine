@@ -27,6 +27,7 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
      * @param icon icon to show on map, enum
      */
     public MapMarker(Vector3i sector, String name, MapIcon icon, Vector4f color) {
+    //    ModPlayground.broadcastMessage("new marker " + name + icon.name());
         this.color.set(color);
         this.sector.set(sector);
         this.name = name;
@@ -83,7 +84,7 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
 
     @Override
     public float getScale(long l) {
-        ModPlayground.broadcastMessage("scale "+ scale+"factor " + scaleFactor + " selected" + selected);
+    //    ModPlayground.broadcastMessage("scale "+ scale+"factor " + scaleFactor + " selected" + selected);
         return scale * scaleFactor * (selected?2:1);
     }
 

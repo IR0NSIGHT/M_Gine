@@ -69,6 +69,5 @@ mission has
     - buttons
     
 # BUGS
-- aborted mission in "active" tab of GUI
-- selected mission doesnt show up in "selected tab", only after re-selecting
+- mapmarkers flicker on mouseover
    

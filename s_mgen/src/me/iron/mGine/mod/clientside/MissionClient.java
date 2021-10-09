@@ -1,5 +1,6 @@
 package me.iron.mGine.mod.clientside;
 
+import api.ModPlayground;
 import api.common.GameClient;
 import api.utils.StarRunnable;
 import api.utils.gui.ModGUIHandler;
@@ -46,8 +47,10 @@ public class MissionClient {
         MissionMapDrawer.instance.getMapMarkers().clear();
         if (selectedMission != null) {
             for (MissionTask task: selectedMission.getMissionTasks()) {
-                if (task.getTaskSector() != null)
+                if (task.getTaskSector() != null) {
                     MissionMapDrawer.instance.addMarker(new TaskMarker(task));
+                //    ModPlayground.broadcastMessage("task marker");
+                }
             }
         }
         MissionMapDrawer.instance.updateInternalList();
@@ -66,9 +69,13 @@ public class MissionClient {
         instance = this;
         MissionMapDrawer drawer = new MissionMapDrawer();
         new StarRunnable(){
+            long lastRan = System.currentTimeMillis();
             @Override
             public void run() {
-                update();
+                if (lastRan + 2000 < System.currentTimeMillis()) {
+                    lastRan =System.currentTimeMillis();
+                //    update();
+                }
             }
         }.runTimer(ModMain.instance,5);
 
@@ -83,11 +90,13 @@ public class MissionClient {
     }
 
     public void update() {
+        ModPlayground.broadcastMessage("UPDATE CLEINT");
         updateSelectedMission();
         updateSelectedTask();
         updateCurrentTasks();
         updateGUILists();
     }
+
     private void updateGUILists() {
         if (guiFinishedMissionsList == null || guiOpenMissionsList == null || guiActiveMissionsList == null || selectedMissionTab == null)
             return;
@@ -98,7 +107,8 @@ public class MissionClient {
         selectedMissionTab.update();
     }
 
-    private void updateSelectedMission() {
+    private void updateSelectedMission() { //TODO gets called every frame.
+    //    ModPlayground.broadcastMessage("client update selected mission");
         if (selectedMission == null)
             return;
 
@@ -162,6 +172,7 @@ public class MissionClient {
         for (Mission m: missions) {
             addMission(m);
         }
+    //    ModPlayground.broadcastMessage("OVERWRITE");
         update();
     }
 

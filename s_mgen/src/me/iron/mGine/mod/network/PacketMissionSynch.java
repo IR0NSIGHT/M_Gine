@@ -77,7 +77,6 @@ public class PacketMissionSynch extends Packet {
         } else {
             MissionClient.instance.addMissions(missions);
         }
-        MissionClient.instance.update();
     }
 
     @Override
