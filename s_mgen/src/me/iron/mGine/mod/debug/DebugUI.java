@@ -7,6 +7,8 @@ import api.listener.events.player.PlayerChatEvent;
 import api.listener.fastevents.FastListenerCommon;
 import api.listener.fastevents.GameMapDrawListener;
 import api.mod.StarLoader;
+import api.network.Packet;
+import api.network.packets.PacketUtil;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.clientside.map.MapIcon;
@@ -62,6 +64,10 @@ public class DebugUI {
             public void onEvent(PlayerChatEvent event) {
                 String txt = event.getText();
 
+                if (txt.contains("print_packets")) {
+                    Packet.dumpPacketLookup();
+                }
+
                 if (!event.isServer()) { //CLIENT SIDE
                     if (txt.contains("notify")) {
                         txt = txt.replace("notify ","");
@@ -99,6 +105,7 @@ public class DebugUI {
 
                     MissionClient.instance.getSelectedTask().setCurrentState(MissionState.FAILED);
                 }
+
 
                 /* //only works in SP
                 if (txt.contains("sql")) {
@@ -168,7 +175,7 @@ public class DebugUI {
     private static void generateExampleMissions(int seed, String playerName, int amount) {
         Random rand = new Random(seed);
         M_GineCore.instance.clearMissions();
-        amount = 2;
+        amount = 5;
         for (int i = 0; i < amount; i++) {
             //generate a new mission
             Vector3i playerSector = GameServerState.instance.getPlayerStatesByDbId().values().iterator().next().getCurrentSector();

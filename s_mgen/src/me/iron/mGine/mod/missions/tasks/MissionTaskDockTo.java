@@ -16,7 +16,7 @@ import org.schema.game.server.data.GameServerState;
  */
 public class MissionTaskDockTo extends MissionTask {
     private String targetUID; //UID of target to dock to
-    private SegmentController targetObject; //runtime reference to target ship/station.
+    private transient SegmentController targetObject; //runtime reference to target ship/station.
     private boolean wasDocked; //task was completed at some point
 
     /**

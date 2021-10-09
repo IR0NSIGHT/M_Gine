@@ -11,6 +11,7 @@ import org.schema.schine.input.InputState;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * STARMADE MOD
@@ -21,6 +22,7 @@ import java.util.HashSet;
  */
 public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObserver, GUICallback {
     private GUIElementList list;
+    private ListType type;
     protected enum ListType {
         ACTIVE("Active"),
         OPEN("Open"),
@@ -38,6 +40,18 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
 
     public GUIMissionListTab(float width, float height, GUIElement dependent, InputState inputState, ListType type) {
         super(width, height, dependent, inputState);
+        this.type = type;
+        switch (type) {
+            case OPEN:
+                MissionClient.instance.guiOpenMissionsList = this;
+                break;
+            case ACTIVE:
+                MissionClient.instance.guiActiveMissionsList = this;
+                break;
+            case FINISHED:
+                MissionClient.instance.guiFinishedMissionsList = this;
+                break;
+        }
     }
 
     public void setMissions(HashSet<Mission> missions) {

@@ -3,6 +3,7 @@ package me.iron.mGine.mod.network;
 import api.network.Packet;
 import api.network.PacketReadBuffer;
 import api.network.PacketWriteBuffer;
+import api.network.packets.PacketUtil;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
@@ -26,8 +27,8 @@ import java.util.UUID;
 public class PacketInteractMission extends Packet {
     private UUID missionUUID;
 
-    private ArrayList<String> kickList;
-    private ArrayList<String> inviteList;
+    private ArrayList<String> kickList = new ArrayList<>();
+    private ArrayList<String> inviteList = new ArrayList<>();
     private boolean leave;
 
     private boolean accept;
@@ -54,6 +55,10 @@ public class PacketInteractMission extends Packet {
         this.delay = delay;
     }
 
+    public PacketInteractMission(UUID missionUUID) {
+        this.missionUUID = missionUUID;
+    }
+
     public PacketInteractMission() {
     }
 
@@ -64,12 +69,19 @@ public class PacketInteractMission extends Packet {
         this.inviteList = buffer.readStringList();
         this.leave = buffer.readBoolean();
         this.accept = buffer.readBoolean();
+        this.abort = buffer.readBoolean();
         this.delay = buffer.readBoolean(); //TODO build "ask for delay" functionality into missions
     }
 
     @Override
-    public void writePacketData(PacketWriteBuffer packetWriteBuffer) throws IOException {
-
+    public void writePacketData(PacketWriteBuffer buffer) throws IOException {
+        buffer.writeObject(missionUUID);
+        buffer.writeStringList(kickList);
+        buffer.writeStringList(inviteList);
+        buffer.writeBoolean(leave);
+        buffer.writeBoolean(accept);
+        buffer.writeBoolean(abort);
+        buffer.writeBoolean(delay);
     }
 
     @Override
@@ -86,22 +98,26 @@ public class PacketInteractMission extends Packet {
 
         //invite and kick only as captain
         if (m.getCaptain().equals(playerState.getName())) {
-            //kick players
-            for (String member: kickList) {
-                m.getParty().remove(member);
-                PlayerState memberState = GameServerState.instance.getPlayerStatesByName().get(member);
-                if (memberState != null)
-                    memberState.sendServerMessage(Lng.astr("you have been kicked from mission " + m.getIDString()), ServerMessage.MESSAGE_TYPE_ERROR);
+            if (kickList != null) {
+                //kick players
+                for (String member: kickList) {
+                    m.getParty().remove(member);
+                    PlayerState memberState = GameServerState.instance.getPlayerStatesByName().get(member);
+                    if (memberState != null)
+                        memberState.sendServerMessage(Lng.astr("you have been kicked from mission " + m.getIDString()), ServerMessage.MESSAGE_TYPE_ERROR);
+                }
             }
 
-            //invite players
-            for (String member: inviteList) {
-                //TODO invite method with popup for player: "want to join this mission?"
-                PlayerState memberState = GameServerState.instance.getPlayerStatesByName().get(member);
-                if (memberState != null)
-                    memberState.sendServerMessage(Lng.astr("you have been invited to mission " + m.getIDString()), ServerMessage.MESSAGE_TYPE_ERROR);
+            if (inviteList != null) {
+                //invite players
+                for (String member: inviteList) {
+                    //TODO invite method with popup for player: "want to join this mission?"
+                    PlayerState memberState = GameServerState.instance.getPlayerStatesByName().get(member);
+                    if (memberState != null)
+                        memberState.sendServerMessage(Lng.astr("you have been invited to mission " + m.getIDString()), ServerMessage.MESSAGE_TYPE_ERROR);
+                }
             }
-            m.updateActiveParty();
+
         }
 
         if (leave) {
@@ -123,34 +139,42 @@ public class PacketInteractMission extends Packet {
             m.removePartyMember(playerState.getName());
         }
 
-        if (accept) {
+        if (accept) { //claim this mission and start it.
             //cant claim non-open missions
-            if (!m.getState().equals(MissionState.OPEN))
-                return;
-            //add to mission, autoset captain if first member
-            m.addPartyMember(playerState.getName());
+            if (m.getState().equals(MissionState.OPEN)) {
+                //add to mission, autoset captain if first member
+                m.addPartyMember(playerState.getName());
+                m.start(System.currentTimeMillis());
+            }
         }
 
         if (abort) {
             //only captain can abort
-            if (!m.getCaptain().equals(playerState.getName()))
-                return;
-
-            m.onAbandon();
+            if (m.getCaptain().equals(playerState.getName()))
+                m.onAbandon();
         }
 
         if (delay) {
             //only captain can ask for more time in mission
-            if (!m.getCaptain().equals(playerState.getName()))
-                return;
-            m.requestDelay();
+            if (m.getCaptain().equals(playerState.getName()))
+                m.requestDelay();
+
         }
+
+        //update mission
+        m.updateActiveParty();
 
         //synch to mission members
         ArrayList<PlayerState> members = new ArrayList<>(m.getActiveParty().size());
         members.addAll(m.getActiveParty());
         M_GineCore.instance.synchMissionTo(new ArrayList<>(Collections.singleton(m.getUuid())),members);
     }
+
+    public void sendToServer() {
+        PacketUtil.sendPacketToServer(this);
+    }
+
+    //getters and setter
 
     public ArrayList<String> getKickList() {
         return kickList;

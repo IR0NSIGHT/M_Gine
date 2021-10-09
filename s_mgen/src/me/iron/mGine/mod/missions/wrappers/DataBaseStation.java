@@ -2,13 +2,15 @@ package me.iron.mGine.mod.missions.wrappers;
 
 import org.schema.common.util.linAlg.Vector3i;
 
+import java.io.Serializable;
+
 /**
  * STARMADE MOD
  * CREATOR: Max1M
  * DATE: 05.10.2021
  * TIME: 21:09
  */
-public class DataBaseStation {
+public class DataBaseStation implements Serializable {
     Vector3i position;
     String UID;
     String name;

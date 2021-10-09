@@ -9,6 +9,7 @@ import me.iron.mGine.mod.clientside.map.SpriteList;
 import me.iron.mGine.mod.debug.DebugUI;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.missions.DataBaseManager;
+import me.iron.mGine.mod.network.PacketInteractMission;
 import me.iron.mGine.mod.network.PacketMissionSynch;
 import org.schema.schine.resource.ResourceLoader;
 
@@ -26,6 +27,7 @@ public class ModMain extends StarMod {
     public void onEnable() {
         instance = this;
         PacketUtil.registerPacket(PacketMissionSynch.class);
+        PacketUtil.registerPacket(PacketInteractMission.class);
         super.onEnable();
     }
 

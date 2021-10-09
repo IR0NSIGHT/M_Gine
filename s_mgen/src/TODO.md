@@ -65,6 +65,8 @@ mission has
     - ~~synch on update~~
     - only send relevant missions to each client (joined, owned, avaialbe.)
    - send GUI interaction client->server
+    - ~~packet~~
+    - buttons
     
 # BUGS
 - aborted mission in "active" tab of GUI

@@ -4,13 +4,10 @@ import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import org.schema.game.client.data.GameClientState;
-import org.schema.game.common.data.player.PlayerState;
 import org.schema.schine.graphicsengine.core.MouseEvent;
 import org.schema.schine.graphicsengine.forms.font.FontLibrary;
 import org.schema.schine.graphicsengine.forms.gui.*;
 import org.schema.schine.input.InputState;
-
-import javax.vecmath.Vector3f;
 
 /**
  * STARMADE MOD
@@ -18,15 +15,17 @@ import javax.vecmath.Vector3f;
  * DATE: 29.09.2021
  * TIME: 13:39
  */
-public class GUIActiveMissionTab extends GUIScrollablePanel {
-    public static GUIActiveMissionTab instance;
-    public GUIActiveMissionTab(float width, float height, GUIElement dependent, InputState state) {
+public class GUISelectedMissionTab extends GUIScrollablePanel {
+    public static GUISelectedMissionTab instance;
+    public GUISelectedMissionTab(float width, float height, GUIElement dependent, InputState state) {
         super(width, height, dependent, state);
         instance = this;
     }
 
     @Override
     public void onInit() {
+        MissionClient.instance.selectedMissionTab = this;
+
         GUIAncor testPanel = new GUIAncor(getState(),getWidth(),getHeight());
         testPanel.onInit();
 
@@ -75,8 +74,11 @@ public class GUIActiveMissionTab extends GUIScrollablePanel {
         }, new GUICallback() {
             @Override
             public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
-                if (mouseEvent.pressedLeftMouse())
+                if (mouseEvent.pressedLeftMouse()) {
                     onToggleButtonClicked();
+                    MissionClient.instance.update();
+                }
+
             }
 
             @Override
@@ -143,8 +145,8 @@ public class GUIActiveMissionTab extends GUIScrollablePanel {
     private GUITextButton buttonToggleActivation;
     private Mission activeMission;
 
-    //will try to get the selected mission from missionclient.
-    public void getSelectedMissionFromClient() {
+    //will try to get the selected mission from missionclient and save it as activelist.
+    public void update() {
         try {
             if (MissionClient.instance == null)
                 return;
@@ -170,13 +172,12 @@ public class GUIActiveMissionTab extends GUIScrollablePanel {
         switch (m.getState()) {
             case IN_PROGRESS: {
                 //abort
-                m.setState(MissionState.ABORTED);
+                MissionClient.instance.requestAcceptToggleMission(m.getUuid(),false);
                 return;
             }
             case OPEN: {
                 //accept
-                m.addPartyMember(GameClientState.instance.getPlayerName()); //TODO network stuff
-                m.start(System.currentTimeMillis());
+                MissionClient.instance.requestAcceptToggleMission(m.getUuid(),true);
                 return;
             }
         }

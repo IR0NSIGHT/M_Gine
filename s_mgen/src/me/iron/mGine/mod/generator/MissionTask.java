@@ -28,7 +28,7 @@ public class MissionTask implements Serializable {
     private MapIcon icon; //subsprite enum that gets displayed on map
 
     //checkpoints that have to be passed in order to unlock this checkpoint
-    private int[] preconditions = new int[0]; //TODO is this sendable?
+    private int[] preconditions = new int[0];
 
     public MissionTask() {};
 
@@ -125,8 +125,8 @@ public class MissionTask implements Serializable {
     public void writeToBuffer(PacketWriteBuffer buffer) throws IOException {
         buffer.writeString(getClass().getName());
         buffer.writeObject(this);
-        DebugFile.log("buffer wrote task class" + this.getClass());
-        DebugFile.log("buffer wrote task obj"+ id) ;
+       //DebugFile.log("buffer wrote task class" + this.getClass());
+       //DebugFile.log("buffer wrote task obj"+ id) ;
     }
 
     /**

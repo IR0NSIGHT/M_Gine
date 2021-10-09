@@ -1,5 +1,6 @@
 package me.iron.mGine.mod.clientside.map;
 
+import api.ModPlayground;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.gamemap.entry.SelectableMapEntry;
 import org.schema.game.client.view.camera.GameMapCamera;
@@ -82,6 +83,7 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
 
     @Override
     public float getScale(long l) {
+        ModPlayground.broadcastMessage("scale "+ scale+"factor " + scaleFactor + " selected" + selected);
         return scale * scaleFactor * (selected?2:1);
     }
 
@@ -177,7 +179,11 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
 
     @Override
     public void onUnSelect() {
+        if (!selected)
+            return;
+
         selected = false;
+    //    ModPlayground.broadcastMessage("unselect" + this.name);
         if (MissionMapDrawer.instance.selected != null && MissionMapDrawer.instance.selected.equals(this))
             MissionMapDrawer.instance.selected = null;
 

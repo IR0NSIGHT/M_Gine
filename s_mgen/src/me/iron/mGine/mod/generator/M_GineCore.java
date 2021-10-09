@@ -2,6 +2,7 @@ package me.iron.mGine.mod.generator;
 
 
 
+import api.DebugFile;
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.missions.DataBaseManager;
@@ -65,6 +66,7 @@ public class M_GineCore implements Serializable { //TODO make serializable
             if (uuidMissionHashMap.containsKey(id))
                 missions.add(this.uuidMissionHashMap.get(id));
        }
+        DebugFile.log("sending mission " + Arrays.toString(missions.toArray()) + "to players");
        new PacketMissionSynch(missions).sendTo(receivers);
     }
 
@@ -86,6 +88,9 @@ public class M_GineCore implements Serializable { //TODO make serializable
     public void clearMissions() {
         missions.clear();
         uuidMissionHashMap.clear();
+        PacketMissionSynch clearAll = new PacketMissionSynch(new ArrayList<Mission>());
+        clearAll.setClearClient(true);
+        clearAll.sendToAll();
     }
     /**
      * @param uuid
@@ -106,7 +111,7 @@ public class M_GineCore implements Serializable { //TODO make serializable
         MissionType type = MissionType.getByIdx(rand.nextInt());
         //generate that type
         Mission m = type.generate(rand, seed, center);
-        M_GineCore.instance.missions.add(m);
+        M_GineCore.instance.addMission(m);
         return m;
     }
 }

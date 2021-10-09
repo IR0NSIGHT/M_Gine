@@ -4,7 +4,6 @@ import api.utils.gui.GUIMenuPanel;
 
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
-import org.schema.schine.graphicsengine.forms.font.FontLibrary;
 import org.schema.schine.graphicsengine.forms.gui.*;
 import org.schema.schine.graphicsengine.forms.gui.newgui.GUIContentPane;
 import org.schema.schine.input.InputState;
@@ -32,7 +31,7 @@ public class MissionMenuPanel extends GUIMenuPanel {
         addMissionTab(MissionClient.instance.active, GUIMissionListTab.ListType.ACTIVE);
         addMissionTab(MissionClient.instance.available, GUIMissionListTab.ListType.OPEN);
         addMissionTab(MissionClient.instance.finished, GUIMissionListTab.ListType.FINISHED);
-
+        MissionClient.instance.update();
     }
 
     private void addMissionTab(HashSet<Mission> missionCollection, GUIMissionListTab.ListType type) {
@@ -62,7 +61,7 @@ public class MissionMenuPanel extends GUIMenuPanel {
         final GUIColoredRectangle background = new GUIColoredRectangle(getState(),MissionGUIControlManager.windowWidth,MissionGUIControlManager.windowHeight, tab.getContent(0),new Vector4f(0.3f,0.3f,0.3f,1));
         background.onInit();
         tab.getContent(0).attach(background);
-        GUIActiveMissionTab selected = new GUIActiveMissionTab(MissionGUIControlManager.windowWidth,MissionGUIControlManager.windowHeight,tab, getState());
+        GUISelectedMissionTab selected = new GUISelectedMissionTab(MissionGUIControlManager.windowWidth,MissionGUIControlManager.windowHeight,tab, getState());
         selected.onInit();
 
         selected.dependent=background;

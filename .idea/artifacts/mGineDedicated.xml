@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="mGineDedicated">
-    <output-path>$USER_HOME$/Desktop/Starmade/server testarea/dedicated starmade/StarMade/mods</output-path>
-    <root id="archive" name="mGine.jar">
-      <element id="module-output" name="s_mgen" />
-    </root>
-  </artifact>
-</component>

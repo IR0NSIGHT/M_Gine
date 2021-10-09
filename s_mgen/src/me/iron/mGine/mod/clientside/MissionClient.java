@@ -4,20 +4,21 @@ import api.common.GameClient;
 import api.utils.StarRunnable;
 import api.utils.gui.ModGUIHandler;
 import me.iron.mGine.mod.ModMain;
-import me.iron.mGine.mod.clientside.GUI.GUIActiveMissionTab;
+import me.iron.mGine.mod.clientside.GUI.GUISelectedMissionTab;
+import me.iron.mGine.mod.clientside.GUI.GUIMissionListTab;
 import me.iron.mGine.mod.clientside.GUI.MissionGUIControlManager;
 import me.iron.mGine.mod.clientside.map.MissionMapDrawer;
 import me.iron.mGine.mod.clientside.map.TaskMarker;
-import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
+import me.iron.mGine.mod.network.PacketInteractMission;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.GameClientState;
-import org.schema.game.common.controller.observer.DrawerObservable;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * STARMADE MOD
@@ -27,6 +28,11 @@ import java.util.HashSet;
  */
 public class MissionClient {
     public static MissionClient instance;
+    public GUIMissionListTab guiActiveMissionsList;
+    public GUIMissionListTab guiOpenMissionsList;
+    public GUIMissionListTab guiFinishedMissionsList;
+    public GUISelectedMissionTab selectedMissionTab;
+
     public HashSet<Mission> active = new HashSet<>();
     public HashSet<Mission> available = new HashSet<>();
     public HashSet<Mission> finished = new HashSet<>();
@@ -38,12 +44,13 @@ public class MissionClient {
     public void setSelectedMission(Mission selectedMission) {
         this.selectedMission = selectedMission;
         MissionMapDrawer.instance.getMapMarkers().clear();
-        for (MissionTask task: selectedMission.getMissionTasks()) {
-            if (task.getTaskSector() != null)
-                MissionMapDrawer.instance.addMarker(new TaskMarker(task));
+        if (selectedMission != null) {
+            for (MissionTask task: selectedMission.getMissionTasks()) {
+                if (task.getTaskSector() != null)
+                    MissionMapDrawer.instance.addMarker(new TaskMarker(task));
+            }
         }
         MissionMapDrawer.instance.updateInternalList();
-        GUIActiveMissionTab.instance.getSelectedMissionFromClient();
     }
 
     public Mission getSelectedMission() {
@@ -79,12 +86,43 @@ public class MissionClient {
         updateSelectedMission();
         updateSelectedTask();
         updateCurrentTasks();
+        updateGUILists();
+    }
+    private void updateGUILists() {
+        if (guiFinishedMissionsList == null || guiOpenMissionsList == null || guiActiveMissionsList == null || selectedMissionTab == null)
+            return;
+
+        guiFinishedMissionsList.setMissions(finished);
+        guiOpenMissionsList.setMissions(available);
+        guiActiveMissionsList.setMissions(active);
+        selectedMissionTab.update();
     }
 
     private void updateSelectedMission() {
-        if (selectedMission != null) {
+        if (selectedMission == null)
+            return;
 
+        for (Mission m: finished) {
+            if (selectedMission.equals(m)) {
+                setSelectedMission(m);
+                return;
+            }
         }
+        for (Mission m: available) {
+            if (selectedMission.equals(m)) {
+                setSelectedMission(m);
+                return;
+            }
+        }
+        for (Mission m: active) {
+            if (selectedMission.equals(m)) {
+                setSelectedMission(m);
+                return;
+            }
+        }
+
+
+        selectedMission = null; //old mission doesnt exist anymore in lists.
     }
 
     private void updateSelectedTask() {
@@ -124,15 +162,20 @@ public class MissionClient {
         for (Mission m: missions) {
             addMission(m);
         }
+        update();
     }
 
     public void addMissions(Collection<Mission> missions) {
         for (Mission m : missions) {
             addMission(m);
         }
+        update();
     }
 
     public void addMission(Mission m) {
+        active.remove(m);
+        available.remove(m);
+        finished.remove(m);
         switch (m.getState()) {
             case OPEN:
             {
@@ -158,5 +201,17 @@ public class MissionClient {
             }
         }
         return null;
+    }
+
+    /**
+     * request on server to accept or abort mission
+     * @param id UUID of mission
+     * @param accept true: accept, false: abort
+     */
+    public void requestAcceptToggleMission(UUID id, boolean accept) {
+        PacketInteractMission packet = new PacketInteractMission(id);
+        packet.setAccept(accept);
+        packet.setAbort(!accept);
+        packet.sendToServer();
     }
 }

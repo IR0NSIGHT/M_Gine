@@ -53,28 +53,16 @@ public class MissionTransportCargo extends Mission {
             pick_up_cargo.setIcon(MapIcon.WP_PICKUP);
             pick_up_cargo.setTaskSector(from.getPosition());
 
-            MissionTask deliver_cargo = new MissionTaskDockTo(this,"deliver cargo","bring the received cargo to station " + to.getName(),false,"") {
-                DataBaseStation target = to;
-                @Override
-                protected boolean successCondition() {
-                    return super.successCondition();
-                }
-
-                @Override
-                public void update() {
-                    super.update();
-                    info = "bring the received cargo to station " + to.getName();
-                    if (getTargetUID().equals("")) {
-                        setTargetUID(to.getUID());
-                    }
-                }
-            };
+            MissionTask deliver_cargo = new MissionTaskDockTo(this,"deliver cargo","bring the received cargo to station " + to.getName(),false,"");
             deliver_cargo.setIcon(MapIcon.WP_DROPOFF);
             deliver_cargo.setTaskSector(to.getPosition());
 
-            this.setMissionTasks(new MissionTask[2]);
-            this.missionTasks[0] = pick_up_cargo;
-            this.missionTasks[1] = deliver_cargo;
+            MissionTask[] tasks = new MissionTask[2];
+            tasks[0] = pick_up_cargo;
+            tasks[1] = deliver_cargo;
+
+            this.setMissionTasks(tasks);
+
 
             deliver_cargo.setPreconditions(new int[]{0});
 
@@ -91,6 +79,7 @@ public class MissionTransportCargo extends Mission {
     public void update(long time) {
         super.update(time);
         tryUpdateTargetStation();
+        updateTaskTargets();
     }
 
     /**
@@ -110,5 +99,10 @@ public class MissionTransportCargo extends Mission {
                 ex.printStackTrace();
             }
         }
+    }
+
+    private void updateTaskTargets() {
+        if (!to.getUID().equals("") && ((MissionTaskDockTo)missionTasks[1]).getTargetUID().equals(""))
+            ((MissionTaskDockTo)missionTasks[1]).setTargetUID(to.getUID());
     }
 }

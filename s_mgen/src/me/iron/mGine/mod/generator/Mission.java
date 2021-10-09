@@ -23,7 +23,7 @@ public class Mission extends DrawerObservable implements Serializable {
     private int missionID;
 
     //active "quest party members"
-    private String captain; //captain of mission who controls party.
+    private String captain = ""; //captain of mission who controls party.
     private HashSet<String> party = new HashSet<>();
 
     //generation parameters
@@ -112,6 +112,10 @@ public class Mission extends DrawerObservable implements Serializable {
             onFailure();
     }
 
+    /**
+     * will start the countdown and set the state to in_progress
+     * @param time starttime (system time)
+     */
     public void start(long time) {
         startTime = time;
         state = MissionState.IN_PROGRESS;
@@ -197,12 +201,12 @@ public class Mission extends DrawerObservable implements Serializable {
         buffer.writeString(getClass().getName());
         buffer.writeObject(this);
 
-        DebugFile.log("buffer wrote mission class" + getClass().getSimpleName());
-        DebugFile.log("buffer wrote mission obj" + uuid);
+       //DebugFile.log("buffer wrote mission class" + getClass().getSimpleName());
+       //DebugFile.log("buffer wrote mission obj" + uuid);
 
         //write non primitive objects
         buffer.writeInt(missionTasks.length);
-        DebugFile.log("buffer wrote task list size" + missionTasks.length);
+      //  DebugFile.log("buffer wrote task list size" + missionTasks.length);
         for (MissionTask task: missionTasks) {
             task.writeToBuffer(buffer);
         }
@@ -219,7 +223,7 @@ public class Mission extends DrawerObservable implements Serializable {
             Object taskObj = buffer.readObject(clazz);
             if (!(taskObj instanceof MissionTask))
                 continue;
-            MissionTask task =(MissionTask) taskObj;
+            MissionTask task =(MissionTask) taskObj; //target task broken.
             task.readFromBuffer(buffer);
             task.mission = this;
             missionTasks[i] = task;
