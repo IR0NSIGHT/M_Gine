@@ -165,9 +165,7 @@ public class PacketInteractMission extends Packet {
         m.updateActiveParty();
 
         //synch to mission members
-        ArrayList<PlayerState> members = new ArrayList<>(m.getActiveParty().size());
-        members.addAll(m.getActiveParty());
-        M_GineCore.instance.synchMissionTo(new ArrayList<>(Collections.singleton(m.getUuid())),members);
+        MissionNetworkController.instance.synchMission(m.getUuid());
     }
 
     public void sendToServer() {

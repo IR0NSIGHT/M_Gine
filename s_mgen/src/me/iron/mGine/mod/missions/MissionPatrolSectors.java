@@ -79,7 +79,6 @@ public class MissionPatrolSectors extends Mission {
                 p.sendServerMessage(Lng.astr("Task '"+checkpoint.getName() +"' complete ("+this.getIDString()+")."),2);
             }
         }
-        notifyObservers();
     }
 
     @Override

@@ -55,13 +55,7 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
     }
 
     public void setMissions(HashSet<Mission> missions) {
-        for (Mission m: this.missions) {
-            m.deleteObserver(this);
-        }
         this.missions = missions;
-        for (Mission m: missions) {
-            m.addObserver(this);
-        }
         updateList();
     }
 

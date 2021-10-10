@@ -6,6 +6,7 @@ import api.DebugFile;
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.missions.DataBaseManager;
+import me.iron.mGine.mod.network.MissionNetworkController;
 import me.iron.mGine.mod.network.PacketMissionSynch;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
@@ -30,6 +31,7 @@ public class M_GineCore implements Serializable { //TODO make serializable
     public M_GineCore() {
         instance = this;
         updateLoop(1);
+        new MissionNetworkController();
     }
 
     public void updateLoop(final int intervallSeconds) {
@@ -49,39 +51,26 @@ public class M_GineCore implements Serializable { //TODO make serializable
     private void updateAll() {
         for(Mission m: missions) {
             m.update(System.currentTimeMillis());
-            m.notifyObservers(m);
         }
         if (missions.size() != 0) {
-            synchMissions();
+            MissionNetworkController.instance.synchAllPlayers();
         }
     }
-
-    private void synchMissions() {
-        new PacketMissionSynch(getMissions()).sendToAll();
-    }
-
-    public void synchMissionTo(ArrayList<UUID> ids, ArrayList<PlayerState> receivers) {
-       Collection<Mission> missions = new ArrayList<Mission>();
-       for (UUID id: ids) {
-            if (uuidMissionHashMap.containsKey(id))
-                missions.add(this.uuidMissionHashMap.get(id));
-       }
-        DebugFile.log("sending mission " + Arrays.toString(missions.toArray()) + "to players");
-       new PacketMissionSynch(missions).sendTo(receivers);
-    }
-
 
     public void addMission(Mission m) {
         missions.add(m);
         uuidMissionHashMap.put(m.uuid,m);
+        onMissionUpdate(m);
     }
 
     public void removeMission(Mission m) {
         missions.remove(m);
         uuidMissionHashMap.remove(m.uuid);
+        onMissionUpdate(m);
     }
 
-    private HashSet<Mission> getMissions() {
+
+    public HashSet<Mission> getMissions() {
         return missions;
     }
 
@@ -92,12 +81,24 @@ public class M_GineCore implements Serializable { //TODO make serializable
         clearAll.setClearClient(true);
         clearAll.sendToAll();
     }
+
     /**
      * @param uuid
      * @return mission or null
      */
     public Mission getMissionByUUID(UUID uuid) {
         return uuidMissionHashMap.get(uuid);
+    }
+
+    /**
+     * runs when a mission is updated.
+     */
+    public void onMissionUpdate(Mission m) {
+        if (m.getState().equals(MissionState.OPEN))
+            MissionNetworkController.instance.updateMissionForAll(m);
+        //update the player wrappers
+        MissionNetworkController.instance.updatePlayers(m.getUuid());
+        MissionNetworkController.instance.synchMission(m.getUuid());
     }
 
 //static shit

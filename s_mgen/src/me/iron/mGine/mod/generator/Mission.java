@@ -19,7 +19,7 @@ import java.util.*;
  * DATE: 02.09.2021
  * TIME: 18:12
  */
-public class Mission extends DrawerObservable implements Serializable {
+public class Mission implements Serializable {
     private int missionID;
 
     //active "quest party members"
@@ -59,7 +59,6 @@ public class Mission extends DrawerObservable implements Serializable {
      */
     protected void onSuccess() {
         System.out.println("MISSION COMPLETE");
-        notifyObservers(this);
         state = MissionState.SUCCESS;
     }
 
@@ -70,7 +69,6 @@ public class Mission extends DrawerObservable implements Serializable {
         System.out.println("MISSION FAILED");
         state = MissionState.FAILED;
 
-        notifyObservers(this);
     }
 
     /**
@@ -110,6 +108,8 @@ public class Mission extends DrawerObservable implements Serializable {
 
         if (failureCondition())
             onFailure();
+
+        M_GineCore.instance.onMissionUpdate(this);
     }
 
     /**
@@ -157,7 +157,6 @@ public class Mission extends DrawerObservable implements Serializable {
     }
 
     protected void onTaskStateChanged(MissionTask checkpoint, MissionState oldState, MissionState newState) {
-        notifyObservers(this);
         if (!oldState.equals(MissionState.SUCCESS) && newState.equals(MissionState.SUCCESS)) {
             MissionUtil.notifyParty(getActiveParty(),"Task complete: " + checkpoint.getName(), ServerMessage.MESSAGE_TYPE_INFO);
         }
