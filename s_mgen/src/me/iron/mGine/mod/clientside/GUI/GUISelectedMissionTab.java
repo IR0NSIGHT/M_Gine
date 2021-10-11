@@ -3,6 +3,7 @@ package me.iron.mGine.mod.clientside.GUI;
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
+import me.iron.mGine.mod.missions.MissionUtil;
 import org.schema.game.client.data.GameClientState;
 import org.schema.schine.graphicsengine.core.MouseEvent;
 import org.schema.schine.graphicsengine.forms.font.FontLibrary;
@@ -41,7 +42,9 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
             public String toString() {
                 if (activeMission == null)
                     return "no active mission.";
-                return activeMission.getDescription();
+                String out = activeMission.getDescription();
+                out += MissionUtil.getRemainingTime(activeMission);
+                return out;
             }
         });
 

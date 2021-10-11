@@ -54,6 +54,7 @@ public class MissionClient {
             }
         }
         MissionMapDrawer.instance.updateInternalList();
+        updateGUILists();
     }
 
     public Mission getSelectedMission() {

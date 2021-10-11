@@ -2,6 +2,8 @@ package me.iron.mGine.mod.clientside.GUI;
 
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
+import me.iron.mGine.mod.generator.MissionState;
+import me.iron.mGine.mod.missions.MissionUtil;
 import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.controller.observer.DrawerObserver;
 import org.schema.schine.graphicsengine.core.MouseEvent;
@@ -83,7 +85,7 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
                 return;
             //TODO button with "navigate to"
             int i = 0;
-            for (Mission m: missions) {
+            for (final Mission m: missions) {
                 if (i>=list.size())
                     break;
                 //overwrite the text of each mission
@@ -91,8 +93,12 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
                 if (listEl.getContent() instanceof GUITextOverlay) {
                     GUITextOverlay content = (GUITextOverlay) listEl.getContent();
                     content.getText().clear();
-                    String text = (i< missions.size())?m.getDescription():"";
-                    content.getText().add(text);
+                    content.getText().add(new Object(){
+                        @Override
+                        public String toString() {
+                            return m.getDescription() + "\nremaining time:" + MissionUtil.getRemainingTime(m);
+                        }
+                    });
                     LIST_TO_MISSION.put(listEl,m);
                 }
                 i++;

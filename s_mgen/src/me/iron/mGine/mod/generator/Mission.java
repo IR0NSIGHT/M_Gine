@@ -43,6 +43,7 @@ public class Mission implements Serializable {
 
     //checkpoints
     protected transient MissionTask[] missionTasks = new MissionTask[0];
+    private transient boolean synchFlag; //synch on next update?
 
     public Mission(Random rand, long seed) {
         this.uuid = UUID.randomUUID();
@@ -60,6 +61,7 @@ public class Mission implements Serializable {
     protected void onSuccess() {
         System.out.println("MISSION COMPLETE");
         state = MissionState.SUCCESS;
+        flagForSynch();
     }
 
     /**
@@ -68,14 +70,15 @@ public class Mission implements Serializable {
     protected void onFailure() {
         System.out.println("MISSION FAILED");
         state = MissionState.FAILED;
-
+        flagForSynch();
     }
 
     /**
      * mission gets abandoned <=> no more party members left. runs onFailure.
      */
     public void onAbandon() {
-        onFailure();
+        onFailure(); //TODO do something else here
+        flagForSynch();
     }
 
     /**
@@ -84,6 +87,7 @@ public class Mission implements Serializable {
     public void requestDelay() {
         duration *= 1.02f;
         rewardCredits *= 0.7f;
+        flagForSynch();
     }
 
     /**
@@ -91,6 +95,11 @@ public class Mission implements Serializable {
      * @param time
      */
     public void update(long time) {
+        if (synchFlag) {
+            synchFlag = false;
+            M_GineCore.instance.onMissionUpdate(this);
+        }
+
         if (state != MissionState.IN_PROGRESS)
             return;
 
@@ -109,7 +118,6 @@ public class Mission implements Serializable {
         if (failureCondition())
             onFailure();
 
-        M_GineCore.instance.onMissionUpdate(this);
     }
 
     /**
@@ -119,13 +127,13 @@ public class Mission implements Serializable {
     public void start(long time) {
         startTime = time;
         state = MissionState.IN_PROGRESS;
+        flagForSynch();
     }
 
     public String getDescription() {
         StringBuilder out = new StringBuilder();
         out.append(description).append("(").append(getIDString()).append(")").append(" reward: ").append(MissionUtil.formatMoney(rewardCredits));
         out.append(" state: ").append(state).append("\n");
-        out.append("remaining time: ").append(String.format("%02d:%02d:%02d",(remainingTime % (60*60*60))/(60*60),(remainingTime % 3600) / 60,remainingTime % 60)).append("\n");
         out.append("tasks:\n");
         for (MissionTask task: missionTasks) {
             out.append(task.getTaskSummary()).append("\n");
@@ -161,6 +169,7 @@ public class Mission implements Serializable {
             MissionUtil.notifyParty(getActiveParty(),"Task complete: " + checkpoint.getName(), ServerMessage.MESSAGE_TYPE_INFO);
         }
         System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
+        flagForSynch();
     }
 
     /**
@@ -168,16 +177,23 @@ public class Mission implements Serializable {
      * @param playerName
      */
     public void addPartyMember(String playerName) {
+        if (party.contains(playerName))
+            return;
+
         if (party.size()==0) {
             setCaptain(playerName);
         }
         party.add(playerName);
         updateActiveParty();
+        flagForSynch();
     }
 
     public void removePartyMember(String playerName) {
+        if (!party.contains(playerName))
+            return;
         party.remove(playerName);
         updateActiveParty();
+        flagForSynch();
     }
 
     public void updateActiveParty() {
@@ -236,6 +252,19 @@ public class Mission implements Serializable {
 
     public void setCaptain(String captain) {
         this.captain = captain;
+        flagForSynch();
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public int getRemainingTime() {
+        return remainingTime;
     }
 
     public UUID getUuid() {
@@ -264,6 +293,7 @@ public class Mission implements Serializable {
 
     public void setState(MissionState state) {
         this.state = state;
+        flagForSynch();
     }
 
     public MissionTask[] getMissionTasks() {
@@ -279,6 +309,13 @@ public class Mission implements Serializable {
         for(int i = 0; i < missionTasks.length; i++) {
             missionTasks[i].id = i;
         }
+    }
+
+    /**
+     * flag this mission to be synched when it next updates (before all tests)
+     */
+    public void flagForSynch() {
+        synchFlag = true;
     }
 
     @Override

@@ -56,8 +56,24 @@ public class MissionUtil {
         }
     }
 
-    public static void main(String[] args) {
+    /**
+     * format into hh:mm:ss
+     * @param time in seconds
+     * @return
+     */
+    public static String formatTime(long time) {
+        return (String.format("%02d:%02d:%02d",(time % (60*60*60))/(60*60),(time % 3600) / 60,time % 60));
+    }
 
+    public static String getRemainingTime(Mission m) {
+        int r = m.getDuration();
+        if (m.getStartTime() > 0) {
+            r = (int) (m.getDuration() - (System.currentTimeMillis()-m.getStartTime())/1000);
+        }
+        return formatTime(r);
+    }
+    public static void main(String[] args) {
+        System.out.println(formatTime(2135987125397124587L));
     }
 
 }
