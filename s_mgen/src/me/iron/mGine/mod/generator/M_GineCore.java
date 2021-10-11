@@ -52,8 +52,8 @@ public class M_GineCore implements Serializable { //TODO make serializable
         for(Mission m: missions) {
             m.update(System.currentTimeMillis());
         }
-        if (missions.size() != 0) {
-            MissionNetworkController.instance.synchAllPlayers();
+        if (missions.size() != 0) { //TODO replace with event based updates
+        //    MissionNetworkController.instance.synchAllPlayers();
         }
     }
 

@@ -2,11 +2,13 @@ package me.iron.mGine.mod.network;
 
 import api.listener.Listener;
 import api.listener.events.player.PlayerJoinWorldEvent;
+import api.listener.events.player.PlayerSpawnEvent;
 import api.mod.StarLoader;
 import api.network.packets.PacketUtil;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
+import me.iron.mGine.mod.generator.MissionState;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
 
@@ -27,11 +29,12 @@ public class MissionNetworkController {
     public MissionNetworkController() {
         instance = this;
         initMissionPlayers();
-        StarLoader.registerListener(PlayerJoinWorldEvent.class, new Listener<PlayerJoinWorldEvent>() {
+        StarLoader.registerListener(PlayerSpawnEvent.class, new Listener<PlayerSpawnEvent>() {
             @Override
-            public void onEvent(PlayerJoinWorldEvent playerJoinWorldEvent) {
-                addPlayer(playerJoinWorldEvent.getPlayerName());
+            public void onEvent(PlayerSpawnEvent event) {
+                addPlayer(event.getPlayer().getName());
             }
+
         }, ModMain.instance);
     }
 
@@ -104,10 +107,18 @@ public class MissionNetworkController {
 
     public void synchMission(UUID uuid) {
         Mission m = M_GineCore.instance.getMissionByUUID(uuid);
+
         if (m != null) {
-            PacketMissionSynch packetMissionSynch = new PacketMissionSynch(Collections.singletonList(m));
-            for (PlayerState p: m.getActiveParty()) {
-                PacketUtil.sendPacket(p,packetMissionSynch);
+            //synch open missions to every player.
+            if (m.getState().equals(MissionState.OPEN)) {
+                for (MissionPlayer p: playersByName.values()) {
+                    p.synchPlayer(uuid);
+                }
+            } else {
+                PacketMissionSynch packetMissionSynch = new PacketMissionSynch(Collections.singletonList(m));
+                for (PlayerState p: m.getActiveParty()) {
+                    PacketUtil.sendPacket(p,packetMissionSynch);
+                }
             }
         }
     }
