@@ -106,13 +106,14 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
                             if (GameClientState.instance.getPlayer().isAdmin()) {
                                 s += "\n"+ (m.isVisibleFor(GameClientState.instance.getPlayer())?"visible":"invisible");
                                 s += "\n" + (m.canClaim(GameClientState.instance.getPlayer())?"can claim":"can not claim");
+                                s += "\n publish time:" + (MissionUtil.formatTime((System.currentTimeMillis()-m.getPublishTime())/1000));
                             }
                             return s;
                         }
                     });
                     LIST_TO_MISSION.put(listEl,m);
                 }
-                i++;
+                i+=2;
             }
         } catch (Exception e) {
             e.printStackTrace();

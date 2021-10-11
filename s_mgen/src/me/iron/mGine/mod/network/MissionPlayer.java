@@ -3,7 +3,6 @@ package me.iron.mGine.mod.network;
 import api.network.packets.PacketUtil;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
-import me.iron.mGine.mod.generator.MissionState;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
 
@@ -19,9 +18,16 @@ import java.util.*;
  * eventbased updates.
  */
 public class MissionPlayer implements Serializable {
-    private transient HashSet<UUID> missions = new HashSet<>();
+    private transient HashSet<UUID> missions = new HashSet(){
+        @Override
+        public boolean remove(Object o) {
+            if (contains(o))
+                removeQueue.add((UUID) o);
+            return super.remove(o);
+        }
+    };
     private final String playerName;
-
+    private ArrayList<UUID> removeQueue = new ArrayList<>();
     public MissionPlayer(String playername) {
         this.playerName = playername;
     }
@@ -38,30 +44,18 @@ public class MissionPlayer implements Serializable {
         if (player == null)
             return;
 
-        if (m.isVisibleFor(player) || player.isAdmin()) {
-            missions.add(m.getUuid());
-        } else {
+        if (M_GineCore.instance.getMissionByUUID(m.getUuid())==null) {
             missions.remove(m.getUuid());
+            return;
+        }
+
+        if ( m.isVisibleFor(player) || player.isAdmin()) {
+            missions.add(m.getUuid());
         }
     }
 
     public void synchPlayer() {
-        //is player online?
-        PlayerState pState = GameServerState.instance.getPlayerStatesByName().get(playerName);
-        if (pState == null)
-            return;
-
-        //make a packet with all missions that are relevant to him, send
-        ArrayList<Mission> mms = new ArrayList<>(missions.size());
-        Iterator<UUID> it = missions.iterator();
-        while (it.hasNext()) {
-            Mission m = M_GineCore.instance.getMissionByUUID(it.next());
-            if (m != null)
-                mms.add(m);
-        }
-        PacketMissionSynch packet = new PacketMissionSynch(mms);
-        packet.setClearClient(true);
-        PacketUtil.sendPacket(pState,packet);
+        synchPlayer(null);
     }
 
     public void synchPlayer(UUID uuid) {
@@ -74,16 +68,35 @@ public class MissionPlayer implements Serializable {
      * @param force
      */
     public void synchPlayer(UUID uuid, boolean force) {
-        if (!force && !missions.contains(uuid))
+        if (!force && (uuid != null && !missions.contains(uuid)))
             return;
+
         //is player online?
         PlayerState pState = GameServerState.instance.getPlayerStatesByName().get(playerName);
         if (pState == null)
             return;
-        Mission m = M_GineCore.instance.getMissionByUUID(uuid);
 
+        Mission m = M_GineCore.instance.getMissionByUUID(uuid);
+        if (uuid != null && m == null) //m doesnt exist -> dont synch.
+            return;
+
+        ArrayList<Mission> ids = new ArrayList<>();
+        if (uuid == null) {
+            for (UUID id: missions) {
+                Mission mmm = M_GineCore.instance.getMissionByUUID(id);
+                if (mmm != null)
+                    ids.add(mmm);
+            }
+        } else {
+            ids = new ArrayList<>(1);
+            Mission mmm = M_GineCore.instance.getMissionByUUID(uuid);
+            if (mmm != null)
+                ids.add(mmm);
+        }
         //make a packet with this one mission and send to player
-        PacketMissionSynch packet = new PacketMissionSynch(Collections.singletonList(m));
+        PacketMissionSynch packet = new PacketMissionSynch(ids);
+        packet.addRemoveList(removeQueue);
+        removeQueue.clear();
         PacketUtil.sendPacket(pState,packet);
     }
 }

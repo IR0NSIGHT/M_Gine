@@ -176,6 +176,7 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
             if (missionText == null || buttonToggleActivation == null)
                 return;
 
+            activeMission = null;
             //overwrite the text of placeholder
             if (MissionClient.instance.getSelectedMission() != null) {
                 Mission m = MissionClient.instance.getSelectedMission();

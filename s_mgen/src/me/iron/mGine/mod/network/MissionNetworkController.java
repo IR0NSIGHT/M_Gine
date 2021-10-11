@@ -26,7 +26,7 @@ public class MissionNetworkController {
     public static MissionNetworkController instance;
 
     private HashMap<String,MissionPlayer> playersByName = new HashMap<>();
-
+    private ArrayList<UUID> removeQueue = new ArrayList<>();
     public MissionNetworkController() {
         instance = this;
         initMissionPlayers();
@@ -147,4 +147,6 @@ public class MissionNetworkController {
         mp.updateMissions();
         mp.synchPlayer();
     }
+
+
 }

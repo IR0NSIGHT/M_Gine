@@ -14,6 +14,7 @@ import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.network.PacketInteractMission;
+import org.lwjgl.Sys;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.GameClientState;
 
@@ -184,27 +185,50 @@ public class MissionClient {
     }
 
     public void addMission(Mission m) {
-        active.remove(m);
-        available.remove(m);
-        finished.remove(m);
         switch (m.getState()) {
             case OPEN:
             {
                 available.add(m);
+                finished.remove(m);
+                active.remove(m);
                 break;
             }
             case IN_PROGRESS: {
                 active.add(m);
+                available.remove(m);
+                finished.remove(m);
                 break;
             }
             default:
             {
                 finished.add(m);
+                active.remove(m);
+                available.remove(m);
                 break;
             }
         }
     }
 
+    public void removeMissions(Collection<UUID> uuids) {
+        for (UUID uuid: uuids) {
+            Mission m = new Mission(uuid);
+            removeMission(m);
+            if (active.contains(m)||available.contains(m)||finished.contains(m)) {
+                System.out.println("mission remains after being deleted.");
+            }
+        }
+        update();
+    }
+
+    /**
+     * will delete the mission from this client and its GUI. EXCLUDES FINISHED MISSIONS!
+     * @param m
+     */
+    public void removeMission(Mission m) {
+        active.remove(m);
+        available.remove(m);
+    //    finished.remove(m);
+    }
     private MissionTask getNextActiveTask(Mission m) {
         for (MissionTask t: m.getMissionTasks()) {
             if (t.getCurrentState().equals(MissionState.IN_PROGRESS)) {

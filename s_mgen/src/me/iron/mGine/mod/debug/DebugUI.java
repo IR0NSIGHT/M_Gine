@@ -95,6 +95,10 @@ public class DebugUI {
                     return;
                 }
 
+                if (txt.contains("clear ms")) {
+                    M_GineCore.instance.clearMissions();
+                }
+
                 if (txt.contains("clear money")) {
                     for (PlayerState p: GameServerState.instance.getPlayerStatesByName().values()) {
                         p.setCredits(0);

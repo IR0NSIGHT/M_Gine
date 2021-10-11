@@ -1,6 +1,7 @@
 package me.iron.mGine.mod.generator;
 
 import api.DebugFile;
+import api.ModPlayground;
 import api.network.PacketReadBuffer;
 import api.network.PacketWriteBuffer;
 import me.iron.mGine.mod.missions.MissionUtil;
@@ -58,6 +59,10 @@ public class Mission implements Serializable {
         this.rewardCredits = Math.abs(rand.nextInt())%1000;
     }
 
+    public Mission(UUID uuid) {
+        this.uuid = uuid;
+    }
+
     /**
      * sets state to success, runs extra code for special stuff: reward payments etc
      */
@@ -110,6 +115,7 @@ public class Mission implements Serializable {
         if (synchFlag) {
             synchFlag = false;
             M_GineCore.instance.onMissionUpdate(this);
+            ModPlayground.broadcastMessage("synching " + this.getUuid());
         }
 
         if (state != MissionState.IN_PROGRESS)
@@ -181,9 +187,10 @@ public class Mission implements Serializable {
     protected void onTaskStateChanged(MissionTask checkpoint, MissionState oldState, MissionState newState) {
         if (!oldState.equals(MissionState.SUCCESS) && newState.equals(MissionState.SUCCESS)) {
             MissionUtil.notifyParty(getActiveParty(),"Task complete: " + checkpoint.getName(), ServerMessage.MESSAGE_TYPE_INFO);
+            System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
+            flagForSynch();
         }
-        System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
-        flagForSynch();
+
     }
 
     /**
@@ -306,6 +313,9 @@ public class Mission implements Serializable {
     }
 
     public void setState(MissionState state) {
+        if (this.state.equals(state))
+            return;
+
         this.state = state;
         flagForSynch();
     }
@@ -369,7 +379,7 @@ public class Mission implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof Mission)) return false;
         Mission mission = (Mission) o;
         return uuid.equals(mission.uuid);
     }

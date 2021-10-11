@@ -2,17 +2,13 @@ package me.iron.mGine.mod.generator;
 
 
 
-import api.DebugFile;
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
-import me.iron.mGine.mod.missions.DataBaseManager;
 import me.iron.mGine.mod.network.MissionNetworkController;
 import me.iron.mGine.mod.network.PacketMissionSynch;
-import org.schema.common.util.linAlg.Vector3i;
-import org.schema.game.common.data.player.PlayerState;
+import org.schema.game.server.data.GameServerState;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -23,7 +19,8 @@ import java.util.*;
  */
 public class M_GineCore implements Serializable { //TODO make serializable
     public static M_GineCore instance;
-    public int missionsLimit = 50;
+    public int missionsLimit = 3;
+    public int garbageCollectorInterval =1000*60*30; //in millis
 
     private Random rand;
     private HashSet<Mission> missions = new HashSet<>();
@@ -42,7 +39,7 @@ public class M_GineCore implements Serializable { //TODO make serializable
             @Override
             public void run() {
 
-                if (last + intervallSeconds*1000<System.currentTimeMillis()) {
+                if (last + intervallSeconds*1000<System.currentTimeMillis() && GameServerState.instance.getPlayerStatesByName().values().size() != 0) {
                     last = System.currentTimeMillis();
                     updateAll();
                 }
@@ -51,6 +48,8 @@ public class M_GineCore implements Serializable { //TODO make serializable
     }
 
     private void updateAll() {
+
+        this.missionsLimit = 5;
         ArrayList<Mission> removeQueue = new ArrayList<>();
         for(Mission m: missions) {
             m.update(System.currentTimeMillis());
@@ -59,14 +58,17 @@ public class M_GineCore implements Serializable { //TODO make serializable
             }
         }
 
+
         for (Mission m: removeQueue) {
             removeMission(m);
         }
 
+
         //add new missions to keep amount always at missionsLimit
-        for (int i = 0; i <( missionsLimit- missions.size()); i++) {
-            generateMission(rand.nextLong());
+        while (missions.size()<missionsLimit) {
+            addMission(generateMission(rand.nextLong()));
         }
+
     }
 
     public void addMission(Mission m) {
@@ -78,7 +80,8 @@ public class M_GineCore implements Serializable { //TODO make serializable
     public void removeMission(Mission m) {
         missions.remove(m);
         uuidMissionHashMap.remove(m.uuid);
-        onMissionUpdate(m);
+        MissionNetworkController.instance.updateMissionForAll(m);
+        //onMissionUpdate(m);
     }
 
     /**
@@ -86,7 +89,7 @@ public class M_GineCore implements Serializable { //TODO make serializable
      * @return
      */
     private boolean isObsolete(Mission m) {
-        return (m.getState().equals(MissionState.SUCCESS)||m.getState().equals(MissionState.FAILED)|| (System.currentTimeMillis()-m.getPublishTime())>5000);
+        return (!m.getState().equals(MissionState.IN_PROGRESS) && (System.currentTimeMillis()-m.getPublishTime())> garbageCollectorInterval);
     }
 
     public HashSet<Mission> getMissions() {
@@ -128,7 +131,6 @@ public class M_GineCore implements Serializable { //TODO make serializable
 
         //generate that type
         Mission m = type.generate(rand, seed);
-        M_GineCore.instance.addMission(m);
         return m;
     }
 }

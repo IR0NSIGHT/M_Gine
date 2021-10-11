@@ -12,6 +12,7 @@ import org.schema.game.server.data.GameServerState;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * STARMADE MOD
@@ -23,6 +24,7 @@ import java.util.Collection;
  */
 public class PacketMissionSynch extends Packet {
     private ArrayList<Mission> missions = new ArrayList<>();
+    private ArrayList<UUID> removeList = new ArrayList<>();
     private boolean clearClient; //clear missions from client
     /**
      * @param missions missions to send
@@ -35,7 +37,12 @@ public class PacketMissionSynch extends Packet {
         this.clearClient = clearClient;
     }
 
+    public void addRemoveList(ArrayList<UUID> removeList) {
+        this.removeList.addAll(removeList);
+    }
+
     public PacketMissionSynch() {} //default constructer for starlaoder
+
     @Override
     public void readPacketData(PacketReadBuffer packetReadBuffer) throws IOException {
         try {
@@ -52,6 +59,12 @@ public class PacketMissionSynch extends Packet {
                     ex.printStackTrace();
                 }
             }
+
+            int sizeRm = packetReadBuffer.readInt();
+            removeList.ensureCapacity(sizeRm);
+            for (int i = 0; i < sizeRm; i++) {
+                removeList.add(packetReadBuffer.readObject(UUID.class));
+            }
         } catch (NullPointerException ex) {
             ex.printStackTrace();
         }
@@ -65,6 +78,11 @@ public class PacketMissionSynch extends Packet {
         for (Mission m: missions) {
             m.writeToBuffer(packetWriteBuffer);
         }
+
+        packetWriteBuffer.writeInt(removeList.size());
+        for (UUID uuid: removeList) {
+            packetWriteBuffer.writeObject(uuid);
+        }
     }
 
     @Override
@@ -73,6 +91,9 @@ public class PacketMissionSynch extends Packet {
             MissionClient.instance.overwriteMissions(missions);
         } else {
             MissionClient.instance.addMissions(missions);
+        }
+        if (removeList.size()>0) {
+            MissionClient.instance.removeMissions(removeList);
         }
     }
 
