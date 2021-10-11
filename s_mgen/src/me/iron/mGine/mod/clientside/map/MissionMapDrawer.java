@@ -1,5 +1,6 @@
 package me.iron.mGine.mod.clientside.map;
 
+import api.ModPlayground;
 import api.listener.Listener;
 import api.listener.events.input.MousePressEvent;
 import api.listener.fastevents.FastListenerCommon;
@@ -150,9 +151,19 @@ public class MissionMapDrawer implements GameMapDrawListener {
         }
 
     }
-
+    private int frames;
+    private long start;
     @Override
     public void galaxy_DrawSprites(GameMapDrawer gameMapDrawer) {
+        //TODO debug remove
+   //    frames ++;
+   //    if (frames>=100) {
+   //        ModPlayground.broadcastMessage("FPS:"+((System.currentTimeMillis()-start)/10));
+   //        start = System.currentTimeMillis();
+   //        frames = 0;
+   //    }
+
+
         for (Map.Entry<Sprite,MapMarker[]> entry: sprite_to_subsprites.entrySet()) {
             for (MapMarker m: entry.getValue()) {
                 m.preDraw(gameMapDrawer);

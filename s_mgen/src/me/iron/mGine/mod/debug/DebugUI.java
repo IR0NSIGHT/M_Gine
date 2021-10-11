@@ -179,7 +179,7 @@ public class DebugUI {
         for (int i = 0; i < amount; i++) {
             //generate a new mission
             Vector3i playerSector = GameServerState.instance.getPlayerStatesByDbId().values().iterator().next().getCurrentSector();
-            Mission m = M_GineCore.generateMission(rand.nextLong(),playerSector);
+            Mission m = M_GineCore.generateMission(rand.nextLong());
 
             if (false) {
                 //make active

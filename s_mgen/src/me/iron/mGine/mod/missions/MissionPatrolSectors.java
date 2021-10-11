@@ -27,8 +27,9 @@ public class MissionPatrolSectors extends Mission {
     float completionRadius;
     float distanceTotal;
     Vector3i center;
-    public MissionPatrolSectors(final Random rand, long seed, Vector3i center) {
+    public MissionPatrolSectors(final Random rand, long seed) {
         super(rand,seed);
+        Vector3i center = new Vector3i(rand.nextInt()%500,rand.nextInt()%500,rand.nextInt()%500);
         this.center = center;
         cargoAmount = 20 + Math.abs(rand.nextInt())%80;
         completionRadius = 0.5f;
@@ -76,7 +77,7 @@ public class MissionPatrolSectors extends Mission {
         for (PlayerState p: getActiveParty()) {
             //inform about checkpoint
             for (int i = 0; i < 6; i++) {
-                p.sendServerMessage(Lng.astr("Task '"+checkpoint.getName() +"' complete ("+this.getIDString()+")."),2);
+                p.sendServerMessage(Lng.astr("Task '"+checkpoint.getName() +"' complete ("+"MISSION NAME GOES HERE"+")."),2);
             }
         }
     }
@@ -84,7 +85,7 @@ public class MissionPatrolSectors extends Mission {
     @Override
     protected void onSuccess() {
         StringBuilder b = new StringBuilder();
-        b.append("You have completed Patrol ").append(getIDString()).append(". \n");
+        b.append("You have completed Patrol ").append("MISSION NAME GOES HERE").append(". \n");
         b.append("Your reward of ").append(MissionUtil.formatMoney(rewardCredits))
         .append(" has been added to your account. Thank you for your service");
         String mssg = b.toString();

@@ -104,7 +104,7 @@ public class PacketInteractMission extends Packet {
                     m.getParty().remove(member);
                     PlayerState memberState = GameServerState.instance.getPlayerStatesByName().get(member);
                     if (memberState != null)
-                        memberState.sendServerMessage(Lng.astr("you have been kicked from mission " + m.getIDString()), ServerMessage.MESSAGE_TYPE_ERROR);
+                        memberState.sendServerMessage(Lng.astr("you have been kicked from mission " + m.getUuid()), ServerMessage.MESSAGE_TYPE_ERROR);
                 }
             }
 
@@ -114,7 +114,7 @@ public class PacketInteractMission extends Packet {
                     //TODO invite method with popup for player: "want to join this mission?"
                     PlayerState memberState = GameServerState.instance.getPlayerStatesByName().get(member);
                     if (memberState != null)
-                        memberState.sendServerMessage(Lng.astr("you have been invited to mission " + m.getIDString()), ServerMessage.MESSAGE_TYPE_ERROR);
+                        memberState.sendServerMessage(Lng.astr("you have been invited to mission " +  m.getUuid()), ServerMessage.MESSAGE_TYPE_ERROR);
                 }
             }
 
@@ -160,9 +160,7 @@ public class PacketInteractMission extends Packet {
                 m.requestDelay();
 
         }
-
-        //update mission
-        m.updateActiveParty();
+        m.flagForSynch();
     }
 
     public void sendToServer() {

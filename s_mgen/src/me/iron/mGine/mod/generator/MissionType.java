@@ -34,19 +34,17 @@ public enum MissionType {
     }
 
     //generate a mission from this type
-    public Mission generate(Random rand, long seed, Vector3i center) {
-        //
-        //return new Mission(rand, seed); //TODO debug for network synch
-
-
+    public Mission generate(Random rand, long seed) {
         switch (this) {
-            case PATROL: {
-                return new MissionPatrolSectors(rand,seed, center);
-            }
+            case PATROL:
+                return new MissionPatrolSectors(rand,seed);
+
             case SCOUT:
                 return new MissionScout(rand,seed, new Vector3i(rand.nextInt()%120,rand.nextInt()%120,rand.nextInt()%120));
+
             case TRANSPORT_CARGO:
-                return new MissionTransportCargo(rand, seed, new Vector3i(4,4,4)); //TODO debugger
+                return new MissionTransportCargo(rand, seed);
+
         }
         return null;
 

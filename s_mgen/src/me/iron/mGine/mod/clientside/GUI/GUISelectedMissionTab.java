@@ -4,6 +4,7 @@ import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.missions.MissionUtil;
+import me.iron.mGine.mod.network.PacketInteractMission;
 import org.schema.game.client.data.GameClientState;
 import org.schema.schine.graphicsengine.core.MouseEvent;
 import org.schema.schine.graphicsengine.forms.font.FontLibrary;
@@ -123,17 +124,35 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
             }
         });
 
+        GUITextButton delayButton = new GUITextButton(getState(), buttonX, (int) (buttonY * 0.95f), "request delay", new GUICallback() {
+            @Override
+            public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
+                if (!mouseEvent.pressedLeftMouse() || activeMission == null)
+                    return;
+                PacketInteractMission packet = new PacketInteractMission(activeMission.getUuid());
+                packet.setDelay(true);
+                packet.sendToServer();
+            }
+
+            @Override
+            public boolean isOccluded() {
+                return false;
+            }
+        });
+
         missionTextOverlay.setPos(0,0,0);
         partyTextOverlay.setPos(0,(int) (testPanel.getHeight()/2),0);
         acceptAndAbortButton.setPos(buttonX,0,0);
         inviteToPartyButton.setPos(buttonX,testPanel.getHeight()/2,0);
         removeFromPartyButton.setPos(buttonX,testPanel.getHeight()/2+buttonY,0);
+        delayButton.setPos(buttonX,testPanel.getHeight()/2+buttonY*2,0);
 
         testPanel.attach(missionTextOverlay);
         testPanel.attach(partyTextOverlay);
         testPanel.attach(acceptAndAbortButton);
         testPanel.attach(inviteToPartyButton);
         testPanel.attach(removeFromPartyButton);
+        testPanel.attach(delayButton);
         setContent(testPanel);
 
 

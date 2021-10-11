@@ -2,8 +2,8 @@ package me.iron.mGine.mod.clientside.GUI;
 
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
-import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.missions.MissionUtil;
+import org.schema.game.client.data.GameClientState;
 import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.controller.observer.DrawerObserver;
 import org.schema.schine.graphicsengine.core.MouseEvent;
@@ -102,7 +102,12 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
                     content.getText().add(new Object(){
                         @Override
                         public String toString() {
-                            return m.getDescription() + "\nremaining time:" + MissionUtil.getRemainingTime(m);
+                            String s = m.getDescription() + "\nremaining time:" + MissionUtil.getRemainingTime(m);
+                            if (GameClientState.instance.getPlayer().isAdmin()) {
+                                s += "\n"+ (m.isVisibleFor(GameClientState.instance.getPlayer())?"visible":"invisible");
+                                s += "\n" + (m.canClaim(GameClientState.instance.getPlayer())?"can claim":"can not claim");
+                            }
+                            return s;
                         }
                     });
                     LIST_TO_MISSION.put(listEl,m);

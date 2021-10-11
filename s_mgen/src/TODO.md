@@ -7,36 +7,39 @@
 ##GUI window
 - ~~window that lists mission~~
 - mission management
-    - select
+    - ~~select~~
     - ~~accept~~
     - ~~abort~~
     - ask for more time
+    - show briefing
 - party management
     - invite player
     - kick player
     - become captain
+- GUI scaling
     
 ##map
 - waypoint
  - ~~lines~~
  - ~~automatic navigation to next task~~
- - button to hide waypoints
+ - button to hide waypoints [irrelevant]
  - ~~selectable sprites~~
     - ~~give info~~
     - ~~clicking centers on their pos~~
     - ~~set waypoint to sprite (rightclick)~~
- - decent looking waypoint icon
+ - ~~decent looking waypoint icon~~
 - ~~coloring waypoints for active/finished/failed~~
    
 #SERVER
 ## logic
-- generate missions randomly (seed)
-- update missions through centralized timer
+- ~~generate missions randomly (seed)~~
+- generate random lore texts fitting mission
+- ~~update missions through centralized timer~~
 - save missions persistently (with minimal fields, recreate through seed?)
-- decide where what missions are available for who (npc stations)
+- ~~decide where what missions are available for who (npc stations)~~
 - global timer that generates new missions
 - experience/popularity level gained through missions, unlock new missions?
-- mission UID
+- ~~mission UID~~
 
 ## missions
 ### Mp structure:
@@ -44,14 +47,10 @@ mission has
     - ~~max. one captain~~
     - ~~can have multiple members ("party")~~
     - captain can invite and kick members
-    - mission is either "claimed" or "unclaimed"
-        - unclaimed: avaialbe for everyone (nearby)
-        - claimed: captain can invite others
-        - switch: someone accepts the mission
+    - ~~mission is either "claimed" or "unclaimed"~~
         
 ##### guarantee that the mission can be recreated with seed and minimal values!
 - ~~patrol mission~~
-- ~~scan sectors mission~~
 - ~~scan sectors mission~~
 - escort mission
 - search and destroy mission
@@ -64,8 +63,8 @@ mission has
    - update mission server->client
     - ~~make missions & tasks serializable~~ 
     - ~~synch on update~~
-    - only send relevant missions to each client (joined, owned, avaialbe.)
-    - only send when a mission is changed. have client do countdown on his own.
+    - ~~only send relevant missions to each client (joined, owned, avaialbe.)~~
+    - ~~only send when a mission is changed. have client do countdown on his own.~~
    - send GUI interaction client->server
     - ~~packet~~
     - buttons
@@ -75,5 +74,4 @@ mission has
          - leave
     
 # BUGS
-- mapmarkers flicker on mouseover
    

@@ -27,14 +27,19 @@ import java.util.Random;
 public class MissionTransportCargo extends Mission {
     private DataBaseStation from;
     private DataBaseStation to;
-    public MissionTransportCargo(Random rand, long seed, Vector3i fromSector) {
+    public MissionTransportCargo(Random rand, long seed) {
         super(rand, seed);
         this.description = "Transport cargo";
         //get station in from sector
         try {
             //get origin
-            ArrayList<DataBaseStation> fromStations =  DataBaseManager.instance.getEntitiesNear(fromSector,fromSector, SimpleTransformableSendableObject.EntityType.SPACE_STATION,null);
-            from = fromStations.get(0);
+            from = MissionUtil.getRandomNPCStationByFaction(-10000000,rand);
+            if (from == null) {
+                new NullPointerException().printStackTrace();
+                return;
+            }
+
+            Vector3i fromSector = from.getPosition();
             //get target
             Vector3i startSearch = new Vector3i(fromSector); startSearch.sub(100,100,100);
             Vector3i endSearch = new Vector3i(fromSector); endSearch.add(100,100,100);
@@ -63,7 +68,7 @@ public class MissionTransportCargo extends Mission {
             tasks[1] = deliver_cargo;
 
             this.setMissionTasks(tasks);
-
+            this.setSector(from.getPosition());
 
             deliver_cargo.setPreconditions(new int[]{0});
 

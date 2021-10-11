@@ -53,6 +53,7 @@ public class DataBaseManager {
         Statement s = connection.createStatement();
         //TODO entity type selection.
         String query = "SELECT UID, NAME, X, Y, Z, FACTION, TYPE FROM ENTITIES WHERE X >= "+from.x+"AND X <= "+to.x+ " AND Y >= " + from.y +" AND Y <= " + to.y + " AND Z >= " + from.z + " AND Y <= " + to.y;
+        query += " AND NAME NOT LIKE 'Temporary%'";
         if (faction != null) {
             query += " AND FACTION = " + faction;
         }
@@ -130,4 +131,5 @@ public class DataBaseManager {
         }
         return sectors;
     }
+
  }

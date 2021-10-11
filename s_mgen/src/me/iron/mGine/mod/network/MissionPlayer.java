@@ -34,7 +34,11 @@ public class MissionPlayer implements Serializable {
     }
 
     public void updateMission(Mission m) {
-        if (m.getParty().contains(playerName) || m.getState().equals(MissionState.OPEN)) {
+        PlayerState player = GameServerState.instance.getPlayerStatesByName().get(playerName);
+        if (player == null)
+            return;
+
+        if (m.isVisibleFor(player) || player.isAdmin()) {
             missions.add(m.getUuid());
         } else {
             missions.remove(m.getUuid());
@@ -56,6 +60,7 @@ public class MissionPlayer implements Serializable {
                 mms.add(m);
         }
         PacketMissionSynch packet = new PacketMissionSynch(mms);
+        packet.setClearClient(true);
         PacketUtil.sendPacket(pState,packet);
     }
 

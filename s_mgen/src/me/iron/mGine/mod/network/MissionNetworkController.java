@@ -1,6 +1,7 @@
 package me.iron.mGine.mod.network;
 
 import api.listener.Listener;
+import api.listener.events.player.PlayerChangeSectorEvent;
 import api.listener.events.player.PlayerJoinWorldEvent;
 import api.listener.events.player.PlayerSpawnEvent;
 import api.mod.StarLoader;
@@ -36,6 +37,16 @@ public class MissionNetworkController {
             }
 
         }, ModMain.instance);
+
+        StarLoader.registerListener(PlayerChangeSectorEvent.class, new Listener<PlayerChangeSectorEvent>() {
+            @Override
+            public void onEvent(PlayerChangeSectorEvent playerChangeSectorEvent) {
+                String player =playerChangeSectorEvent.getPlayerState().getName();
+                MissionPlayer mp = getPlayerByName(player);
+                mp.updateMissions();
+                mp.synchPlayer();
+            }
+        },ModMain.instance);
     }
 
     private void initMissionPlayers() {

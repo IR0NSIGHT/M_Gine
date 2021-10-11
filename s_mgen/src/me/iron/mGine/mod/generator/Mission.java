@@ -4,6 +4,7 @@ import api.DebugFile;
 import api.network.PacketReadBuffer;
 import api.network.PacketWriteBuffer;
 import me.iron.mGine.mod.missions.MissionUtil;
+import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
@@ -20,8 +21,6 @@ import java.util.*;
  * TIME: 18:12
  */
 public class Mission implements Serializable {
-    private int missionID;
-
     //active "quest party members"
     private String captain = ""; //captain of mission who controls party.
     private HashSet<String> party = new HashSet<>();
@@ -33,26 +32,30 @@ public class Mission implements Serializable {
     protected long seed;
     protected String description;
     protected final UUID uuid;
+    protected Vector3i sector; //used to determin if a player can see the "OPEN" quest or is to far away. can be null
 
     //runtime values
+    private boolean delayed;
     protected long startTime;
+    protected long publishTime; //when was mission made availalbe (for unclaimed garbage collection)
+
     private transient HashSet<PlayerState> activeParty = new HashSet<>();
+    private transient boolean synchFlag; //synch on next update?
 
     protected MissionState state = MissionState.OPEN;
     protected int remainingTime;
 
     //checkpoints
     protected transient MissionTask[] missionTasks = new MissionTask[0];
-    private transient boolean synchFlag; //synch on next update?
 
     public Mission(Random rand, long seed) {
         this.uuid = UUID.randomUUID();
+        this.publishTime = System.currentTimeMillis();
         this.type = MissionType.getByClass(this.getClass());
         this.seed = seed;
         this.duration = 120+Math.abs(rand.nextInt())%500;
         this.remainingTime = duration;
         this.rewardCredits = Math.abs(rand.nextInt())%1000;
-        missionID = M_GineCore.getNextID();
     }
 
     /**
@@ -85,8 +88,17 @@ public class Mission implements Serializable {
      * interaction called by party captain: asks for more time in mission. gives 20% extra time for 30% less pay (default)
      */
     public void requestDelay() {
-        duration *= 1.02f;
-        rewardCredits *= 0.7f;
+        if (!state.equals(MissionState.IN_PROGRESS))
+            return;
+
+        if (delayed) {
+            MissionUtil.notifyParty(this.getActiveParty(),"already delayed.",ServerMessage.MESSAGE_TYPE_ERROR);
+            return;
+        }
+        MissionUtil.notifyParty(this.getActiveParty(),"mission was delayed.",ServerMessage.MESSAGE_TYPE_INFO);
+        delayed = true;
+        duration *= 1.2f;
+        rewardCredits *= 0.5f;
         flagForSynch();
     }
 
@@ -102,6 +114,8 @@ public class Mission implements Serializable {
 
         if (state != MissionState.IN_PROGRESS)
             return;
+
+        updateActiveParty();
 
         //update countdown
         long runningFor = (time - startTime)/1000;
@@ -132,7 +146,7 @@ public class Mission implements Serializable {
 
     public String getDescription() {
         StringBuilder out = new StringBuilder();
-        out.append(description).append("(").append(getIDString()).append(")").append(" reward: ").append(MissionUtil.formatMoney(rewardCredits));
+        out.append(description).append("\n(").append(getUuid()).append(")\n").append(" reward: ").append(MissionUtil.formatMoney(rewardCredits));
         out.append(" state: ").append(state).append("\n");
         out.append("tasks:\n");
         for (MissionTask task: missionTasks) {
@@ -173,11 +187,15 @@ public class Mission implements Serializable {
     }
 
     /**
-     * add player to this missions party. first member becomes captain.
+     * add player to this missions party. first member becomes captain. player needs to be online.
      * @param playerName
      */
     public void addPartyMember(String playerName) {
         if (party.contains(playerName))
+            return;
+
+        PlayerState p = GameServerState.instance.getPlayerStatesByName().get(playerName);
+        if (!canClaim(p))
             return;
 
         if (party.size()==0) {
@@ -271,10 +289,6 @@ public class Mission implements Serializable {
         return uuid;
     }
 
-    public String getIDString() {
-        return Integer.toOctalString(missionID);
-    }
-
     public HashSet<String> getParty() {
         return party;
     }
@@ -316,6 +330,40 @@ public class Mission implements Serializable {
      */
     public void flagForSynch() {
         synchFlag = true;
+    }
+
+    /**
+     * is this mission shown to the player in his GUI?
+     * @param p playerstate of player
+     * @return true=show mission, false=dont show mission.
+     */
+    public boolean isVisibleFor(PlayerState p) {
+        boolean canSeeOpen = state.equals(MissionState.OPEN) && (getSector() == null || (getSector()!=null && MissionUtil.getDistance(p.getCurrentSector(),getSector())<16));
+        return (canSeeOpen || party.contains(p.getName()));
+    }
+
+    /**
+     * can this player accept/join the mission. default test if in mission sector (if sector !=null).
+     * needs to run on client, used by GUI.
+     * @param p player
+     * @return true or false, you know, a boolean.
+     */
+    public boolean canClaim(PlayerState p) {
+        if (getSector() != null && !p.getCurrentSector().equals(getSector()))
+            return false;
+        return true;
+    }
+
+    public Vector3i getSector() {
+        return sector;
+    }
+
+    public void setSector(Vector3i sector) {
+        this.sector = sector;
+    }
+
+    public long getPublishTime() {
+        return publishTime;
     }
 
     @Override

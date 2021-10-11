@@ -23,14 +23,16 @@ import java.util.*;
  */
 public class M_GineCore implements Serializable { //TODO make serializable
     public static M_GineCore instance;
-    private static int nextID = 0; //load mechanism from persistent
+    public int missionsLimit = 50;
 
+    private Random rand;
     private HashSet<Mission> missions = new HashSet<>();
     private transient HashMap<UUID,Mission> uuidMissionHashMap = new HashMap<>();
 
     public M_GineCore() {
         instance = this;
         updateLoop(1);
+        rand = new Random();
         new MissionNetworkController();
     }
 
@@ -49,11 +51,21 @@ public class M_GineCore implements Serializable { //TODO make serializable
     }
 
     private void updateAll() {
+        ArrayList<Mission> removeQueue = new ArrayList<>();
         for(Mission m: missions) {
             m.update(System.currentTimeMillis());
+            if (isObsolete(m)) {
+                removeQueue.add(m);
+            }
         }
-        if (missions.size() != 0) { //TODO replace with event based updates
-        //    MissionNetworkController.instance.synchAllPlayers();
+
+        for (Mission m: removeQueue) {
+            removeMission(m);
+        }
+
+        //add new missions to keep amount always at missionsLimit
+        for (int i = 0; i <( missionsLimit- missions.size()); i++) {
+            generateMission(rand.nextLong());
         }
     }
 
@@ -69,6 +81,13 @@ public class M_GineCore implements Serializable { //TODO make serializable
         onMissionUpdate(m);
     }
 
+    /**
+     * test if a mission should be removed (f.e. wasnt claimed for an hour or so
+     * @return
+     */
+    private boolean isObsolete(Mission m) {
+        return (m.getState().equals(MissionState.SUCCESS)||m.getState().equals(MissionState.FAILED)|| (System.currentTimeMillis()-m.getPublishTime())>5000);
+    }
 
     public HashSet<Mission> getMissions() {
         return missions;
@@ -101,17 +120,14 @@ public class M_GineCore implements Serializable { //TODO make serializable
         MissionNetworkController.instance.synchMission(m.getUuid());
     }
 
-//static shit
-    public static int getNextID() {
-        return nextID++;
-    }
-
-    public static Mission generateMission(long seed, Vector3i center) {
+    public static Mission generateMission(long seed) {
         Random rand = new Random(seed);
+
         //select random type
         MissionType type = MissionType.getByIdx(rand.nextInt());
+
         //generate that type
-        Mission m = type.generate(rand, seed, center);
+        Mission m = type.generate(rand, seed);
         M_GineCore.instance.addMission(m);
         return m;
     }
