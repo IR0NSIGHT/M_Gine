@@ -163,9 +163,6 @@ public class PacketInteractMission extends Packet {
 
         //update mission
         m.updateActiveParty();
-
-        //synch to mission members
-        MissionNetworkController.instance.synchMission(m.getUuid());
     }
 
     public void sendToServer() {

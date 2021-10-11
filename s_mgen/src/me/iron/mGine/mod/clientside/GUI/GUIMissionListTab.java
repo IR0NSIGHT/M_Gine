@@ -85,6 +85,12 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
                 return;
             //TODO button with "navigate to"
             int i = 0;
+            for (GUIListElement listElement: list) {
+                if (listElement.getContent() instanceof GUITextOverlay) {
+                    ((GUITextOverlay) listElement.getContent()).getText().clear();
+                }
+            }
+
             for (final Mission m: missions) {
                 if (i>=list.size())
                     break;
