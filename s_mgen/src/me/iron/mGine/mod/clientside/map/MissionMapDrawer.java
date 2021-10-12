@@ -1,6 +1,5 @@
 package me.iron.mGine.mod.clientside.map;
 
-import api.ModPlayground;
 import api.listener.Listener;
 import api.listener.events.input.MousePressEvent;
 import api.listener.fastevents.FastListenerCommon;
@@ -16,7 +15,6 @@ import org.schema.game.client.view.gamemap.GameMapDrawer;
 import org.schema.game.client.view.gui.shiphud.HudIndicatorOverlay;
 import org.schema.game.common.data.world.VoidSystem;
 import org.schema.schine.common.language.Lng;
-import org.schema.schine.graphicsengine.core.GLFrame;
 import org.schema.schine.graphicsengine.forms.Sprite;
 
 import javax.vecmath.Vector3f;
@@ -151,19 +149,8 @@ public class MissionMapDrawer implements GameMapDrawListener {
         }
 
     }
-    private int frames;
-    private long start;
     @Override
     public void galaxy_DrawSprites(GameMapDrawer gameMapDrawer) {
-        //TODO debug remove
-   //    frames ++;
-   //    if (frames>=100) {
-   //        ModPlayground.broadcastMessage("FPS:"+((System.currentTimeMillis()-start)/10));
-   //        start = System.currentTimeMillis();
-   //        frames = 0;
-   //    }
-
-
         for (Map.Entry<Sprite,MapMarker[]> entry: sprite_to_subsprites.entrySet()) {
             for (MapMarker m: entry.getValue()) {
                 m.preDraw(gameMapDrawer);
@@ -209,13 +196,13 @@ public class MissionMapDrawer implements GameMapDrawListener {
     public static Vector4f colorByMissionState(MissionState state) {
         switch (state) {
             case SUCCESS:
-                return darkGreen;
+                return brightGreen;
             case FAILED:
                 return brightRed;
             case IN_PROGRESS:
                 return brightYellow;
             case OPEN:
-                return darkYellow;
+                return brightOrange;
             case ABORTED:
                 return darkRed;
             default:
@@ -223,7 +210,7 @@ public class MissionMapDrawer implements GameMapDrawListener {
         }
     }
 
-    private static Vector4f darkYellow = new Vector4f(0.5f,0.5f,0,1);
+    private static Vector4f brightOrange = new Vector4f(1f,0.5f,0,1);
     private static Vector4f brightYellow = new Vector4f(0.97f,1.0f,0,1);
     private static Vector4f darkRed = new Vector4f(0.5f,0f,0,1);
     private static Vector4f brightRed = new Vector4f(1f,0f,0,1);
