@@ -90,7 +90,9 @@ public class M_GineCore implements Serializable { //TODO make serializable
      * @return
      */
     private boolean isObsolete(Mission m) {
-        return (!m.getState().equals(MissionState.IN_PROGRESS) && (System.currentTimeMillis()-m.getPublishTime())> garbageCollectorInterval);
+        boolean finished = m.getState().equals(MissionState.SUCCESS)||m.getState().equals(MissionState.FAILED);
+        boolean unclaimedForToLong = (m.getState().equals(MissionState.OPEN) && (System.currentTimeMillis()-m.getPublishTime())> garbageCollectorInterval);
+        return finished || unclaimedForToLong;
     }
 
     public HashSet<Mission> getMissions() {
