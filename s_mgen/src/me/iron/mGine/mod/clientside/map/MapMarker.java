@@ -1,6 +1,7 @@
 package me.iron.mGine.mod.clientside.map;
 
 import api.ModPlayground;
+import org.lwjgl.util.vector.Vector;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.gamemap.entry.SelectableMapEntry;
 import org.schema.game.client.view.camera.GameMapCamera;
@@ -51,8 +52,19 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
      */
     public void preDraw(GameMapDrawer drawer) {
         autoScale(drawer.getCamera());
-        if (selected)
-            MissionMapDrawer.instance.drawText(pos,name);
+        if (selected) {
+            Vector3f pos = new Vector3f(getPos());
+            pos.sub(drawer.getCamera().getPos());
+            float distToCam = pos.length()*0.005f;
+            Vector3f textPos = new Vector3f(drawer.getCamera().getCachedUp());
+            Vector3f right = new Vector3f(drawer.getCamera().getCachedRight());
+            right.scale(distToCam* name.length()/2f);
+            textPos.scale(Math.max(distToCam*7,12f));
+            textPos.add(getPos());
+            textPos.add(right);
+            MissionMapDrawer.instance.drawText(textPos,name);
+        }
+
     }
 
     public void addToDrawList(boolean isPublic) {
