@@ -79,29 +79,20 @@ public class MissionTask implements Serializable {
             return;
         }
 
-        MissionState previous = currentState;
         if (!preconditionsSatisfied()) {
-            currentState = MissionState.OPEN;
-            if (previous != currentState)
-                this.onStateChanged(previous,currentState);
+            setCurrentState(MissionState.OPEN);
             return;
         }
         if (failureCondition()) {
-            currentState = MissionState.FAILED;
-            if (previous != currentState)
-                this.onStateChanged(previous,currentState);
+            setCurrentState(MissionState.FAILED);
             return;
         }
         if (successCondition()) {
-            currentState = MissionState.SUCCESS;
-            if (previous != currentState)
-                this.onStateChanged(previous,currentState);
+            setCurrentState(MissionState.SUCCESS);
             return;
         }
 
-        this.currentState = MissionState.IN_PROGRESS;
-        if (previous != currentState)
-            this.onStateChanged(previous,currentState);
+        setCurrentState(MissionState.IN_PROGRESS);
     }
 
     public String getTaskSummary() {
@@ -158,6 +149,9 @@ public class MissionTask implements Serializable {
     }
 
     public void setCurrentState(MissionState currentState) {
+        if (!currentState.equals(this.currentState)) {
+            onStateChanged(this.currentState,currentState);
+        }
         this.currentState = currentState;
     }
 

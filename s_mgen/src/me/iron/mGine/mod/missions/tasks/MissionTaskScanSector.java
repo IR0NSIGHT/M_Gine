@@ -47,6 +47,11 @@ public class MissionTaskScanSector extends MissionTask {
         listener = null; //kill reference, garbagecollector goes woosh
     }
 
+    @Override
+    protected boolean successCondition() {
+        return scanned;
+    }
+
     public void onScan(EntityScanEvent event) {
         if (!event.isSuccess() || scanned)
             return;
@@ -60,7 +65,6 @@ public class MissionTaskScanSector extends MissionTask {
 
         //this is the droid you are looking for
         scanned = true;
-        setCurrentState(MissionState.SUCCESS);
         new StarRunnable(){
             @Override
             public void run() {

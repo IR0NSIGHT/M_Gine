@@ -67,7 +67,7 @@ public class Mission implements Serializable {
      * sets state to success, runs extra code for special stuff: reward payments etc
      */
     protected void onSuccess() {
-        System.out.println("MISSION COMPLETE");
+        MissionUtil.notifyParty(getActiveParty(),"Mission " + name + " success.",ServerMessage.MESSAGE_TYPE_INFO);
         state = MissionState.SUCCESS;
         flagForSynch();
     }
@@ -76,7 +76,7 @@ public class Mission implements Serializable {
      * sets state to failed, runs extra code for special stuff: negative relations with questgiver etc
      */
     protected void onFailure() {
-        System.out.println("MISSION FAILED");
+        MissionUtil.notifyParty(getActiveParty(),"Mission " + name + " failed.",ServerMessage.MESSAGE_TYPE_ERROR);
         state = MissionState.FAILED;
         flagForSynch();
     }
@@ -114,6 +114,9 @@ public class Mission implements Serializable {
     public void update(long time) {
         if (synchFlag) {
             synchFlag = false;
+            for (MissionTask t: missionTasks) {
+                ModPlayground.broadcastMessage("task " + t.name + ": " +t.currentState.getName());
+            }
             M_GineCore.instance.onMissionUpdate(this);
             ModPlayground.broadcastMessage("synching " + this.getUuid() +"\n"+ this.getName());
         }
@@ -180,12 +183,9 @@ public class Mission implements Serializable {
     }
 
     protected void onTaskStateChanged(MissionTask checkpoint, MissionState oldState, MissionState newState) {
-        if (!oldState.equals(MissionState.SUCCESS) && newState.equals(MissionState.SUCCESS)) {
-            MissionUtil.notifyParty(getActiveParty(),"Task complete: " + checkpoint.getName(), ServerMessage.MESSAGE_TYPE_INFO);
-            System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
-            flagForSynch();
-        }
-
+        MissionUtil.notifyParty(getActiveParty(),"Task complete: " + checkpoint.getName(), ServerMessage.MESSAGE_TYPE_INFO);
+        System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
+        flagForSynch();
     }
 
     /**
@@ -348,6 +348,7 @@ public class Mission implements Serializable {
      * flag this mission to be synched when it next updates (before all tests)
      */
     public void flagForSynch() {
+
         synchFlag = true;
     }
 

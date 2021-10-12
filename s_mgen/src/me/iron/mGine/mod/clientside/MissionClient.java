@@ -185,25 +185,21 @@ public class MissionClient {
     }
 
     public void addMission(Mission m) {
+        available.remove(m);
+        active.remove(m);
         switch (m.getState()) {
             case OPEN:
             {
                 available.add(m);
-                finished.remove(m);
-                active.remove(m);
                 break;
             }
             case IN_PROGRESS: {
                 active.add(m);
-                available.remove(m);
-                finished.remove(m);
                 break;
             }
             default:
             {
                 finished.add(m);
-                active.remove(m);
-                available.remove(m);
                 break;
             }
         }
