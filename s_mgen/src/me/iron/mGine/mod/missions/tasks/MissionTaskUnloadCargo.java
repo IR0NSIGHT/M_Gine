@@ -1,6 +1,7 @@
 package me.iron.mGine.mod.missions.tasks;
 
 import api.DebugFile;
+import api.ModPlayground;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
@@ -8,9 +9,7 @@ import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
-import org.hsqldb.server.Server;
 import org.schema.game.common.controller.SegmentController;
-import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.element.ElementInformation;
 import org.schema.game.common.data.element.ElementKeyMap;
 import org.schema.game.common.data.player.PlayerState;
@@ -27,24 +26,27 @@ import javax.vecmath.Vector3f;
  * CREATOR: Max1M
  * DATE: 12.10.2021
  * TIME: 17:27
- * go to this sector, near this entity, stand still and stay until the cargo is unloaded.
- * can do multiple tours, success once all units are delivered.
+ * go to this sector, near this entity, stand still and stay until the cargo is unloaded/loaded.
+ * can do multiple tours, success once all units are delivered/received.
  * target stationwrapper MUST be complete: UID, pos etc.
  */
 public class MissionTaskUnloadCargo extends MissionTask {
     private short blockID;
     private int units;
+    private int unitsStart;
     private float blockVolume;
     private String blockName;
     private DataBaseStation target;
     private int infoIntervall = 0;
+    private boolean load;
 
-    public MissionTaskUnloadCargo(Mission mission, String name, String info, DataBaseStation target, short blockType, int units, boolean optional) {
+    public MissionTaskUnloadCargo(Mission mission, String name, String info, DataBaseStation target, short blockType, int units, boolean load,boolean optional) {
         super(mission, name, info, optional);
         this.target = target;
         setCargo(blockType,units);
         setIcon(MapIcon.WP_DROPOFF);
         setTaskSector(target.getPosition());
+        setLoad(load);
     }
 
     public void setCargo(short blockID, int units) {
@@ -54,13 +56,25 @@ public class MissionTaskUnloadCargo extends MissionTask {
 
         this.blockID = blockID;
         this.units = units;
+        this.unitsStart = units;
         this.blockVolume = ei.getVolume();
         this.blockName = ei.getName();
+    }
+
+    /**
+     * @param load true: load into ship, false: load out of ship
+     */
+    public void setLoad(boolean load) {
+        this.load = load;
+        setIcon(load?MapIcon.WP_PICKUP:MapIcon.WP_DROPOFF);
     }
 
     @Override
     public void update() {
         super.update();
+        if (!currentState.equals(MissionState.IN_PROGRESS))
+            return;
+
         if (units == 0)
             return;
         infoIntervall ++;
@@ -71,7 +85,7 @@ public class MissionTaskUnloadCargo extends MissionTask {
 
     @Override
     protected boolean successCondition() {
-        return super.successCondition() || units == 0;
+        return (units == 0);
     }
 
     private void tryUnload(PlayerState player) {
@@ -89,7 +103,6 @@ public class MissionTaskUnloadCargo extends MissionTask {
             //station is not here.
             DebugFile.logError(new NullPointerException("target station for transport mission doesnt exist in sector " + target.getPosition() +" :" + target.getUID()), ModMain.instance);
             MissionUtil.notifyParty(mission.getActiveParty(),"target station doesn't exist. contact admin.",ServerMessage.MESSAGE_TYPE_ERROR);
-        //    mission.setState(MissionState.FAILED);
             return;
         }
 
@@ -104,17 +117,35 @@ public class MissionTaskUnloadCargo extends MissionTask {
 
         Inventory inv = player.getInventory();
 
-        if (!inv.existsInInventory(blockID)) {
+        if (!load && !inv.existsInInventory(blockID)) {
             inform(player,"No " + blockName +" detected in your inventory.");
             return;
         }
 
+        if (!player.isUseCargoInventory()) {
+            inform(player,"Must select cargo in player inventory.");
+            return;
+        }
+
         try {
-            int needed = Math.min((int)(1000/blockVolume),units);
-            int slot = inv.incExistingOrNextFreeSlot(blockID, -needed);
+            int amount;
+            if (load) {
+                int wantToAdd = (int)Math.min(1000/blockVolume,units);
+                amount = inv.canPutInHowMuch(blockID,wantToAdd,-1);
+                if (amount == 0) {
+                    inform(player,"cargo is full.");
+                    return;
+                }
+                inform(player,"loading cargo: " + Math.round((1-(float)units/(float)unitsStart)*100)+"%"); //TODO custom hud thingy
+            } else { //unload
+                amount = (int)-Math.min((1000/blockVolume),units);
+                inform(player,"unloading cargo: " +Math.round((1-(float)units/(float)unitsStart)*100)+"%");
+            }
+            int slot = inv.incExistingOrNextFreeSlot(blockID,amount);
+            units -= Math.abs(amount);
+            ModPlayground.broadcastMessage("units:" + units);
             inv.sendInventoryModification(slot);
-            units -= needed;
-            inform(player,"unloading cargo.");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -132,6 +163,6 @@ public class MissionTaskUnloadCargo extends MissionTask {
 
     @Override
     public String getTaskSummary() {
-        return "Unload " + units + "x "+ blockName+" at " + target.getName()+" " + target.getPosition().toStringPure();
+        return (load?"Load ":"Unload ") + MissionUtil.formatMoney(units) + "x "+ blockName+" at " + target.getName()+" " + target.getPosition().toStringPure();
     }
 }

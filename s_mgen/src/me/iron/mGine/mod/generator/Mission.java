@@ -183,7 +183,15 @@ public class Mission implements Serializable {
     }
 
     protected void onTaskStateChanged(MissionTask checkpoint, MissionState oldState, MissionState newState) {
-        MissionUtil.notifyParty(getActiveParty(),"Task complete: " + checkpoint.getName(), ServerMessage.MESSAGE_TYPE_INFO);
+        switch (newState) {
+            case IN_PROGRESS:
+                MissionUtil.notifyParty(getActiveParty(),"Task in progress: " + checkpoint.getName(), ServerMessage.MESSAGE_TYPE_INFO); break;
+            case SUCCESS:
+                MissionUtil.notifyParty(getActiveParty(),"Task complete: " + checkpoint.getName(), ServerMessage.MESSAGE_TYPE_INFO); break;
+            case FAILED:
+                MissionUtil.notifyParty(getActiveParty(),"Task failed: " + checkpoint.getName(), ServerMessage.MESSAGE_TYPE_INFO); break;
+
+        }
         System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
         flagForSynch();
     }

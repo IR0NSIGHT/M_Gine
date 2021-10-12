@@ -69,12 +69,10 @@ public class MissionTransportCargo extends Mission {
                 }
             }
 
-            MissionTask pick_up_cargo = new MissionTaskDockTo(this,"pick up cargo","pick up the cargo at station " + from.getName(),false,from.getUID());
-            pick_up_cargo.setIcon(MapIcon.WP_PICKUP);
-            pick_up_cargo.setTaskSector(from.getPosition());
+            //MissionTask pick_up_cargo = new MissionTaskDockTo(this,"pick up cargo","pick up the cargo at station " + from.getName(),false,from.getUID());
+            MissionTask pick_up_cargo = new MissionTaskUnloadCargo(this,"Load cargo","load the cargo at station " + from.getName(),from,cargoID,cargoUnits,true,false);
 
-
-            MissionTask deliver_cargo = new MissionTaskUnloadCargo(this,"Unload cargo","bring the received cargo to station " + to.getName(),to,cargoID,cargoUnits,false);
+            MissionTask deliver_cargo = new MissionTaskUnloadCargo(this,"Unload cargo","bring the received cargo to station " + to.getName(),to,cargoID,cargoUnits,false,false);
 
             MissionTask[] tasks = new MissionTask[2];
             tasks[0] = pick_up_cargo;
@@ -83,7 +81,7 @@ public class MissionTransportCargo extends Mission {
             this.setMissionTasks(tasks);
             this.setSector(from.getPosition());
 
-        //    deliver_cargo.setPreconditions(new int[]{0});
+            deliver_cargo.setPreconditions(new int[]{0});
 
             Vector3i distance = new Vector3i(fromSector); distance.sub(to.getPosition());
             float difficulty = rand.nextFloat();
