@@ -187,6 +187,7 @@ public class MissionClient {
     public void addMission(Mission m) {
         available.remove(m);
         active.remove(m);
+        finished.remove(m);
         switch (m.getState()) {
             case OPEN:
             {
