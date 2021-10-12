@@ -41,7 +41,7 @@ public class PacketMissionSynch extends Packet {
         this.removeList.addAll(removeList);
     }
 
-    public PacketMissionSynch() {} //default constructer for starlaoder
+    public PacketMissionSynch() {} //default constructor for starloader
 
     @Override
     public void readPacketData(PacketReadBuffer packetReadBuffer) throws IOException {
