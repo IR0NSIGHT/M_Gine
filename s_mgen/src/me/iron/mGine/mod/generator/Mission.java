@@ -348,7 +348,6 @@ public class Mission implements Serializable {
      * flag this mission to be synched when it next updates (before all tests)
      */
     public void flagForSynch() {
-
         synchFlag = true;
     }
 

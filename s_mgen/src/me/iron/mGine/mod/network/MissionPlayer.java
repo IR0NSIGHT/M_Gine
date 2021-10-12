@@ -99,4 +99,8 @@ public class MissionPlayer implements Serializable {
         removeQueue.clear();
         PacketUtil.sendPacket(pState,packet);
     }
+
+    public HashSet<UUID> getMissions() {
+        return missions;
+    }
 }

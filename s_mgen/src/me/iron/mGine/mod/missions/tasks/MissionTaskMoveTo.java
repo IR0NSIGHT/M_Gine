@@ -2,6 +2,7 @@ package me.iron.mGine.mod.missions.tasks;
 
 import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
+import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
@@ -23,7 +24,7 @@ public class MissionTaskMoveTo extends MissionTask {
 
     @Override
     protected boolean successCondition() {
-        if (visited)
+        if (visited || currentState.equals(MissionState.SUCCESS))
             return true;
         for (PlayerState p: mission.getActiveParty()) {
             if (getTaskSector() != null && p.getCurrentSector().equals(getTaskSector())) {

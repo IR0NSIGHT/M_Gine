@@ -50,13 +50,18 @@ public class M_GineCore implements Serializable { //TODO make serializable
 
     private void updateAll() {
 
-        this.missionsLimit = 5;
+        this.missionsLimit = 30;
         ArrayList<Mission> removeQueue = new ArrayList<>();
         for(Mission m: missions) {
-            m.update(System.currentTimeMillis());
-            if (isObsolete(m)) {
-                removeQueue.add(m);
+            try {
+                m.update(System.currentTimeMillis());
+                if (isObsolete(m)) {
+                    removeQueue.add(m);
+                }
+            } catch (Exception ex) {
+
             }
+
         }
 
 

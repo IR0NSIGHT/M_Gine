@@ -17,11 +17,15 @@ import me.iron.mGine.mod.clientside.map.MissionMapDrawer;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.MissionState;
+import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.DataBaseManager;
 import me.iron.mGine.mod.missions.MissionUtil;
+import me.iron.mGine.mod.network.MissionNetworkController;
+import me.iron.mGine.mod.network.MissionPlayer;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.GameClientState;
 import org.schema.game.client.view.gamemap.GameMapDrawer;
+import org.schema.game.common.controller.SegmentController;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.world.Sector;
@@ -38,7 +42,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.UUID;
+
 import me.iron.mGine.mod.missions.wrappers.*;
+import org.schema.schine.network.objects.Sendable;
 
 /**
  * STARMADE MOD
@@ -105,11 +112,38 @@ public class DebugUI {
                     }
                 }
 
+                PlayerState p = GameServerState.instance.getPlayerFromNameIgnoreCaseWOException(event.getMessage().sender);
+                if (p == null)
+                    return;
+
                 if (txt.contains("fail")) {
 
-                    MissionClient.instance.getSelectedTask().setCurrentState(MissionState.FAILED);
                 }
 
+                if (txt.contains("uid")) {
+                    Sendable s =GameServerState.instance.getLocalAndRemoteObjectContainer().getLocalObjects().get(p.getSelectedEntityId());
+                    if (s == null || !(s instanceof SegmentController))
+                        return;
+                    SegmentController sc = (SegmentController) s;
+                    ModPlayground.broadcastMessage(((SegmentController) s).getName()+" || "+((SegmentController) s).getUniqueIdentifier());
+
+                }
+                if (txt.contains("success")) {
+                    MissionPlayer mp = MissionNetworkController.instance.getPlayerByName(p.getName());
+                    for (UUID id: mp.getMissions()) {
+                        Mission m =M_GineCore.instance.getMissionByUUID(id);
+                        if (m == null)
+                            continue;
+
+                        switch (m.getState()) {
+                            case IN_PROGRESS:
+                                for (MissionTask t: m.getMissionTasks()) {
+                                    t.setCurrentState(MissionState.SUCCESS);
+                                }
+                                //m.setState(MissionState.SUCCESS);
+                        }
+                    }
+                }
 
                 /* //only works in SP
                 if (txt.contains("sql")) {

@@ -5,11 +5,13 @@ import me.iron.mGine.mod.generator.LoreGenerator;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.tasks.MissionTaskDockTo;
+import me.iron.mGine.mod.missions.tasks.MissionTaskUnloadCargo;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSector;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.SpaceStation;
+import org.schema.game.common.data.element.ElementInformation;
 import org.schema.game.common.data.world.*;
 import org.schema.game.server.data.GameServerState;
 
@@ -29,7 +31,7 @@ public class MissionTransportCargo extends Mission {
     private DataBaseStation from;
     private DataBaseStation to;
 
-    private int cargoID; //block id
+    private short cargoID; //block id
     private String cargoName; //block name
     private int cargoUnits; //amount to transport
 
@@ -44,6 +46,12 @@ public class MissionTransportCargo extends Mission {
                 new NullPointerException().printStackTrace();
                 return;
             }
+
+            int cargoVol = (int) ((10+30*rand.nextFloat())*1000);
+            ElementInformation elementI = MissionUtil.getRandomElement(rand.nextLong());
+            int cargoUnits =(int) (cargoVol / elementI.getVolume());
+            cargoName = elementI.getName();//TODO get random from existing blocks
+            cargoID = elementI.getId();
 
             Vector3i fromSector = from.getPosition();
             //get target
@@ -65,9 +73,8 @@ public class MissionTransportCargo extends Mission {
             pick_up_cargo.setIcon(MapIcon.WP_PICKUP);
             pick_up_cargo.setTaskSector(from.getPosition());
 
-            MissionTask deliver_cargo = new MissionTaskDockTo(this,"deliver cargo","bring the received cargo to station " + to.getName(),false,"");
-            deliver_cargo.setIcon(MapIcon.WP_DROPOFF);
-            deliver_cargo.setTaskSector(to.getPosition());
+
+            MissionTask deliver_cargo = new MissionTaskUnloadCargo(this,"Unload cargo","bring the received cargo to station " + to.getName(),to,cargoID,cargoUnits,false);
 
             MissionTask[] tasks = new MissionTask[2];
             tasks[0] = pick_up_cargo;
@@ -76,16 +83,15 @@ public class MissionTransportCargo extends Mission {
             this.setMissionTasks(tasks);
             this.setSector(from.getPosition());
 
-            deliver_cargo.setPreconditions(new int[]{0});
+        //    deliver_cargo.setPreconditions(new int[]{0});
 
             Vector3i distance = new Vector3i(fromSector); distance.sub(to.getPosition());
             float difficulty = rand.nextFloat();
             duration = (int) ((int) (distance.length()* 16000 / 450) * (1 + 3* difficulty)); //time needed to travel distance at max speed plus random bonus of 0..300%
             rewardCredits = (int) ((duration/60)*(500000+500000*rand.nextFloat()));
 
-            cargoName = "toilet paper";//TODO get random from existing blocks
-            cargoID = -1;
-            cargoUnits = 4000;
+
+
 
             //set UI stuff
             this.briefing = LoreGenerator.instance.generateTransportBriefing(from,to,cargoName,cargoUnits,rand.nextLong());

@@ -1,5 +1,6 @@
 package me.iron.mGine.mod.generator;
 
+import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import org.apache.xmlbeans.impl.piccolo.xml.Entity;
 import org.schema.common.util.linAlg.Vector3i;
@@ -29,21 +30,21 @@ public class LoreGenerator {
                 "A skirmish with pirates forced us to abandon a crate of " + cargoName +" .",
                 "Pirates intercepted a shipment of ours. ",
                 "The local manager stole the complete supplies of "+cargoName+". ",
-                "An intern of our accidentally threw away all "+cargoName+". "
+                "An intern accidentally threw away all "+cargoName+". "
         };
         String[] orderSs = new String[]{"Transport ", "We need you to transport ","We require a delivery of ","We need to ship a supply of "};
         String[] fromSs = new String[]{" from "," stored at ", " out of "," starting at ", " from our base ", " from station "};
         String[] toSs = new String[]{" to "," to our station"," to our base "," ,destination ", " targeting our station "," ,restocking ", " ,resupplying "};
         Random r = new Random(seed);
         String out = (r.nextBoolean())?"":getRand(excuses,r);
-        out += getRand(orderSs,r) + cargoUnits + " units of " + cargoName + getRand(fromSs,r) + "'"+from.getName()+"'" + getRand(toSs,r) + ((!to.getName().equals(""))?"'"+to.getName()+"'":"")+" at " + to.getPosition().toStringPure();
+        out += getRand(orderSs,r) + MissionUtil.formatMoney(cargoUnits) + " units of " + cargoName + getRand(fromSs,r) + "'"+from.getName()+"'" + getRand(toSs,r) + ((!to.getName().equals(""))?"'"+to.getName()+"'":"")+" at " + to.getPosition().toStringPure();
         return out;
     }
 
     public String generateTransportName(DataBaseStation from, DataBaseStation to, String cargoName,int cargoUnits,long seed) {
         String[] transportSs = new String[]{"Transport "," Ferry "," Bring "," Move "," Ship "};
         Random random = new Random(seed);
-        return getRand(transportSs,random)+cargoUnits+"x "+cargoName+" from "+from.getName()+" to "+to.getPosition().toStringPure();
+        return getRand(transportSs,random)+ MissionUtil.formatMoney(cargoUnits)+"x "+cargoName+" from "+from.getName()+" ("+from.getPosition().toStringPure() +") to "+ to.getName()+" (" +to.getPosition().toStringPure()+")";
     }
     private String getRand(String[] arr, Random random) {
         return arr[random.nextInt(arr.length)];

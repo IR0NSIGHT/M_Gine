@@ -1,5 +1,7 @@
 package me.iron.mGine.mod.missions;
 
+import api.config.BlockConfig;
+import com.sun.xml.internal.bind.v2.model.core.ElementInfo;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
@@ -9,6 +11,8 @@ import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector;
 import org.schema.common.util.linAlg.Vector3i;
+import org.schema.game.common.data.element.ElementInformation;
+import org.schema.game.common.data.element.ElementKeyMap;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.world.FTLConnection;
 import org.schema.game.common.data.world.SimpleTransformableSendableObject;
@@ -50,7 +54,7 @@ public class MissionUtil {
         double amount = Double.parseDouble(""+credits);
         DecimalFormat formatter = new DecimalFormat("#,###");
         String out = formatter.format(amount);
-        return formatter.format(amount)+"c";
+        return formatter.format(amount);
     }
 
     public static void notifyParty(Collection<PlayerState> players, String message, int type) {
@@ -126,4 +130,20 @@ public class MissionUtil {
         }
     }
 
+    public static ElementInformation getRandomElement(long seed) {
+        Random r = new Random(seed);
+
+        //ArrayList<ElementInformation> eis = BlockConfig.getElements();
+        //return eis.get(r.nextInt(eis.size()));
+        int i = 0;
+        ElementInformation ei = null;
+        while (i < 50) {
+            i++;
+            ei = ElementKeyMap.getInformationKeyMap().get((short)r.nextInt(256));
+            if (ei.isShoppable() && !ei.isDeprecated())
+                break;
+        }
+
+        return ei;
+    }
 }

@@ -101,5 +101,3 @@ mission has
     
 # BUGS
 - missions don't get synched on joining world.
-- mission doesnt change GUI values on Delay
-- aborted mission keeps counting down on GUI
