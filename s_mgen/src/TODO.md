@@ -46,6 +46,7 @@
  - open missions are marked with an "!" marker, visible from far away (at least 1 system) : "quest available here"
  - detailed info avaialbe when "in comms range": closeby (within loading range) "get quest infos"
  - claimable when in comms range "accept quest"
+ 
 ### UI params:
  every mission has:
  - name (name for easy distincton)
@@ -82,7 +83,7 @@ mission has
 - transport goods mission
 - rescue mission
 
-#NETWORK
+# NETWORK
 - synch missions between client and server
    - update mission server->client
     - ~~make missions & tasks serializable~~ 
@@ -93,9 +94,13 @@ mission has
     - ~~packet~~
     - buttons
         - ~~accept/abort~~
+        - ~~request delay~~
         - invite
-         - kick
-         - leave
+        - kick
+        - leave
     
 # BUGS
-   
+- missions don't get synched on joining world.
+- transport mission "accept" doenst get synched back to client.
+- mission doesnt change GUI values on Delay
+- aborted mission keeps counting down on GUI

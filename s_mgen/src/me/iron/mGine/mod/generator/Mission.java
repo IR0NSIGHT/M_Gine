@@ -101,7 +101,7 @@ public class Mission implements Serializable {
         }
         MissionUtil.notifyParty(this.getActiveParty(),"mission was delayed.",ServerMessage.MESSAGE_TYPE_INFO);
         delayed = true;
-        duration *= 1.2f;
+        duration *= 1.5f;
         rewardCredits *= 0.5f;
         flagForSynch();
     }
@@ -114,7 +114,7 @@ public class Mission implements Serializable {
         if (synchFlag) {
             synchFlag = false;
             M_GineCore.instance.onMissionUpdate(this);
-            ModPlayground.broadcastMessage("synching " + this.getUuid());
+            ModPlayground.broadcastMessage("synching " + this.getUuid() +"\n"+ this.getName());
         }
 
         if (state != MissionState.IN_PROGRESS)
@@ -378,6 +378,14 @@ public class Mission implements Serializable {
 
     public long getPublishTime() {
         return publishTime;
+    }
+
+    public int getRewardCredits() {
+        return rewardCredits;
+    }
+
+    public void setRewardCredits(int rewardCredits) {
+        this.rewardCredits = rewardCredits;
     }
 
     @Override
