@@ -2,6 +2,7 @@ package me.iron.mGine.mod.missions;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.iron.mGine.mod.generator.Mission;
+import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
 import org.lwjgl.Sys;
@@ -68,11 +69,15 @@ public class MissionUtil {
     }
 
     public static String getRemainingTime(Mission m) {
-        int r = m.getDuration();
-        if (m.getStartTime() > 0) {
+        int r;
+        if (m.getState().equals(MissionState.SUCCESS)||m.getState().equals(MissionState.FAILED)) {
+            return "00:00:00";
+        } else if (m.getStartTime() > 0) {
             r = (int) (m.getDuration() - (System.currentTimeMillis()-m.getStartTime())/1000);
+        } else {
+            r = m.getDuration();
         }
-        return formatTime(r);
+        return formatTime(Math.max(0,r));
     }
 
     public static void main(String[] args) {
