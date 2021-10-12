@@ -31,6 +31,7 @@ public class M_GineCore implements Serializable { //TODO make serializable
         updateLoop(1);
         rand = new Random();
         new MissionNetworkController();
+        new LoreGenerator();
     }
 
     public void updateLoop(final int intervallSeconds) {

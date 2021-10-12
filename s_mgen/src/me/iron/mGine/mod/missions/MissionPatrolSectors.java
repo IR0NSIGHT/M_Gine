@@ -1,7 +1,6 @@
 package me.iron.mGine.mod.missions;
 
 
-import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
@@ -33,7 +32,7 @@ public class MissionPatrolSectors extends Mission {
         this.center = center;
         cargoAmount = 20 + Math.abs(rand.nextInt())%80;
         completionRadius = 0.5f;
-        description = "Patrol sectors";
+        name = "Patrol sectors";
         int waypoints = 4 + Math.abs(rand.nextInt())%6;
         final MissionTask[] tasks = new MissionTask[waypoints];
 
@@ -97,11 +96,6 @@ public class MissionPatrolSectors extends Mission {
     }
 
     @Override
-    public String getDescription() {
-        return super.getDescription() + "\ntotal distance: " + Math.round(distanceTotal) + "km";
-    }
-
-    @Override
     public String toString() {
         return "MissionPatrolSectors{" +
                 "cargoAmount=" + cargoAmount +
@@ -112,7 +106,7 @@ public class MissionPatrolSectors extends Mission {
                 ", duration=" + duration +
                 ", rewardCredits=" + rewardCredits +
                 ", seed=" + seed +
-                ", description='" + description + '\'' +
+                ", description='" + name + '\'' +
                 ", uuid=" + uuid +
                 ", startTime=" + startTime +
                 ", state=" + state +

@@ -13,7 +13,6 @@ import org.schema.schine.input.InputState;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * STARMADE MOD
@@ -102,7 +101,7 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
                     content.getText().add(new Object(){
                         @Override
                         public String toString() {
-                            String s = m.getDescription() + "\nremaining time:" + MissionUtil.getRemainingTime(m);
+                            String s = m.getName() + "\nremaining time:" + MissionUtil.getRemainingTime(m);
                             if (GameClientState.instance.getPlayer().isAdmin()) {
                                 s += "\n"+ (m.isVisibleFor(GameClientState.instance.getPlayer())?"visible":"invisible");
                                 s += "\n" + (m.canClaim(GameClientState.instance.getPlayer())?"can claim":"can not claim");

@@ -31,7 +31,7 @@ import java.util.Random;
         this.setMissionTasks(tasks);
         float difficulty = rand.nextFloat();
         float rewardMulti = rand.nextFloat();
-        this.description = "Scout " + amountSectors +" sectors by scanning them.";
+        this.name = "Scout " + amountSectors +" sectors by scanning them.";
         this.duration = (int) (60 + 60*(1-difficulty))* amountSectors; //~2 mins per sector
         this.rewardCredits = (int)(300 + 300*difficulty+300*rewardMulti)*1000; //300k base, 300k for difficulty, 300k for random reward
     }

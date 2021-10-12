@@ -1,6 +1,7 @@
 package me.iron.mGine.mod.missions;
 
 import me.iron.mGine.mod.clientside.map.MapIcon;
+import me.iron.mGine.mod.generator.LoreGenerator;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.tasks.MissionTaskDockTo;
@@ -27,9 +28,14 @@ import java.util.Random;
 public class MissionTransportCargo extends Mission {
     private DataBaseStation from;
     private DataBaseStation to;
+
+    private int cargoID; //block id
+    private String cargoName; //block name
+    private int cargoUnits; //amount to transport
+
     public MissionTransportCargo(Random rand, long seed) {
         super(rand, seed);
-        this.description = "Transport cargo";
+        this.name = "Transport cargo";
         //get station in from sector
         try {
             //get origin
@@ -76,6 +82,15 @@ public class MissionTransportCargo extends Mission {
             float difficulty = rand.nextFloat();
             duration = (int) ((int) (distance.length()* 16000 / 450) * (1 + 3* difficulty)); //time needed to travel distance at max speed plus random bonus of 0..300%
             rewardCredits = (int) ((duration/60)*(500000+500000*rand.nextFloat()));
+
+            cargoName = "toilet paper";//TODO get random from existing blocks
+            cargoID = -1;
+            cargoUnits = 4000;
+
+            //set UI stuff
+            this.briefing = LoreGenerator.instance.generateTransportBriefing(from,to,cargoName,cargoUnits,rand.nextLong());
+            this.name = LoreGenerator.instance.generateTransportName(from,to,cargoName,cargoUnits,rand.nextLong());
+            //TODO requirements: big cargo
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         }

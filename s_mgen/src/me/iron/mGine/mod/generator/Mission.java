@@ -1,12 +1,10 @@
 package me.iron.mGine.mod.generator;
 
-import api.DebugFile;
 import api.ModPlayground;
 import api.network.PacketReadBuffer;
 import api.network.PacketWriteBuffer;
 import me.iron.mGine.mod.missions.MissionUtil;
 import org.schema.common.util.linAlg.Vector3i;
-import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
 import org.schema.schine.network.server.ServerMessage;
@@ -31,7 +29,8 @@ public class Mission implements Serializable {
     protected int duration; //in seconds
     protected int rewardCredits;
     protected long seed;
-    protected String description;
+    protected String name = this.getClass().getSimpleName();
+    protected String briefing = "briefing goes here."; //short text paragraph with lore and info about mission.
     protected final UUID uuid;
     protected Vector3i sector; //used to determin if a player can see the "OPEN" quest or is to far away. can be null
 
@@ -150,15 +149,8 @@ public class Mission implements Serializable {
         flagForSynch();
     }
 
-    public String getDescription() {
-        StringBuilder out = new StringBuilder();
-        out.append(description).append("\n(").append(getUuid()).append(")\n").append(" reward: ").append(MissionUtil.formatMoney(rewardCredits));
-        out.append(" state: ").append(state).append("\n");
-        out.append("tasks:\n");
-        for (MissionTask task: missionTasks) {
-            out.append(task.getTaskSummary()).append("\n");
-        }
-        return out.toString();
+    public String getName() {
+        return name;
     }
 
     protected boolean successCondition() {
@@ -318,6 +310,18 @@ public class Mission implements Serializable {
 
         this.state = state;
         flagForSynch();
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBriefing() {
+        return briefing;
+    }
+
+    public void setBriefing(String briefing) {
+        this.briefing = briefing;
     }
 
     public MissionTask[] getMissionTasks() {

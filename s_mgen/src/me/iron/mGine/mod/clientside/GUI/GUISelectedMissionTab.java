@@ -43,7 +43,8 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
             public String toString() {
                 if (activeMission == null)
                     return "no active mission.";
-                String out = activeMission.getDescription();
+                String out = activeMission.getName()+"\n";
+                out += activeMission.getBriefing()+"\n";
                 out += MissionUtil.getRemainingTime(activeMission);
                 return out;
             }

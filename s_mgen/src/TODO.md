@@ -17,6 +17,13 @@
     - kick player
     - become captain
 - GUI scaling
+- GUI remake:
+    - each mission in 3tab lists:
+        - shown with name, reward
+        - dropdown reveals briefing
+    - active tab
+        - show briefing button
+        - only display active waypoints? / optional "hide task"
     
 ##map
 - waypoint
@@ -28,8 +35,23 @@
     - ~~clicking centers on their pos~~
     - ~~set waypoint to sprite (rightclick)~~
  - ~~decent looking waypoint icon~~
-- ~~coloring waypoints for active/finished/failed~~
-   
+ - ~~coloring waypoints for active/finished/failed~~
+ - mark available missions
+ - when should OPEN mission be visible ?:
+    - globally
+    - same system/nearby
+    
+# design choices:
+### mission markers:
+ - open missions are marked with an "!" marker, visible from far away (at least 1 system) : "quest available here"
+ - detailed info avaialbe when "in comms range": closeby (within loading range) "get quest infos"
+ - claimable when in comms range "accept quest"
+### UI params:
+ every mission has:
+ - name (name for easy distincton)
+ - briefing (detailed info with lore)
+ - requirement list (list of things you need: - cargo space, - personal transporter)
+
 #SERVER
 ## logic
 - ~~generate missions randomly (seed)~~
@@ -37,7 +59,8 @@
 - ~~update missions through centralized timer~~
 - save missions persistently (with minimal fields, recreate through seed?)
 - ~~decide where what missions are available for who (npc stations)~~
-- global timer that generates new missions
+- ~~global timer that generates new missions and scraps old ones~~
+- handle finished mission: save, delete, clientside save?
 - experience/popularity level gained through missions, unlock new missions?
 - ~~mission UID~~
 
@@ -48,7 +71,8 @@ mission has
     - ~~can have multiple members ("party")~~
     - captain can invite and kick members
     - ~~mission is either "claimed" or "unclaimed"~~
-        
+
+    
 ##### guarantee that the mission can be recreated with seed and minimal values!
 - ~~patrol mission~~
 - ~~scan sectors mission~~
