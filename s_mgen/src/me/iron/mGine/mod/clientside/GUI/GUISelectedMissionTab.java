@@ -5,11 +5,14 @@ import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.network.PacketInteractMission;
+import org.newdawn.slick.UnicodeFont;
 import org.schema.game.client.data.GameClientState;
 import org.schema.schine.graphicsengine.core.MouseEvent;
 import org.schema.schine.graphicsengine.forms.font.FontLibrary;
 import org.schema.schine.graphicsengine.forms.gui.*;
 import org.schema.schine.input.InputState;
+
+import javax.vecmath.Vector4f;
 
 /**
  * STARMADE MOD
@@ -32,11 +35,21 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
         testPanel.onInit();
 
         //width and height stuff for sizing and playing objects
-        int buttonX = (int) getWidth()/2;
+        int textWidth = (int) getWidth()*3/4;
         int buttonY = 90;
+        int buttonWidth = (int) getWidth()-textWidth;
+        int buttonHeight = buttonY;
+
+        Vector4f backGroundColor = new Vector4f(0.08f,0.2f,0.2f,1);
+
+        UnicodeFont buttonFont = FontLibrary.getBlenderProHeavy20();
+        UnicodeFont textFont = FontLibrary.getBlenderProMedium20();
 
         //missionTextOverlay field that shows mission description
-        GUITextOverlay missionTextOverlay = new GUITextOverlay(buttonX, (int) testPanel.getHeight()/2,FontLibrary.getBlenderProMedium18(),getState());
+        GUIColoredRectangle textBackground = new GUIColoredRectangle(getState(), textWidth,testPanel.getHeight()/2,new Vector4f(backGroundColor));
+        textBackground.onInit();
+
+        GUITextOverlay missionTextOverlay = new GUITextOverlay(textWidth, (int) testPanel.getHeight()/2,textFont,getState());
         missionTextOverlay.onInit();
         missionTextOverlay.getText().add(new Object(){
             @Override
@@ -45,12 +58,21 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
                     return "no active mission.";
                 String out = activeMission.getName()+"\n";
                 out += activeMission.getBriefing()+"\n";
-                out += MissionUtil.getRemainingTime(activeMission);
+                out += MissionUtil.getRemainingTime(activeMission) + "\n";
+                out += MissionUtil.formatMoney(activeMission.getRewardCredits());
                 return out;
             }
         });
+        missionTextOverlay.autoWrapOn = textBackground;
+        missionTextOverlay.autoHeight = true;
+        missionTextOverlay.setClip(0, (int) textBackground.getHeight()-1); //idk why it needs -1
+        //missionTextOverlay.setLimitTextDraw(3);
+        textBackground.attach(missionTextOverlay);
 
-        GUITextOverlay partyTextOverlay = new GUITextOverlay(buttonX, (int) (testPanel.getHeight()/2), FontLibrary.getBlenderProMedium18(),getState());
+        GUIColoredRectangle partyBackground = new GUIColoredRectangle(getState(), textWidth,testPanel.getHeight()/2,new Vector4f(backGroundColor));
+        textBackground.onInit();
+
+        GUITextOverlay partyTextOverlay = new GUITextOverlay(textWidth, (int) (testPanel.getHeight()/2), textFont,getState());
         partyTextOverlay.onInit();
         partyTextOverlay.getText().add(new Object(){
             @Override
@@ -67,9 +89,13 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
                 }
             }
         });
+        partyTextOverlay.autoHeight = true;
+        partyTextOverlay.autoWrapOn = partyBackground;
+        partyTextOverlay.setClip(0,(int)partyBackground.getHeight()-1);
+        partyBackground.attach(partyTextOverlay);
 
         //acceptAndAbortButton to abort/accept mission. auto updates text, calls back to onToggleButtonClicked.
-        GUITextButton acceptAndAbortButton = new GUITextButton(getState(), buttonX, (int) (buttonY*0.95f), new Object(){
+        GUITextButton acceptAndAbortButton = new GUITextButton(getState(), buttonWidth, buttonHeight, buttonFont, new Object(){
             @Override
             public String toString() {
                 if (activeMission == null)
@@ -92,7 +118,7 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
             }
         });
 
-        GUITextButton inviteToPartyButton = new GUITextButton(getState(), buttonX, (int) (buttonY * 0.95f), new Object() {
+        GUITextButton inviteToPartyButton = new GUITextButton(getState(), buttonWidth,buttonHeight, buttonFont, new Object() {
             @Override
             public String toString() {
                 return "invite player to party";
@@ -108,7 +134,7 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
                 return false;
             }
         });
-        GUITextButton removeFromPartyButton = new GUITextButton(getState(), buttonX, (int) (buttonY * 0.95f), new Object() {
+        GUITextButton removeFromPartyButton = new GUITextButton(getState(), buttonWidth,buttonHeight, buttonFont, new Object() {
             @Override
             public String toString() {
                 return "remove player from party";
@@ -125,7 +151,7 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
             }
         });
 
-        GUITextButton delayButton = new GUITextButton(getState(), buttonX, (int) (buttonY * 0.95f), "request delay", new GUICallback() {
+        GUITextButton delayButton = new GUITextButton(getState(), buttonWidth,buttonHeight, buttonFont, "request delay", new GUICallback() {
             @Override
             public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
                 if (!mouseEvent.pressedLeftMouse() || activeMission == null)
@@ -141,15 +167,16 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
             }
         });
 
-        missionTextOverlay.setPos(0,0,0);
-        partyTextOverlay.setPos(0,(int) (testPanel.getHeight()/2),0);
-        acceptAndAbortButton.setPos(buttonX,0,0);
-        inviteToPartyButton.setPos(buttonX,testPanel.getHeight()/2,0);
-        removeFromPartyButton.setPos(buttonX,testPanel.getHeight()/2+buttonY,0);
-        delayButton.setPos(buttonX,testPanel.getHeight()/2+buttonY*2,0);
+        textBackground.setPos(0,0,0);
+        partyBackground.setPos(0,(int) (testPanel.getHeight()/2),0);
+        acceptAndAbortButton.setPos(textWidth,buttonY*0,0);
+        delayButton.setPos(textWidth,buttonY*1,0);
 
-        testPanel.attach(missionTextOverlay);
-        testPanel.attach(partyTextOverlay);
+        inviteToPartyButton.setPos(textWidth,testPanel.getHeight()/2,0);
+        removeFromPartyButton.setPos(textWidth,testPanel.getHeight()/2+buttonY,0);
+
+        testPanel.attach(textBackground);
+        testPanel.attach(partyBackground);
         testPanel.attach(acceptAndAbortButton);
         testPanel.attach(inviteToPartyButton);
         testPanel.attach(removeFromPartyButton);
