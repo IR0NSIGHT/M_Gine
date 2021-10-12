@@ -49,7 +49,7 @@ public class MissionTaskScanSector extends MissionTask {
 
     @Override
     protected boolean successCondition() {
-        return scanned;
+        return scanned || currentState.equals(MissionState.SUCCESS);
     }
 
     public void onScan(EntityScanEvent event) {
