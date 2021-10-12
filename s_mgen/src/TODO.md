@@ -101,6 +101,5 @@ mission has
     
 # BUGS
 - missions don't get synched on joining world.
-- transport mission "accept" doenst get synched back to client.
 - mission doesnt change GUI values on Delay
 - aborted mission keeps counting down on GUI

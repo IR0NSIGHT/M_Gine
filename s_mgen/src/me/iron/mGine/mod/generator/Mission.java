@@ -7,6 +7,7 @@ import me.iron.mGine.mod.missions.MissionUtil;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
+import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.server.ServerMessage;
 
 import java.io.IOException;
@@ -144,6 +145,8 @@ public class Mission implements Serializable {
      * @param time starttime (system time)
      */
     public void start(long time) {
+        if (party.size() == 0) //cant start a mission without a party.
+            return;
         startTime = time;
         state = MissionState.IN_PROGRESS;
         flagForSynch();
@@ -194,8 +197,10 @@ public class Mission implements Serializable {
             return;
 
         PlayerState p = GameServerState.instance.getPlayerStatesByName().get(playerName);
-        if (!canClaim(p))
+        if (!canClaim(p)) {
+            p.sendServerMessage(Lng.astr("can not claim mission."),ServerMessage.MESSAGE_TYPE_ERROR);
             return;
+        }
 
         if (party.size()==0) {
             setCaptain(playerName);
@@ -363,8 +368,9 @@ public class Mission implements Serializable {
      * @return true or false, you know, a boolean.
      */
     public boolean canClaim(PlayerState p) {
-        if (getSector() != null && !p.getCurrentSector().equals(getSector()))
+        if (getSector() != null && !p.getCurrentSector().equals(getSector())) {
             return false;
+        }
         return true;
     }
 
