@@ -7,6 +7,7 @@ import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
+import org.hsqldb.server.Server;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector;
@@ -40,6 +41,7 @@ import java.util.*;
 public class MissionUtil {
     public static void giveMoney(int amount, PlayerState player) {
         player.setCredits(player.getCredits()+amount);
+        player.sendServerMessage(Lng.astr( formatMoney(amount)+" credits received."), ServerMessage.MESSAGE_TYPE_INFO);
     }
 
     public static void giveMoney(int amount,String playerName) {

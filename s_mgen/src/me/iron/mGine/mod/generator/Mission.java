@@ -32,9 +32,11 @@ public class Mission implements Serializable {
     protected long seed;
     protected String name = this.getClass().getSimpleName();
     protected String briefing = "briefing goes here."; //short text paragraph with lore and info about mission.
+    protected String successText = "Mission successful. Reward was payed.";
+    protected String failText = "Mission failed. No reward was payed.";
+
     protected final UUID uuid;
     protected Vector3i sector; //used to determin if a player can see the "OPEN" quest or is to far away. can be null
-
     //runtime values
     private boolean delayed;
     protected long startTime;
@@ -67,7 +69,7 @@ public class Mission implements Serializable {
      * sets state to success, runs extra code for special stuff: reward payments etc
      */
     protected void onSuccess() {
-        MissionUtil.notifyParty(getActiveParty(),"Mission " + name + " success.",ServerMessage.MESSAGE_TYPE_INFO);
+        MissionUtil.notifyParty(getActiveParty(),getSuccessText(), ServerMessage.MESSAGE_TYPE_DIALOG);
         state = MissionState.SUCCESS;
         flagForSynch();
     }
@@ -76,7 +78,7 @@ public class Mission implements Serializable {
      * sets state to failed, runs extra code for special stuff: negative relations with questgiver etc
      */
     protected void onFailure() {
-        MissionUtil.notifyParty(getActiveParty(),"Mission " + name + " failed.",ServerMessage.MESSAGE_TYPE_ERROR);
+        MissionUtil.notifyParty(getActiveParty(),getFailText(),ServerMessage.MESSAGE_TYPE_DIALOG);
         state = MissionState.FAILED;
         flagForSynch();
     }
@@ -339,6 +341,22 @@ public class Mission implements Serializable {
 
     public MissionTask[] getMissionTasks() {
         return missionTasks;
+    }
+
+    public String getTasksSummarized() {
+        StringBuilder out = new StringBuilder();
+        for (MissionTask t: getMissionTasks()) {
+            out.append(t.getTaskSummary()).append("\n");
+        }
+        return out.toString();
+    }
+
+    public String getSuccessText() {
+        return successText;
+    }
+
+    public String getFailText() {
+        return failText;
     }
 
     /**

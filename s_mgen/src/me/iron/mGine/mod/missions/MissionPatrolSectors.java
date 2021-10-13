@@ -83,16 +83,19 @@ public class MissionPatrolSectors extends Mission {
 
     @Override
     protected void onSuccess() {
+        super.onSuccess();
+    }
+
+    @Override
+    public String getSuccessText() {
         StringBuilder b = new StringBuilder();
-        b.append("You have completed Patrol ").append("MISSION NAME GOES HERE").append(". \n");
+        b.append("You have completed Patrol ").append(getUuid().toString()).append(". \n"); //TODO proper name generation
         b.append("Your reward of ").append(MissionUtil.formatMoney(rewardCredits))
-        .append(" has been added to your account. Thank you for your service");
-        String mssg = b.toString();
+                .append(" has been added to your account. Thank you for your service");
         for (PlayerState p: getActiveParty()) {
             MissionUtil.giveMoney(rewardCredits,p);
-            p.sendServerMessage(Lng.astr(mssg), ServerMessage.MESSAGE_TYPE_DIALOG);
         }
-        super.onSuccess();
+        return b.toString();
     }
 
     @Override
