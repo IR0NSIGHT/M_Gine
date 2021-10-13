@@ -102,7 +102,7 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
                         @Override
                         public String toString() {
                             String s = m.getName() + "\nremaining time:" + MissionUtil.getRemainingTime(m);
-                            if (GameClientState.instance.getPlayer().isAdmin()) {
+                            if (false && GameClientState.instance.getPlayer().isAdmin()) {
                                 s += "\n"+ (m.isVisibleFor(GameClientState.instance.getPlayer())?"visible":"invisible");
                                 s += "\n" + (m.canClaim(GameClientState.instance.getPlayer())?"can claim":"can not claim");
                                 s += "\n publish time:" + (MissionUtil.formatTime((System.currentTimeMillis()-m.getPublishTime())/1000));

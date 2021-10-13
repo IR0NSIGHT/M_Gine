@@ -115,10 +115,10 @@ public class Mission implements Serializable {
         if (synchFlag) {
             synchFlag = false;
             for (MissionTask t: missionTasks) {
-                ModPlayground.broadcastMessage("task " + t.name + ": " +t.currentState.getName());
+                //ModPlayground.broadcastMessage("task " + t.name + ": " +t.currentState.getName());
             }
             M_GineCore.instance.onMissionUpdate(this);
-            ModPlayground.broadcastMessage("synching " + this.getUuid() +"\n"+ this.getName());
+            //ModPlayground.broadcastMessage("synching " + this.getUuid() +"\n"+ this.getName());
         }
 
         if (state != MissionState.IN_PROGRESS)

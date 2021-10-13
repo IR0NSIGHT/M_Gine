@@ -3,19 +3,22 @@
 ##HUD
 - mission overview
     - currenttask
-- HUD markers (HUD Indicators)    
+- HUD markers (HUD Indicators)   
+ 
 ##GUI window
 - ~~window that lists mission~~
 - mission management
     - ~~select~~
     - ~~accept~~
     - ~~abort~~
-    - ask for more time
-    - show briefing
+    - ~~ask for more time~~
+    - unselect mission
+    - show tasks
 - party management
     - invite player
     - kick player
     - become captain
+    
 - GUI scaling
 - GUI remake:
     - each mission in 3tab lists:
@@ -36,7 +39,7 @@
     - ~~set waypoint to sprite (rightclick)~~
  - ~~decent looking waypoint icon~~
  - ~~coloring waypoints for active/finished/failed~~
- - mark available missions
+ - mark available missions (with small ! marker)
  - when should OPEN mission be visible ?:
     - globally
     - same system/nearby

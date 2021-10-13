@@ -1,7 +1,6 @@
 package me.iron.mGine.mod.missions.tasks;
 
 import api.DebugFile;
-import api.ModPlayground;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
@@ -143,9 +142,7 @@ public class MissionTaskUnloadCargo extends MissionTask {
             }
             int slot = inv.incExistingOrNextFreeSlot(blockID,amount);
             units -= Math.abs(amount);
-            ModPlayground.broadcastMessage("units:" + units);
             inv.sendInventoryModification(slot);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

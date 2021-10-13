@@ -3,14 +3,17 @@ package me.iron.mGine.mod.clientside.GUI;
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
+import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.network.PacketInteractMission;
 import org.newdawn.slick.UnicodeFont;
 import org.schema.game.client.data.GameClientState;
+import org.schema.schine.common.language.Lng;
 import org.schema.schine.graphicsengine.core.MouseEvent;
 import org.schema.schine.graphicsengine.forms.font.FontLibrary;
 import org.schema.schine.graphicsengine.forms.gui.*;
 import org.schema.schine.input.InputState;
+import org.schema.schine.network.server.ServerMessage;
 
 import javax.vecmath.Vector4f;
 
@@ -105,7 +108,7 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
         }, new GUICallback() {
             @Override
             public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
-                if (mouseEvent.pressedLeftMouse()) {
+                if (mouseEvent.pressedLeftMouse() && activeMission != null) {
                     onToggleButtonClicked();
                     MissionClient.instance.update();
                 }
@@ -167,10 +170,30 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
             }
         });
 
+        GUITextButton showTasksButton = new GUITextButton(getState(), buttonWidth, buttonHeight, buttonFont, "show tasks", new GUICallback() {
+            @Override
+            public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
+                if (mouseEvent.pressedLeftMouse() && activeMission != null) {
+                    StringBuilder out = new StringBuilder();
+                    out.append("Tasks: \n");
+                    for (MissionTask t: activeMission.getMissionTasks()) {
+                        out.append(t.getTaskSummary()).append("\n");
+                    }
+                    GameClientState.instance.getServerMessages().add(new ServerMessage(Lng.astr(out.toString()), ServerMessage.MESSAGE_TYPE_DIALOG));
+                }
+            }
+
+            @Override
+            public boolean isOccluded() {
+                return false;
+            }
+        });
+
         textBackground.setPos(0,0,0);
         partyBackground.setPos(0,(int) (testPanel.getHeight()/2),0);
-        acceptAndAbortButton.setPos(textWidth,buttonY*0,0);
-        delayButton.setPos(textWidth,buttonY*1,0);
+        acceptAndAbortButton.setPos(textWidth,0,0);
+        delayButton.setPos(textWidth,buttonY,0);
+        showTasksButton.setPos(textWidth,buttonY*2,0);
 
         inviteToPartyButton.setPos(textWidth,testPanel.getHeight()/2,0);
         removeFromPartyButton.setPos(textWidth,testPanel.getHeight()/2+buttonY,0);
@@ -178,6 +201,8 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
         testPanel.attach(textBackground);
         testPanel.attach(partyBackground);
         testPanel.attach(acceptAndAbortButton);
+        testPanel.attach(showTasksButton);
+
         testPanel.attach(inviteToPartyButton);
         testPanel.attach(removeFromPartyButton);
         testPanel.attach(delayButton);
