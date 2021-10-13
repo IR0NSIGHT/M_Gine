@@ -32,6 +32,7 @@ import org.schema.game.common.data.world.Sector;
 import org.schema.game.common.data.world.SectorInformation;
 import org.schema.game.common.data.world.SimpleTransformableSendableObject;
 import org.schema.game.common.data.world.VoidSystem;
+import org.schema.game.mod.Mod;
 import org.schema.game.server.data.GameServerState;
 import org.schema.schine.common.language.Lng;
 import org.schema.schine.graphicsengine.forms.gui.GUIColoredRectangle;
@@ -104,12 +105,14 @@ public class DebugUI {
 
                 if (txt.contains("clear ms")) {
                     M_GineCore.instance.clearMissions();
+                    return;
                 }
 
                 if (txt.contains("clear money")) {
                     for (PlayerState p: GameServerState.instance.getPlayerStatesByName().values()) {
                         p.setCredits(0);
                     }
+                    return;
                 }
 
                 PlayerState p = GameServerState.instance.getPlayerFromNameIgnoreCaseWOException(event.getMessage().sender);
@@ -117,7 +120,7 @@ public class DebugUI {
                     return;
 
                 if (txt.contains("fail")) {
-
+                    return;
                 }
 
                 if (txt.contains("uid")) {
@@ -126,15 +129,20 @@ public class DebugUI {
                         return;
                     SegmentController sc = (SegmentController) s;
                     ModPlayground.broadcastMessage(((SegmentController) s).getName()+" || "+((SegmentController) s).getUniqueIdentifier());
-
+                    return;
                 }
                 if (txt.contains("success")) {
                     MissionPlayer mp = MissionNetworkController.instance.getPlayerByName(p.getName());
                     for (UUID id: mp.getMissions()) {
                         Mission m =M_GineCore.instance.getMissionByUUID(id);
+
                         if (m == null)
                             continue;
 
+                        if (!m.getState().equals(MissionState.IN_PROGRESS))
+                            continue;
+
+                        ModPlayground.broadcastMessage("success'd mission" + m.getName());
                         switch (m.getState()) {
                             case IN_PROGRESS:
                                 for (MissionTask t: m.getMissionTasks()) {
