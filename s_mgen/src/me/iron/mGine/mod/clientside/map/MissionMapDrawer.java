@@ -134,6 +134,7 @@ public class MissionMapDrawer implements GameMapDrawListener {
 
     @Override
     public void galaxy_PostDraw(GameMapDrawer gameMapDrawer) {
+
     }
 
     @Override

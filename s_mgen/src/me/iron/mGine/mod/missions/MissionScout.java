@@ -89,6 +89,9 @@ import java.util.Random;
         MissionTask[] tasks = new MissionTask[amountSectors];
         for (int i = 0; i < amountSectors; i++) {
             Vector3i sector = new Vector3i(sectors.get(i).getPos());
+            if (i == 0) {
+                setSector(sector);
+            }
             sector.add(rand.nextInt()%2, rand.nextInt()%2, rand.nextInt()%2);
             MissionTaskScanSector scanSector = new MissionTaskScanSector(this,"scan sector","scan sector"+sector.toStringPure(), sector,false);
             tasks[i] = scanSector;

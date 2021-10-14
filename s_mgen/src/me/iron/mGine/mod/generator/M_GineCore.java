@@ -89,7 +89,7 @@ public class M_GineCore implements Serializable { //TODO make serializable
         missions.remove(m);
         uuidMissionHashMap.remove(m.uuid);
         MissionNetworkController.instance.updateMissionForAll(m);
-        //onMissionUpdate(m);
+        questMarkers.remove(m.getSector());
     }
 
     /**
@@ -107,8 +107,13 @@ public class M_GineCore implements Serializable { //TODO make serializable
     }
 
     public void clearMissions() {
-        missions.clear();
-        uuidMissionHashMap.clear();
+        HashSet<Mission> temp = new HashSet<>(missions.size());
+        temp.addAll(missions);
+        for (Mission m: temp) {
+            removeMission(m);
+        }
+   //    missions.clear();
+   //    uuidMissionHashMap.clear();
         PacketMissionSynch clearAll = new PacketMissionSynch(new ArrayList<Mission>());
         clearAll.setClearClient(true);
         clearAll.sendToAll();

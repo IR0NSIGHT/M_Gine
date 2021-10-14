@@ -34,7 +34,12 @@ public class PacketMissionSynch extends Packet {
      */
     public PacketMissionSynch(Collection<Mission> missions) {
         this.missions.addAll(missions);
-        questMarkers.addAll(M_GineCore.instance.getQuestMarkers());
+        for (Mission m: M_GineCore.instance.getMissions()) {
+            if (m.getSector() != null) {
+                questMarkers.add(m.getSector());
+            }
+        }
+        //questMarkers.addAll(M_GineCore.instance.getQuestMarkers());
     }
 
     public void setClearClient(boolean clearClient) {

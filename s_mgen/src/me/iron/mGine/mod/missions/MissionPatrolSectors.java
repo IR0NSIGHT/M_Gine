@@ -5,13 +5,19 @@ import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.tasks.MissionTaskMoveTo;
+import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
+import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
 import org.schema.common.util.linAlg.Vector3i;
+import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.world.VoidSystem;
+import org.schema.game.server.data.simulation.npc.NPCFaction;
 import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.server.ServerMessage;
 
 import javax.vecmath.Vector3f;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -28,8 +34,20 @@ public class MissionPatrolSectors extends Mission {
     Vector3i center;
     public MissionPatrolSectors(final Random rand, long seed) {
         super(rand,seed);
-        Vector3i center = new Vector3i(rand.nextInt()%500,rand.nextInt()%500,rand.nextInt()%500);
+        Vector3i center = new Vector3i(0,rand.nextInt(69),69);
+        try {
+            NPCFaction f = DataBaseManager.instance.getNPCFactions().get(rand.nextInt(DataBaseManager.instance.getNPCFactions().size()));
+            ArrayList<DataBaseSystem> systems = DataBaseManager.instance.getSystems(f.getIdFaction());
+            DataBaseStation s = DataBaseManager.instance.getExistingRandomStation(systems,null, SpaceStation.SpaceStationType.FACTION,rand.nextLong());
+            if (s != null) {
+                center = s.getPosition();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
         this.center = center;
+        setSector(center);
         cargoAmount = 20 + Math.abs(rand.nextInt())%80;
         completionRadius = 0.5f;
         name = "Patrol sectors";
