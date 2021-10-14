@@ -189,6 +189,25 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
             }
         });
 
+        GUITextButton toggleOpenMarkers = new GUITextButton(getState(), buttonWidth, buttonHeight, buttonFont, new Object() {
+            @Override
+            public String toString() {
+                return (MissionClient.instance.isDrawOpenMarkers() ? "hide open mission markers" : "show open mission markers");
+            }
+        }, new GUICallback() {
+            @Override
+            public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
+                if (mouseEvent.pressedLeftMouse()) {
+                    MissionClient.instance.setDrawOpenMarkers(!MissionClient.instance.isDrawOpenMarkers());
+                }
+            }
+
+            @Override
+            public boolean isOccluded() {
+                return false;
+            }
+        });
+
         textBackground.setPos(0,0,0);
         partyBackground.setPos(0,(int) (testPanel.getHeight()/2),0);
         acceptAndAbortButton.setPos(textWidth,0,0);
@@ -197,15 +216,19 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
 
         inviteToPartyButton.setPos(textWidth,testPanel.getHeight()/2,0);
         removeFromPartyButton.setPos(textWidth,testPanel.getHeight()/2+buttonY,0);
+        toggleOpenMarkers.setPos(textWidth,testPanel.getHeight()/2+buttonY*2,0);
 
         testPanel.attach(textBackground);
         testPanel.attach(partyBackground);
+
         testPanel.attach(acceptAndAbortButton);
+        testPanel.attach(delayButton);
         testPanel.attach(showTasksButton);
 
         testPanel.attach(inviteToPartyButton);
         testPanel.attach(removeFromPartyButton);
-        testPanel.attach(delayButton);
+        testPanel.attach(toggleOpenMarkers);
+
         setContent(testPanel);
 
 

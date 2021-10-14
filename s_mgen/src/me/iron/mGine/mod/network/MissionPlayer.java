@@ -18,6 +18,7 @@ import java.util.*;
  * eventbased updates.
  */
 public class MissionPlayer implements Serializable {
+    private boolean showAll; //admin feature to always see all missions.
     private transient HashSet<UUID> missions = new HashSet(){
         @Override
         public boolean remove(Object o) {
@@ -33,7 +34,6 @@ public class MissionPlayer implements Serializable {
     }
 
     public void updateMissions() {
-        missions.clear();
         for (Mission m: M_GineCore.instance.getMissions()) {
             updateMission(m);
         }
@@ -49,8 +49,10 @@ public class MissionPlayer implements Serializable {
             return;
         }
 
-        if ( m.isVisibleFor(player) || player.isAdmin()) {
+        if ( m.isVisibleFor(player) || (player.isAdmin()&&showAll)) {
             missions.add(m.getUuid());
+        } else {
+            missions.remove(m.getUuid());
         }
     }
 
@@ -102,5 +104,11 @@ public class MissionPlayer implements Serializable {
 
     public HashSet<UUID> getMissions() {
         return missions;
+    }
+
+    public void setShowAll(boolean showAll) {
+        this.showAll = showAll;
+        updateMissions();
+        synchPlayer();
     }
 }

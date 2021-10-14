@@ -1,6 +1,5 @@
 package me.iron.mGine.mod.clientside;
 
-import api.ModPlayground;
 import api.common.GameClient;
 import api.utils.StarRunnable;
 import api.utils.gui.ModGUIHandler;
@@ -8,19 +7,19 @@ import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.clientside.GUI.GUISelectedMissionTab;
 import me.iron.mGine.mod.clientside.GUI.GUIMissionListTab;
 import me.iron.mGine.mod.clientside.GUI.MissionGUIControlManager;
+import me.iron.mGine.mod.clientside.map.MapIcon;
+import me.iron.mGine.mod.clientside.map.MapMarker;
 import me.iron.mGine.mod.clientside.map.MissionMapDrawer;
 import me.iron.mGine.mod.clientside.map.TaskMarker;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.network.PacketInteractMission;
-import org.lwjgl.Sys;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.GameClientState;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.UUID;
+import javax.vecmath.Vector3f;
+import java.util.*;
 
 /**
  * STARMADE MOD
@@ -35,22 +34,27 @@ public class MissionClient {
     public GUIMissionListTab guiFinishedMissionsList;
     public GUISelectedMissionTab selectedMissionTab;
 
+    public HashMap<Vector3i, MapMarker> openQuestMarkers = new HashMap<>(); //list of open quest markers
+    //mission sublists
     public HashSet<Mission> active = new HashSet<>();
     public HashSet<Mission> available = new HashSet<>();
     public HashSet<Mission> finished = new HashSet<>();
-    public HashSet <MissionTask> currentTasks = new HashSet<>();
+    public HashSet <MissionTask> currentTasks = new HashSet<>(); //unused i think
 
     public static boolean autoNav = true;
     private Mission selectedMission;
 
+    private boolean drawOpenMarkers;
+
     public void setSelectedMission(Mission selectedMission) {
+        for (MissionTask t: selectedMission.getMissionTasks()) {
+            MissionMapDrawer.instance.getMapMarkers().remove(new TaskMarker(t)); //TODO this is jank do it better.
+        }
         this.selectedMission = selectedMission;
-        MissionMapDrawer.instance.getMapMarkers().clear();
         if (selectedMission != null) {
             for (MissionTask task: selectedMission.getMissionTasks()) {
                 if (task.getTaskSector() != null) {
                     MissionMapDrawer.instance.addMarker(new TaskMarker(task));
-                //    ModPlayground.broadcastMessage("task marker");
                 }
             }
         }
@@ -245,5 +249,53 @@ public class MissionClient {
         packet.setAccept(accept);
         packet.setAbort(!accept);
         packet.sendToServer();
+    }
+
+    public void setOpenQuestMarkers(ArrayList<Vector3i> markers) {
+        ArrayList<Vector3i> removeQueue = new ArrayList<>();
+
+        //flag old markers
+        for (Vector3i v: openQuestMarkers.keySet()) {
+            if (markers.contains(v)) {
+                //no action needed
+            } else {
+                //flag for removing
+                removeQueue.add(v);
+            }
+        }
+
+        //delete old markers from drawer
+        for (Vector3i v: removeQueue) {
+            MissionMapDrawer.instance.removeMarker(openQuestMarkers.get(v));
+            openQuestMarkers.remove(v);
+        }
+
+        Vector3f halfSectorOffset = MissionMapDrawer.posFromSector(new Vector3i(1,1,1),true);
+        halfSectorOffset.scale(0.5f);
+        //add new markers to list and drawer
+        for (Vector3i v: markers) {
+           // if (!openQuestMarkers.containsKey(v)) {
+                //add new marker
+                MapMarker questMarker = new MapMarker(v,"open mission", MapIcon.WP_QUEST,MissionMapDrawer.brightYellow) {
+                    @Override
+                    public boolean canDraw() {
+                        return MissionClient.instance.isDrawOpenMarkers();
+                    }
+                };
+            //    questMarker.getMapPos().add(halfSectorOffset);
+            //    questMarker.setBaseScale(0.03f); //instead of 0.1 -> smaller.
+                openQuestMarkers.put(v,questMarker);
+                MissionMapDrawer.instance.addMarker(questMarker);
+          // }
+        }
+        MissionMapDrawer.instance.updateInternalList();
+    }
+
+    public boolean isDrawOpenMarkers() {
+        return drawOpenMarkers;
+    }
+
+    public void setDrawOpenMarkers(boolean drawOpenMarkers) {
+        this.drawOpenMarkers = drawOpenMarkers;
     }
 }

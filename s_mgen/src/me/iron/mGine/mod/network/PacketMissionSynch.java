@@ -5,7 +5,9 @@ import api.network.PacketReadBuffer;
 import api.network.PacketWriteBuffer;
 import api.network.packets.PacketUtil;
 import me.iron.mGine.mod.clientside.MissionClient;
+import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
+import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
 
@@ -25,12 +27,14 @@ import java.util.UUID;
 public class PacketMissionSynch extends Packet {
     private ArrayList<Mission> missions = new ArrayList<>();
     private ArrayList<UUID> removeList = new ArrayList<>();
+    private ArrayList<Vector3i> questMarkers = new ArrayList<>();
     private boolean clearClient; //clear missions from client
     /**
      * @param missions missions to send
      */
     public PacketMissionSynch(Collection<Mission> missions) {
         this.missions.addAll(missions);
+        questMarkers.addAll(M_GineCore.instance.getQuestMarkers());
     }
 
     public void setClearClient(boolean clearClient) {
@@ -65,6 +69,11 @@ public class PacketMissionSynch extends Packet {
             for (int i = 0; i < sizeRm; i++) {
                 removeList.add(packetReadBuffer.readObject(UUID.class));
             }
+
+            size = packetReadBuffer.readInt();
+            for (int i = 0; i < size; i++) {
+                questMarkers.add((Vector3i)packetReadBuffer.readObject(Vector3i.class));
+            }
         } catch (NullPointerException ex) {
             ex.printStackTrace();
         }
@@ -83,6 +92,11 @@ public class PacketMissionSynch extends Packet {
         for (UUID uuid: removeList) {
             packetWriteBuffer.writeObject(uuid);
         }
+
+        packetWriteBuffer.writeInt(questMarkers.size());
+        for (Vector3i pos: questMarkers) {
+            packetWriteBuffer.writeObject(pos);
+        }
     }
 
     @Override
@@ -94,6 +108,9 @@ public class PacketMissionSynch extends Packet {
         }
         if (removeList.size()>0) {
             MissionClient.instance.removeMissions(removeList);
+        }
+        if (questMarkers.size()>0) {
+            MissionClient.instance.setOpenQuestMarkers(questMarkers);
         }
     }
 

@@ -6,6 +6,7 @@ import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.network.MissionNetworkController;
 import me.iron.mGine.mod.network.PacketMissionSynch;
+import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.server.data.GameServerState;
 
 import java.io.Serializable;
@@ -25,6 +26,7 @@ public class M_GineCore implements Serializable { //TODO make serializable
     private Random rand;
     private HashSet<Mission> missions = new HashSet<>();
     private transient HashMap<UUID,Mission> uuidMissionHashMap = new HashMap<>();
+    private HashSet<Vector3i> questMarkers = new HashSet<>();
 
     public M_GineCore() {
         instance = this;
@@ -124,13 +126,25 @@ public class M_GineCore implements Serializable { //TODO make serializable
      * runs when a mission is updated.
      */
     public void onMissionUpdate(Mission m) {
-        if (m.getState().equals(MissionState.OPEN))
+        if (m.getState().equals(MissionState.OPEN)) {
             MissionNetworkController.instance.updateMissionForAll(m);
+            if (m.getSector()!=null) {
+                questMarkers.add(m.getSector());
+            }
+        } else {
+            if (m.getSector()!=null) {
+                questMarkers.remove(m.getSector());
+            }
+        }
+
         //update the player wrappers
         MissionNetworkController.instance.updatePlayers(m.getUuid());
         MissionNetworkController.instance.synchMission(m.getUuid());
     }
 
+    public HashSet<Vector3i> getQuestMarkers() {
+        return questMarkers;
+    }
     public static Mission generateMission(long seed) {
         Random rand = new Random(seed);
 

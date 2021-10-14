@@ -8,9 +8,7 @@ import api.listener.fastevents.FastListenerCommon;
 import api.listener.fastevents.GameMapDrawListener;
 import api.mod.StarLoader;
 import api.network.Packet;
-import api.network.packets.PacketUtil;
 import me.iron.mGine.mod.ModMain;
-import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.clientside.map.MapMarker;
 import me.iron.mGine.mod.clientside.map.MissionMapDrawer;
@@ -19,25 +17,18 @@ import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.DataBaseManager;
-import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.network.MissionNetworkController;
 import me.iron.mGine.mod.network.MissionPlayer;
 import org.schema.common.util.linAlg.Vector3i;
-import org.schema.game.client.data.GameClientState;
 import org.schema.game.client.view.gamemap.GameMapDrawer;
 import org.schema.game.common.controller.SegmentController;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.player.PlayerState;
-import org.schema.game.common.data.world.Sector;
 import org.schema.game.common.data.world.SectorInformation;
 import org.schema.game.common.data.world.SimpleTransformableSendableObject;
-import org.schema.game.common.data.world.VoidSystem;
-import org.schema.game.mod.Mod;
 import org.schema.game.server.data.GameServerState;
 import org.schema.schine.common.language.Lng;
-import org.schema.schine.graphicsengine.forms.gui.GUIColoredRectangle;
 
-import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -123,6 +114,19 @@ public class DebugUI {
                     return;
                 }
 
+                if (txt.contains("seeAll")) {
+                    boolean see = false;
+                    if (txt.contains("true")) {
+                        see = true;
+                    }
+                    MissionPlayer mp = MissionNetworkController.instance.getPlayerByName(p.getName());
+                    if (mp == null)
+                        return;
+                    mp.setShowAll(see);
+                    mp.synchPlayer();
+                    ModPlayground.broadcastMessage("set 'seeAll' to "+see);
+                    return;
+                }
                 if (txt.contains("uid")) {
                     Sendable s =GameServerState.instance.getLocalAndRemoteObjectContainer().getLocalObjects().get(p.getSelectedEntityId());
                     if (s == null || !(s instanceof SegmentController))
@@ -248,7 +252,7 @@ public class DebugUI {
             DataBaseManager dbm = new DataBaseManager();
             int start = -100;
             int end = 100;
-            ArrayList<DataBaseStation> ents = dbm.getEntitiesNear(new Vector3i(start,start,start),new Vector3i(end,end,end), SimpleTransformableSendableObject.EntityType.SPACE_STATION, null);
+            ArrayList<DataBaseStation> ents = dbm.getEntitiesNear(new Vector3i(start,start,start),new Vector3i(end,end,end), SimpleTransformableSendableObject.EntityType.SPACE_STATION, null,null);
             StringBuilder out = new StringBuilder();
             int rows = 0;
             for (DataBaseStation ent: ents) {
@@ -286,7 +290,7 @@ public class DebugUI {
                    //    Sector sector =GameServerState.instance.getUniverse().getSector(s.getPos());
                    //    sector.populate(GameServerState.instance);
                         MapMarker m = new MapMarker(s.getPos(),"traders"+index, MapIcon.WP_COMM,new Vector4f(0,1,0,1));
-                        m.setScale(0.1f);
+                        m.setBaseScale(0.1f);
                         m.addToDrawList(true);
                         index ++;
                     }

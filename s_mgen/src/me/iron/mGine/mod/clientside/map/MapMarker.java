@@ -1,7 +1,5 @@
 package me.iron.mGine.mod.clientside.map;
 
-import api.ModPlayground;
-import org.lwjgl.util.vector.Vector;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.gamemap.entry.SelectableMapEntry;
 import org.schema.game.client.view.camera.GameMapCamera;
@@ -33,19 +31,19 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
         this.sector.set(sector);
         this.name = name;
         this.icon = icon;
-        this.pos = MissionMapDrawer.posFromSector(sector,true);
+        this.mapPos = MissionMapDrawer.posFromSector(sector,true);
     }
 
     MapIcon icon;
     Vector3i sector = new Vector3i();
     String name;
     Vector4f color = new Vector4f();
-    Vector3f pos;
+    Vector3f mapPos;
 
     transient private boolean selected;
     transient private boolean drawIndication;
-    private float scale = 0.1f;
-    public float scaleFactor = 1;
+    private float baseScale = 0.1f; //base scale
+    public float scaleFactor = 1; //zoom factor: grow when further away
 
     /**
      * code that gets called before the marker is drawn.
@@ -78,7 +76,7 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
 
     private void autoScale(GameMapCamera camera) {
         Vector3f distanceToCam = new Vector3f(camera.getPos());
-        distanceToCam.sub(pos);
+        distanceToCam.sub(mapPos);
         float dist = distanceToCam.length();
         scaleFactor = Math.min(10,Math.max(1,dist/300));
     }
@@ -97,7 +95,7 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
     @Override
     public float getScale(long l) {
     //    ModPlayground.broadcastMessage("scale "+ scale+"factor " + scaleFactor + " selected" + selected);
-        return scale * scaleFactor * (selected?2:1);
+        return baseScale * scaleFactor * (selected?2:1);
     }
 
     @Override
@@ -112,7 +110,7 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
 
     @Override
     public Vector3f getPos() {
-        return pos;
+        return mapPos;
     }
 
     @Override
@@ -139,7 +137,7 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
 
     public void setSector(Vector3i sector) {
         this.sector.set(sector);
-        this.pos = MissionMapDrawer.posFromSector(sector,true);
+        this.mapPos = MissionMapDrawer.posFromSector(sector,true);
     }
 
     public String getName() {
@@ -154,16 +152,20 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
         this.color.set(color);
     }
 
-    public void setPos(Vector3f pos) {
-        this.pos = pos;
+    public Vector3f getMapPos() {
+        return mapPos;
     }
 
-    public float getScale() {
-        return scale;
+    public void setMapPos(Vector3f mapPos) {
+        this.mapPos = mapPos;
     }
 
-    public void setScale(float scale) {
-        this.scale = scale;
+    public float getBaseScale() {
+        return baseScale;
+    }
+
+    public void setBaseScale(float baseScale) {
+        this.baseScale = baseScale;
     }
 
     public float getScaleFactor() {
@@ -209,8 +211,8 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
                 ", sector=" + sector +
                 ", name='" + name + '\'' +
                 ", color=" + color +
-                ", pos=" + pos +
-                ", scale=" + scale +
+                ", pos=" + mapPos +
+                ", scale=" + baseScale +
                 ", scaleFactor=" + scaleFactor +
                 ", drawIndication=" + drawIndication +
                 '}';

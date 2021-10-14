@@ -9,6 +9,8 @@ import me.iron.mGine.mod.missions.tasks.MissionTaskUnloadCargo;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSector;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
+import org.hsqldb.Database;
+import org.hsqldb.DatabaseManager;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.element.ElementInformation;
@@ -41,7 +43,7 @@ public class MissionTransportCargo extends Mission {
         //get station in from sector
         try {
             //get origin
-            from = MissionUtil.getRandomNPCStationByFaction(-10000000,rand);
+            from = MissionUtil.getRandomNPCStationByFaction(-10000000,null,rand);
             if (from == null) {
                 new NullPointerException().printStackTrace();
                 return;
@@ -54,25 +56,18 @@ public class MissionTransportCargo extends Mission {
             cargoID = elementI.getId();
 
             Vector3i fromSector = from.getPosition();
+
             //get target
-            Vector3i startSearch = new Vector3i(fromSector); startSearch.sub(100,100,100);
-            Vector3i endSearch = new Vector3i(fromSector); endSearch.add(100,100,100);
+            Vector3i startSearch = new Vector3i(fromSector); startSearch.sub(1000,1000,1000);
+            Vector3i endSearch = new Vector3i(fromSector); endSearch.add(1000,1000,1000);
             ArrayList<DataBaseSystem> systems = DataBaseManager.instance.getSystems(-10000000); //traders
             Collections.shuffle(systems,rand);
-            for (DataBaseSystem system: systems) {
-                StellarSystem stellarSystem = GameServerState.instance.getUniverse().getStellarSystemFromStellarPos(system.getPos());
-                ArrayList<DataBaseSector> sectors = DataBaseManager.instance.getSectorsWithStations(stellarSystem, SectorInformation.SectorType.SPACE_STATION, SpaceStation.SpaceStationType.FACTION);
-                Collections.shuffle(sectors,rand);
-                if (sectors.size()!=0) {
-                    to = new DataBaseStation("","trader station",sectors.get(0).getPos(),-10000000, SimpleTransformableSendableObject.EntityType.SPACE_STATION.dbTypeId);
-                    break;
-                }
-            }
+            to = DataBaseManager.instance.getExistingRandomStation(systems,from.getPosition(), SpaceStation.SpaceStationType.FACTION,seed);
 
             //MissionTask pick_up_cargo = new MissionTaskDockTo(this,"pick up cargo","pick up the cargo at station " + from.getName(),false,from.getUID());
             MissionTask pick_up_cargo = new MissionTaskUnloadCargo(this,"Load cargo","load the cargo at station " + from.getName(),from,cargoID,cargoUnits,true,false);
 
-            MissionTask deliver_cargo = new MissionTaskUnloadCargo(this,"Unload cargo","bring the received cargo to station " + to.getName(),to,cargoID,cargoUnits,false,false);
+            MissionTask deliver_cargo = new MissionTaskUnloadCargo(this,"Unload cargo","bring the received cargo to station at " + to.getPosition().toStringPure(),to,cargoID,cargoUnits,false,false);
 
             MissionTask[] tasks = new MissionTask[2];
             tasks[0] = pick_up_cargo;
@@ -86,16 +81,13 @@ public class MissionTransportCargo extends Mission {
             Vector3i distance = new Vector3i(fromSector); distance.sub(to.getPosition());
             float difficulty = rand.nextFloat();
             duration = (int) ((int) (distance.length()* 16000 / 450) * (1 + 3* difficulty)); //time needed to travel distance at max speed plus random bonus of 0..300%
-            rewardCredits = (int) ((duration/60)*(500000+500000*rand.nextFloat()));
-
-
-
+            this.rewardCredits = MissionUtil.calculateReward((int) (distance.length()*GameServerState.instance.getSectorSize()),1,1,rand.nextLong());
 
             //set UI stuff
             this.briefing = LoreGenerator.instance.generateTransportBriefing(from,to,cargoName,cargoUnits,rand.nextLong());
             this.name = LoreGenerator.instance.generateTransportName(from,to,cargoName,cargoUnits,rand.nextLong());
             //TODO requirements: big cargo
-        } catch (SQLException | IOException throwables) {
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }

@@ -4,8 +4,11 @@ import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import org.apache.xmlbeans.impl.piccolo.xml.Entity;
 import org.schema.common.util.linAlg.Vector3i;
+import org.schema.game.common.data.player.faction.Faction;
 import org.schema.game.common.data.world.SimpleTransformableSendableObject;
+import org.schema.game.server.data.GameServerState;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -20,6 +23,36 @@ public class LoreGenerator {
 
     public LoreGenerator() {
         instance = this;
+    }
+
+    public String generateScoutBriefing(int factionID, long seed) {
+        Random rand = new Random(seed);
+        List<Faction> enemies = GameServerState.instance.getFactionManager().getFaction(factionID).getEnemies();
+        Faction enemyF = null;
+        for (Faction f: enemies) {
+            if (f.getName().toLowerCase().contains("enemy")) {
+                continue;
+            }
+            enemyF = f;
+        }
+        assert enemyF != null;
+        String enemy = enemyF.getName();
+
+        String[] spotter = {"A faring trader","A spy satellite","An intelligence service source","A patrol"};
+        String[] faction = {"pirate","scavenger","dutch"};
+        String[] location = {"in our system","near our territory","in the asteroid belt nearby","at yo mama's ass"};
+        String[] spotted = {"spotted","reported","seen","identified","made out"};
+        String[] causes = new String[]{
+                "$spotter$ has $spotted$ $faction$ ships $location$"
+        };
+
+        String text = getRand(causes,rand);
+        text = text.replace("$spotter$",getRand(spotter,rand));
+        text = text.replace("$faction$",enemy);
+        text = text.replace("$location$",getRand(location,rand)+".");
+        text = text.replace("$spotted$",getRand(spotted,rand));
+        text += "\n Scan these sectors.";
+        return text;
     }
 
     public String generateTransportBriefing(DataBaseStation from, DataBaseStation to, String cargoName, int cargoUnits, long seed) {

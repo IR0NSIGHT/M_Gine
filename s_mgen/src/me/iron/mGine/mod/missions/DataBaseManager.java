@@ -9,18 +9,25 @@ import org.schema.game.client.data.gamemap.entry.TransformableEntityMapEntry;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.controller.database.DatabaseEntry;
 import org.schema.game.common.controller.database.DatabaseIndex;
+import org.schema.game.common.data.player.faction.Faction;
 import org.schema.game.common.data.world.SectorInformation;
 import org.schema.game.common.data.world.SimpleTransformableSendableObject;
 import org.schema.game.common.data.world.StellarSystem;
 import org.schema.game.common.data.world.VoidSystem;
+import org.schema.game.server.data.GameServerState;
 import org.schema.game.server.data.ServerConfig;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
+import org.schema.game.server.data.simulation.npc.NPCFaction;
 import org.schema.schine.common.language.Lng;
 
 import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Random;
 
 /**
  * STARMADE MOD
@@ -31,6 +38,7 @@ import java.util.ArrayList;
 public class DataBaseManager {
     private final Connection connection;
     public static DataBaseManager instance;
+    private ArrayList<NPCFaction> npcFactions = new ArrayList<>();
     public DataBaseManager() throws SQLException {
         instance = this;
         String maxNIOSize = "";
@@ -40,6 +48,7 @@ public class DataBaseManager {
             throw new SQLException("server.cfg: SQL_NIO_FILE_SIZE must be power of two (256, 512, 1024,...), but is: " + ServerConfig.SQL_NIO_FILE_SIZE.getCurrentState());
         }
         this.connection = DriverManager.getConnection("jdbc:hsqldb:file:" + DatabaseIndex.getDbPath() + ";shutdown=true" + maxNIOSize, "SA", "");
+        collectNPCFactions();
     }
 
     /**
@@ -49,11 +58,14 @@ public class DataBaseManager {
      * @param type type to search
      * @return list of found objects as wrappers that contain a name, UID, position, faction and type.
      */
-    public ArrayList<DataBaseStation> getEntitiesNear(Vector3i from, Vector3i to,@Nullable SimpleTransformableSendableObject.EntityType type,@Nullable Integer faction) throws SQLException {
+    public ArrayList<DataBaseStation> getEntitiesNear(Vector3i from, Vector3i to,@Nullable SimpleTransformableSendableObject.EntityType type,@Nullable Integer faction,@Nullable Vector3i blackList) throws SQLException {
         Statement s = connection.createStatement();
         //TODO entity type selection.
-        String query = "SELECT UID, NAME, X, Y, Z, FACTION, TYPE FROM ENTITIES WHERE X >= "+from.x+"AND X <= "+to.x+ " AND Y >= " + from.y +" AND Y <= " + to.y + " AND Z >= " + from.z + " AND Y <= " + to.y;
+        String query = "SELECT UID, NAME, X, Y, Z, FACTION, TYPE FROM ENTITIES WHERE X BETWEEN "+from.x+"AND "+to.x+ " AND Y BETWEEN " + from.y +" AND " + to.y + " AND Z BETWEEN " + from.z + " AND " + to.z;
         query += " AND NAME NOT LIKE 'Temporary%'";
+        if (blackList != null) {
+            query += "AND X != " + blackList.x +" AND Y != " + blackList.y +" AND Z != "+blackList.z;
+        }
         if (faction != null) {
             query += " AND FACTION = " + faction;
         }
@@ -119,7 +131,7 @@ public class DataBaseManager {
                     SectorInformation.SectorType sectorType = system.getSectorType(index);
                     SpaceStation.SpaceStationType stationType1 = system.getSpaceStationTypeType(index);
                     index++;
-                    if (!sectorType.equals(type) || !stationType1.equals(stationType)) {
+                    if (!sectorType.equals(type) || (stationType != null & !stationType1.equals(stationType))) {
                         continue;
                     }
                     sectorPos.set(system.getPos());
@@ -132,4 +144,43 @@ public class DataBaseManager {
         return sectors;
     }
 
+    /**
+     * gets an assured existing station of this faction that is not at blacklist position.
+     * @param systems stellar systems to search/choose from
+     * @param blackList not at this pos
+     * @param stationType type of station
+     * @param seed seed for random
+     * @return
+     */
+    public DataBaseStation getExistingRandomStation(ArrayList<DataBaseSystem> systems, @Nullable Vector3i blackList, @Nullable SpaceStation.SpaceStationType stationType, long seed) {
+        Random r = new Random(seed);
+        Iterator<DataBaseSystem> systemIterator = systems.iterator();
+        while (systemIterator.hasNext()) {
+            DataBaseSystem system = systemIterator.next();
+            ArrayList<DataBaseSector> sectors = getSectorsWithStations(getSystem(system.getPos()), SectorInformation.SectorType.SPACE_STATION,stationType);
+            if (sectors.size()!=0)
+                return new DataBaseStation("","",sectors.get(r.nextInt(sectors.size())).getPos(),Integer.MIN_VALUE, SimpleTransformableSendableObject.EntityType.SPACE_STATION.dbTypeId);
+        }
+        return null;
+    }
+
+    public static StellarSystem getSystem(Vector3i systemPos) {
+        try {
+            return GameServerState.instance.getUniverse().getStellarSystemFromStellarPos(systemPos);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public ArrayList<NPCFaction> getNPCFactions() {
+        return npcFactions;
+    }
+
+    private void collectNPCFactions() {
+        for(Faction f : GameServerState.instance.getFactionManager().getFactionCollection()) {
+            if (f instanceof NPCFaction){
+                npcFactions.add(((NPCFaction)f));
+            }
+        }
+    }
  }

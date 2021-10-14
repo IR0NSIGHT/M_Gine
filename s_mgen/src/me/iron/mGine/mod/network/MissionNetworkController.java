@@ -148,5 +148,9 @@ public class MissionNetworkController {
         mp.synchPlayer();
     }
 
+    public void setAdminSeeAll(String playerName, boolean seeAll) {
+        MissionPlayer mp = getPlayerByName(playerName);
+        mp.setShowAll(seeAll);
+    }
 
 }

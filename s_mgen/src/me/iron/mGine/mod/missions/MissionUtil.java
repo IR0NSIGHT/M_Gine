@@ -26,6 +26,7 @@ import org.schema.schine.graphicsengine.core.GlUtil;
 import org.schema.schine.graphicsengine.core.settings.EngineSettings;
 import org.schema.schine.network.server.ServerMessage;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 import java.sql.SQLException;
@@ -39,6 +40,10 @@ import java.util.*;
  * TIME: 21:20
  */
 public class MissionUtil {
+    private static int creditsPerDistance = 1; //credits payed per meter
+    private static float dangerModifier = 1.2f;
+    private static float reputationModifier = 1.2f;
+
     public static void giveMoney(int amount, PlayerState player) {
         player.setCredits(player.getCredits()+amount);
         player.sendServerMessage(Lng.astr( formatMoney(amount)+" credits received."), ServerMessage.MESSAGE_TYPE_INFO);
@@ -107,7 +112,7 @@ public class MissionUtil {
      * @param factionID factionid
      * @return
      */
-    public static DataBaseStation getRandomNPCStationByFaction(int factionID, Random random) {
+    public static DataBaseStation getRandomNPCStationByFaction(int factionID, @Nullable Vector3i blackList, Random random) {
         try {
             ArrayList<DataBaseSystem> systems = DataBaseManager.instance.getSystems(factionID);
             Collections.shuffle(systems);
@@ -118,7 +123,7 @@ public class MissionUtil {
                 DataBaseSystem system = iterator.next();
                 Vector3i start = new Vector3i(system.getPos()); start.scale(16);
                 Vector3i end = new Vector3i(start); end.add(15,15,15);
-                ArrayList<DataBaseStation> stations = DataBaseManager.instance.getEntitiesNear(start,end, SimpleTransformableSendableObject.EntityType.SPACE_STATION,factionID);
+                ArrayList<DataBaseStation> stations = DataBaseManager.instance.getEntitiesNear(start,end, SimpleTransformableSendableObject.EntityType.SPACE_STATION,factionID,blackList);
                 if (stations.size()== 0)
                     continue;
 
@@ -147,5 +152,19 @@ public class MissionUtil {
         }
 
         return ei;
+    }
+
+    /**
+     * will calculate a reward amount based on distance, danger, reputation and random.
+     * @param distanceTravelled distance travelled overall
+     * @param dangerLevel danger level 1..10
+     * @param reputation reputation 1..10
+     * @param seed seed for random factor
+     * @return
+     */
+    public static int calculateReward(int distanceTravelled, int dangerLevel, int reputation, long seed) {
+        creditsPerDistance = 1;
+        Random rand = new Random(seed);
+        return (int) ((distanceTravelled * creditsPerDistance)*Math.pow(dangerModifier,dangerLevel)*Math.pow(reputationModifier,reputation)*(0.5f+0.5f*rand.nextFloat()));
     }
 }

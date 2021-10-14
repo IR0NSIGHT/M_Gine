@@ -210,12 +210,12 @@ public class MissionMapDrawer implements GameMapDrawListener {
         }
     }
 
-    private static Vector4f brightOrange = new Vector4f(1f,0.5f,0,1);
-    private static Vector4f brightYellow = new Vector4f(0.97f,1.0f,0,1);
-    private static Vector4f darkRed = new Vector4f(0.5f,0f,0,1);
-    private static Vector4f brightRed = new Vector4f(1f,0f,0,1);
-    private static Vector4f brightGreen = new Vector4f(0,1,0,1);
-    private static Vector4f darkGreen = new Vector4f(0,0.5f,0,1);
-    private static Vector4f grey = new Vector4f(0.5f,0.5f,0.5f,1);
+    public static Vector4f brightOrange = new Vector4f(1f,0.5f,0,1);
+    public static Vector4f brightYellow = new Vector4f(0.97f,1.0f,0,1);
+    public static Vector4f darkRed = new Vector4f(0.5f,0f,0,1);
+    public static Vector4f brightRed = new Vector4f(1f,0f,0,1);
+    public static Vector4f brightGreen = new Vector4f(0,1,0,1);
+    public static Vector4f darkGreen = new Vector4f(0,0.5f,0,1);
+    public static Vector4f grey = new Vector4f(0.5f,0.5f,0.5f,1);
     public static float scale32px = 0.2f;
 }

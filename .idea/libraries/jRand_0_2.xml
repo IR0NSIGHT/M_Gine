@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jRand-0.2" type="kotlin.js">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jRand-0.2.5-alpha.zip!/jRand-0.2.5-alpha" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
