@@ -77,7 +77,7 @@ public class MissionPlayer implements Serializable {
 
         boolean existGl = m!=null;
         boolean canSee = existGl && m.isVisibleFor(player) || (player.isAdmin()&&showAll);
-        boolean existLc = missions.contains(m.getUuid());
+        boolean existLc = m!=null && missions.contains(m.getUuid());
 
         //remove if mission isnt listed globally or player cant see it.
         if (existLc &&  (!canSee || !existGl)) {

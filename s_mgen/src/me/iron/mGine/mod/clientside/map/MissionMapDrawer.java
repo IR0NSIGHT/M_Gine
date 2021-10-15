@@ -9,6 +9,7 @@ import com.bulletphysics.linearmath.Transform;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.MissionState;
+import org.lwjgl.util.vector.Vector;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.view.effects.ConstantIndication;
 import org.schema.game.client.view.gamemap.GameMapDrawer;
@@ -22,6 +23,7 @@ import javax.vecmath.Vector4f;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * STARMADE MOD
@@ -35,10 +37,14 @@ public class MissionMapDrawer implements GameMapDrawListener {
     private static final float sectorScale = 100f/ VoidSystem.SYSTEM_SIZE;
     private static final Vector3f halfSectorOffset = new Vector3f(sectorScale/2f,sectorScale/2f,sectorScale/2f);
 
+    //internal stuff for drawing
     private HashMap<Sprite,MapMarker[]> sprite_to_subsprites = new HashMap<>(); //internal mapping from sprite->subsprite for drawer
-
     private HashSet<MapMarker> mapMarkers = new HashSet<>(); //list of all markers to draw, provided by server
-    private Vector3i centerOn;
+
+    //non drawing stuff for verwaltung
+    private HashMap<UUID,MapMarker> openMarkers = new HashMap<>(); //list of all "open mission !" map markers
+
+    private Vector3f centerOn;
     public MapMarker selected;
     public MissionMapDrawer() {
         super();
@@ -48,7 +54,7 @@ public class MissionMapDrawer implements GameMapDrawListener {
             @Override
             public void onEvent(MousePressEvent mouseEvent) {
                 if (mouseEvent.getRawEvent().pressedLeftMouse() && selected != null) {
-                    centerOn = selected.getSector();
+                    centerOn = new Vector3f(selected.getSector().x,selected.getSector().y,selected.getSector().z);
                 }
                 if (mouseEvent.getRawEvent().pressedRightMouse() && selected != null) {
                     MissionClient.instance.navigateTo(selected.getSector());
@@ -111,10 +117,33 @@ public class MissionMapDrawer implements GameMapDrawListener {
         }
     }
 
+    public void updateOpenMarkers(HashMap<UUID,Vector3i> newMarkers) {
+        //delete old ones that are obsolete
+        for (Map.Entry<UUID,MapMarker> entry: openMarkers.entrySet()) {
+            if (!newMarkers.containsKey(entry.getKey())) {
+                removeMarker(entry.getValue());
+            }
+        }
+        //add new ones that dont exist yet
+        for (Map.Entry<UUID,Vector3i> entry: newMarkers.entrySet()) {
+            if (!openMarkers.containsKey(entry.getKey())) {
+                MissionMarker mm = new MissionMarker(entry.getValue(),"Open mission",entry.getKey(), MapIcon.WP_QUEST, MapIcon.WP_QUEST_CIRCLE, brightYellow);
+                Vector3f halfSector = new Vector3f(posFromSector(new Vector3i(1,1,1),false));
+                halfSector.scale(0.25f);
+                mm.getPos().add(halfSector);
+                addMarker(mm);
+            } else {
+                MapMarker m = openMarkers.get(entry.getKey());
+                m.setSector(entry.getValue());
+            }
+        }
+        MissionMapDrawer.instance.updateInternalList();
+    }
+
     @Override
     public void system_PreDraw(GameMapDrawer gameMapDrawer, Vector3i vector3i, boolean b) {
         if (centerOn != null) {
-            gameMapDrawer.getGameMapPosition().set(centerOn.x,centerOn.y,centerOn.z,true);
+            gameMapDrawer.getGameMapPosition().set((int)centerOn.x,(int)centerOn.y,(int)centerOn.z,true);
             centerOn = null;
         }
     }

@@ -14,6 +14,7 @@ import org.schema.game.server.data.GameServerState;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -27,19 +28,25 @@ import java.util.UUID;
 public class PacketMissionSynch extends Packet {
     private ArrayList<Mission> missions = new ArrayList<>();
     private ArrayList<UUID> removeList = new ArrayList<>();
-    private ArrayList<Vector3i> questMarkers = new ArrayList<>();
+    private Vector3i[] questMarkers;
+    private UUID[] questUIDs;
+
     private boolean clearClient; //clear missions from client
     /**
      * @param missions missions to send
      */
     public PacketMissionSynch(Collection<Mission> missions) {
         this.missions.addAll(missions);
-        for (Mission m: M_GineCore.instance.getMissions()) {
+        int i = 0;
+        questMarkers = new Vector3i[M_GineCore.instance.getMissions().size()];
+        questUIDs = new UUID[questMarkers.length];
+        for (Mission m: M_GineCore.instance.getMissions()) { //TODO make mehtod in mgine core for centralized control.
             if (m.getSector() != null) {
-                questMarkers.add(m.getSector());
+                questMarkers[i] = m.getSector();
+                questUIDs[i] = m.getUuid();
+                i++;
             }
         }
-        //questMarkers.addAll(M_GineCore.instance.getQuestMarkers());
     }
 
     public void setClearClient(boolean clearClient) {
@@ -76,8 +83,11 @@ public class PacketMissionSynch extends Packet {
             }
 
             size = packetReadBuffer.readInt();
+            questUIDs = new UUID[size];
+            questMarkers = new Vector3i[size];
             for (int i = 0; i < size; i++) {
-                questMarkers.add((Vector3i)packetReadBuffer.readObject(Vector3i.class));
+                questMarkers[i] = packetReadBuffer.readObject(Vector3i.class);
+                questUIDs[i] = packetReadBuffer.readObject(UUID.class);
             }
         } catch (NullPointerException ex) {
             ex.printStackTrace();
@@ -98,9 +108,10 @@ public class PacketMissionSynch extends Packet {
             packetWriteBuffer.writeObject(uuid);
         }
 
-        packetWriteBuffer.writeInt(questMarkers.size());
-        for (Vector3i pos: questMarkers) {
-            packetWriteBuffer.writeObject(pos);
+        packetWriteBuffer.writeInt(questMarkers.length);
+        for (int i = 0; i < questUIDs.length; i++) {
+            packetWriteBuffer.writeObject(questMarkers[i]);
+            packetWriteBuffer.writeObject(questUIDs[i]);
         }
     }
 
@@ -114,8 +125,12 @@ public class PacketMissionSynch extends Packet {
         if (removeList.size()>0) {
             MissionClient.instance.removeMissions(removeList);
         }
-        if (questMarkers.size()>0) {
-            MissionClient.instance.setOpenQuestMarkers(questMarkers);
+        if (questMarkers != null && questUIDs != null && questMarkers.length == questUIDs.length) {
+            HashMap<UUID,Vector3i> uuidToPos = new HashMap<>(questMarkers.length);
+            for (int i = 0; i < questMarkers.length; i++) {
+                uuidToPos.put(questUIDs[i],questMarkers[i]);
+            }
+            MissionClient.instance.setOpenQuestMarkers(uuidToPos);
         }
     }
 

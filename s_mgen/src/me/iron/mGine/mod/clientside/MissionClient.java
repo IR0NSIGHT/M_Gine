@@ -41,6 +41,8 @@ public class MissionClient {
     public HashSet<Mission> finished = new HashSet<>();
     public HashSet <MissionTask> currentTasks = new HashSet<>(); //unused i think
 
+    private HashMap<UUID,Mission> uuidMissionHashMap = new HashMap<>();
+
     public static boolean autoNav = true;
     private Mission selectedMission;
 
@@ -192,6 +194,7 @@ public class MissionClient {
         available.remove(m);
         active.remove(m);
         finished.remove(m);
+        uuidMissionHashMap.put(m.getUuid(),m);
         switch (m.getState()) {
             case OPEN:
             {
@@ -214,9 +217,6 @@ public class MissionClient {
         for (UUID uuid: uuids) {
             Mission m = new Mission(uuid);
             removeMission(m);
-            if (active.contains(m)||available.contains(m)||finished.contains(m)) {
-                System.out.println("mission remains after being deleted.");
-            }
         }
         update();
     }
@@ -228,7 +228,8 @@ public class MissionClient {
     public void removeMission(Mission m) {
         active.remove(m);
         available.remove(m);
-    //    finished.remove(m);
+    //    finished.remove(m); dont delete finished mission (edit: why not`?)
+        uuidMissionHashMap.remove(m.getUuid());
     }
     private MissionTask getNextActiveTask(Mission m) {
         for (MissionTask t: m.getMissionTasks()) {
@@ -251,44 +252,12 @@ public class MissionClient {
         packet.sendToServer();
     }
 
-    public void setOpenQuestMarkers(ArrayList<Vector3i> markers) {
-        ArrayList<Vector3i> removeQueue = new ArrayList<>();
+    public void setOpenQuestMarkers(HashMap<UUID,Vector3i> positions) {
+        MissionMapDrawer.instance.updateOpenMarkers(positions);
+    }
 
-        //flag old markers
-        for (Vector3i v: openQuestMarkers.keySet()) {
-            if (markers.contains(v)) {
-                //no action needed
-            } else {
-                //flag for removing
-                removeQueue.add(v);
-            }
-        }
-
-        //delete old markers from drawer
-        for (Vector3i v: removeQueue) {
-            MissionMapDrawer.instance.removeMarker(openQuestMarkers.get(v));
-            openQuestMarkers.remove(v);
-        }
-
-        Vector3f halfSectorOffset = MissionMapDrawer.posFromSector(new Vector3i(1,1,1),true);
-        halfSectorOffset.scale(0.5f);
-        //add new markers to list and drawer
-        for (Vector3i v: markers) {
-           // if (!openQuestMarkers.containsKey(v)) {
-                //add new marker
-                MapMarker questMarker = new MapMarker(v,"open mission", MapIcon.WP_QUEST,MissionMapDrawer.brightYellow) {
-                    @Override
-                    public boolean canDraw() {
-                        return MissionClient.instance.isDrawOpenMarkers();
-                    }
-                };
-            //    questMarker.getMapPos().add(halfSectorOffset);
-            //    questMarker.setBaseScale(0.03f); //instead of 0.1 -> smaller.
-                openQuestMarkers.put(v,questMarker);
-                MissionMapDrawer.instance.addMarker(questMarker);
-          // }
-        }
-        MissionMapDrawer.instance.updateInternalList();
+    public Mission getMission(UUID uuid) {
+        return uuidMissionHashMap.get(uuid);
     }
 
     public boolean isDrawOpenMarkers() {

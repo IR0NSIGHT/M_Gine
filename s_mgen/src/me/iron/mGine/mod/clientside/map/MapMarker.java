@@ -56,13 +56,16 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
             float distToCam = pos.length()*0.005f;
             Vector3f textPos = new Vector3f(drawer.getCamera().getCachedUp());
             Vector3f right = new Vector3f(drawer.getCamera().getCachedRight());
-            right.scale(distToCam* name.length()/2f);
+            right.scale(distToCam* getMapText().length()/2f);
             textPos.scale(Math.max(distToCam*7,12f));
             textPos.add(getPos());
             textPos.add(right);
-            MissionMapDrawer.instance.drawText(textPos,name);
+            MissionMapDrawer.instance.drawText(textPos,getMapText());
         }
+    }
 
+    public String getMapText() {
+        return name;
     }
 
     public void addToDrawList(boolean isPublic) {
@@ -74,7 +77,7 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
         //EdenMapDrawer.instance.
     }
 
-    private void autoScale(GameMapCamera camera) {
+    protected void autoScale(GameMapCamera camera) {
         Vector3f distanceToCam = new Vector3f(camera.getPos());
         distanceToCam.sub(mapPos);
         float dist = distanceToCam.length();
@@ -150,10 +153,6 @@ public class MapMarker implements PositionableSubColorSprite, SelectableSprite, 
 
     public void setColor(Vector4f color) {
         this.color.set(color);
-    }
-
-    public Vector3f getMapPos() {
-        return mapPos;
     }
 
     public void setMapPos(Vector3f mapPos) {
