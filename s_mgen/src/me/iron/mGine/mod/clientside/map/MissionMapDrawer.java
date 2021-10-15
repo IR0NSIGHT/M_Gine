@@ -132,6 +132,7 @@ public class MissionMapDrawer implements GameMapDrawListener {
                 removeMarker(entry.getValue());
             }
         }
+
         //add new ones that dont exist yet
         for (Map.Entry<UUID,Vector3i> entry: newMarkers.entrySet()) {
             if (!openMarkers.containsKey(entry.getKey())) {
@@ -140,6 +141,7 @@ public class MissionMapDrawer implements GameMapDrawListener {
                 halfSector.scale(0.25f);
                 mm.getPos().add(halfSector);
                 addMarker(mm);
+                openMarkers.put(entry.getKey(),mm);
             } else {
                 MapMarker m = openMarkers.get(entry.getKey());
                 m.setSector(entry.getValue());

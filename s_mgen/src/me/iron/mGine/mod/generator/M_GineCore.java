@@ -2,6 +2,7 @@ package me.iron.mGine.mod.generator;
 
 
 
+import api.ModPlayground;
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.network.MissionNetworkController;
@@ -21,7 +22,7 @@ import java.util.*;
 public class M_GineCore implements Serializable { //TODO make serializable
     public static M_GineCore instance;
     public int missionsLimit = 3;
-    public int garbageCollectorInterval =1000*60*30; //in millis
+    public int garbageCollectorInterval =1000*10*1; //in millis
 
     private Random rand;
     private HashSet<Mission> missions = new HashSet<>();
@@ -52,7 +53,8 @@ public class M_GineCore implements Serializable { //TODO make serializable
 
     private void updateAll() {
 
-        this.missionsLimit = 30;
+        //this.missionsLimit = 30;
+        this.garbageCollectorInterval = 10;
         ArrayList<Mission> removeQueue = new ArrayList<>();
         for(Mission m: missions) {
             try {
@@ -130,13 +132,14 @@ public class M_GineCore implements Serializable { //TODO make serializable
      */
     public void onMissionUpdate(Mission m) {
         MissionNetworkController.instance.onMissionChanged(m.getUuid());
-        if (m.getState().equals(MissionState.OPEN)) {
+        //remove obsolete questmarkers: mission was claimed or deleted.
+        if ((!m.getState().equals(MissionState.OPEN) || !getMissions().contains(m))&&m.getSector()!=null) {
+            questMarkers.remove(m.getSector());
+        }
+
+        if (m.getState().equals(MissionState.OPEN) && getMissions().contains(m)) {
             if (m.getSector()!=null) {
                 questMarkers.add(m.getSector());
-            }
-        } else {
-            if (m.getSector()!=null) {
-                questMarkers.remove(m.getSector());
             }
         }
     }

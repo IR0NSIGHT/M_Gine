@@ -107,5 +107,7 @@ mission has
 # BUGS
 - missions don't get synched on joining world.
 - missions that share the same position have (probably) overlapping quest markers
+- questmarkers of deleted missions persist
+- to many missions available, more then threshhold should allow
 # Test
 - do quest markers get deleted when the server kills the mission?
