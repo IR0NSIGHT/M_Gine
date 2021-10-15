@@ -1,6 +1,5 @@
 package me.iron.mGine.mod.clientside.map;
 
-import api.ModPlayground;
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import org.schema.common.util.linAlg.Vector3i;
@@ -56,6 +55,11 @@ public class MissionMarker extends MapMarker {
         if (mission != null)
             return hiddenIcon.getSubSprite();
         return super.getSubSprite(sprite);
+    }
+
+    @Override
+    public boolean canDraw() {
+       return MissionClient.instance.isDrawOpenMarkers();
     }
 
     @Override
