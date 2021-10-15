@@ -59,7 +59,7 @@ public class MissionMarker extends MapMarker {
 
     @Override
     public boolean canDraw() {
-       return MissionClient.instance.isDrawOpenMarkers();
+       return MissionClient.instance.isDrawOpenMarkers() && (MissionClient.instance.getSelectedMission()==null || !MissionClient.instance.getSelectedMission().getUuid().equals(uuid));
     }
 
     @Override
@@ -71,5 +71,13 @@ public class MissionMarker extends MapMarker {
 
     private void updateIsHidden() {
         mission = MissionClient.instance.getMission(uuid);
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public boolean isHidded() {
+        return mission == null;
     }
 }

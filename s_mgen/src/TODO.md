@@ -104,3 +104,7 @@ mission has
     
 # BUGS
 - missions don't get synched on joining world.
+- selected mission task markers never get deleted.
+- missions that share the same position have (probably) overlapping quest markers
+# Test
+- do quest markers get deleted when the server kills the mission?

@@ -8,6 +8,7 @@ import api.mod.StarLoader;
 import com.bulletphysics.linearmath.Transform;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.clientside.MissionClient;
+import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import org.lwjgl.util.vector.Vector;
 import org.schema.common.util.linAlg.Vector3i;
@@ -54,7 +55,14 @@ public class MissionMapDrawer implements GameMapDrawListener {
             @Override
             public void onEvent(MousePressEvent mouseEvent) {
                 if (mouseEvent.getRawEvent().pressedLeftMouse() && selected != null) {
-                    centerOn = new Vector3f(selected.getSector().x,selected.getSector().y,selected.getSector().z);
+                    if (selected instanceof MissionMarker && !((MissionMarker)selected).isHidded()) {
+                        MissionMarker m = (MissionMarker)selected;
+                        Mission mm = MissionClient.instance.getMission(m.getUuid());
+                        if (mm != null)
+                            MissionClient.instance.setSelectedMission(mm);
+                    } else {
+                        centerOn = new Vector3f(selected.getSector().x,selected.getSector().y,selected.getSector().z);
+                    }
                 }
                 if (mouseEvent.getRawEvent().pressedRightMouse() && selected != null) {
                     MissionClient.instance.navigateTo(selected.getSector());

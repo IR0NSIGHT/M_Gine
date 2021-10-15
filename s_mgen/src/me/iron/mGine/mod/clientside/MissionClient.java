@@ -1,6 +1,9 @@
 package me.iron.mGine.mod.clientside;
 
 import api.common.GameClient;
+import api.listener.Listener;
+import api.listener.events.input.KeyPressEvent;
+import api.mod.StarLoader;
 import api.utils.StarRunnable;
 import api.utils.gui.ModGUIHandler;
 import me.iron.mGine.mod.ModMain;
@@ -15,6 +18,7 @@ import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.network.PacketInteractMission;
+import org.apache.poi.ss.formula.functions.T;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.GameClientState;
 
@@ -47,16 +51,19 @@ public class MissionClient {
     private Mission selectedMission;
 
     private boolean drawOpenMarkers;
-
+    private ArrayList<TaskMarker> activeTaskMarkers = new ArrayList<>();
     public void setSelectedMission(Mission selectedMission) {
-        for (MissionTask t: selectedMission.getMissionTasks()) {
-            MissionMapDrawer.instance.getMapMarkers().remove(new TaskMarker(t)); //TODO this is jank do it better.
+        for (TaskMarker t: activeTaskMarkers) {
+            MissionMapDrawer.instance.getMapMarkers().remove(t);
         }
+        activeTaskMarkers.clear();
         this.selectedMission = selectedMission;
         if (selectedMission != null) {
             for (MissionTask task: selectedMission.getMissionTasks()) {
                 if (task.getTaskSector() != null) {
-                    MissionMapDrawer.instance.addMarker(new TaskMarker(task));
+                    TaskMarker t = new TaskMarker(task);
+                    MissionMapDrawer.instance.addMarker(t);
+                    activeTaskMarkers.add(t);
                 }
             }
         }
