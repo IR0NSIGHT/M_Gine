@@ -123,7 +123,8 @@ public class DebugUI {
                     if (mp == null)
                         return;
                     mp.setShowAll(see);
-                    mp.synchPlayer();
+                    mp.flagUpdateLocal();
+                    mp.flagForSynch();
                     ModPlayground.broadcastMessage("set 'seeAll' to "+see);
                     return;
                 }
@@ -135,6 +136,18 @@ public class DebugUI {
                     ModPlayground.broadcastMessage(((SegmentController) s).getName()+" || "+((SegmentController) s).getUniqueIdentifier());
                     return;
                 }
+                if (txt.contains("synch")) {
+                    MissionPlayer mp = MissionNetworkController.instance.getPlayerByName(p.getName());
+                    mp.flagForSynch();
+                    if (txt.contains("-a")) {
+                        mp.flagUpdateAll();
+                    }
+                    if (txt.contains("-l")) {
+                        mp.flagUpdateLocal();
+                    }
+                    ModPlayground.broadcastMessage("flagged player " + p.getName() + "for synch");
+                }
+
                 if (txt.contains("success")) {
                     MissionPlayer mp = MissionNetworkController.instance.getPlayerByName(p.getName());
                     for (UUID id: mp.getMissions()) {
@@ -156,17 +169,6 @@ public class DebugUI {
                         }
                     }
                 }
-
-                /* //only works in SP
-                if (txt.contains("sql")) {
-                    printTraderStations();
-                }
-                if (txt.contains("clear")) {
-                    MissionMapDrawer.instance.getMapMarkers().clear();
-                    MissionMapDrawer.instance.updateInternalList();
-                }
-                */
-
             }
 
 

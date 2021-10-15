@@ -77,19 +77,21 @@ public class M_GineCore implements Serializable { //TODO make serializable
             addMission(generateMission(rand.nextLong()));
         }
 
+        //update and synch players
+        MissionNetworkController.instance.onGlobalUpdate();
     }
 
     public void addMission(Mission m) {
         missions.add(m);
         uuidMissionHashMap.put(m.uuid,m);
         onMissionUpdate(m);
+
     }
 
     public void removeMission(Mission m) {
         missions.remove(m);
         uuidMissionHashMap.remove(m.uuid);
-        MissionNetworkController.instance.updateMissionForAll(m);
-        questMarkers.remove(m.getSector());
+        onMissionUpdate(m);
     }
 
     /**
@@ -112,11 +114,7 @@ public class M_GineCore implements Serializable { //TODO make serializable
         for (Mission m: temp) {
             removeMission(m);
         }
-   //    missions.clear();
-   //    uuidMissionHashMap.clear();
-        PacketMissionSynch clearAll = new PacketMissionSynch(new ArrayList<Mission>());
-        clearAll.setClearClient(true);
-        clearAll.sendToAll();
+        //synch happens on next update cycle, players will sort out themselves.
     }
 
     /**
@@ -131,8 +129,8 @@ public class M_GineCore implements Serializable { //TODO make serializable
      * runs when a mission is updated.
      */
     public void onMissionUpdate(Mission m) {
+        MissionNetworkController.instance.onMissionChanged(m.getUuid());
         if (m.getState().equals(MissionState.OPEN)) {
-            MissionNetworkController.instance.updateMissionForAll(m);
             if (m.getSector()!=null) {
                 questMarkers.add(m.getSector());
             }
@@ -141,10 +139,6 @@ public class M_GineCore implements Serializable { //TODO make serializable
                 questMarkers.remove(m.getSector());
             }
         }
-
-        //update the player wrappers
-        MissionNetworkController.instance.updatePlayers(m.getUuid());
-        MissionNetworkController.instance.synchMission(m.getUuid());
     }
 
     public HashSet<Vector3i> getQuestMarkers() {

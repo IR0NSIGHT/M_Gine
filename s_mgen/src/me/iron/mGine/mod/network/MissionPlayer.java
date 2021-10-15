@@ -18,49 +18,88 @@ import java.util.*;
  * eventbased updates.
  */
 public class MissionPlayer implements Serializable {
-    private boolean showAll; //admin feature to always see all missions.
-    private transient HashSet<UUID> missions = new HashSet(){
-        @Override
-        public boolean remove(Object o) {
-            if (contains(o))
-                removeQueue.add((UUID) o);
-            return super.remove(o);
-        }
-    };
     private final String playerName;
-    private ArrayList<UUID> removeQueue = new ArrayList<>();
+    private boolean showAll; //admin feature to always see all missions.
+
+    private HashSet<UUID> missions = new HashSet();
+
+    private boolean isFlaggedForSynch; //flagged for synching
+    private boolean isFlaggedUpdateAll; //flagged to update all missions: basically reboot this player
+
+    private ArrayList<UUID> removeQueue = new ArrayList<>(); //missions to remove on client
+    private ArrayList<UUID> synchQueue = new ArrayList<>(); //missions to add/update on client
+
     public MissionPlayer(String playername) {
         this.playerName = playername;
     }
 
-    public void updateMissions() {
+    /**
+     * global update clock ticks, client updates itself.
+     */
+    public void onGlobalUpdate(ArrayList<UUID> changedMissions) {
+        //apply global changes: change in missions, deletion, creating
+        //apply local changes: visibilty of open missions
+        if (isFlaggedUpdateAll) {
+            forceUpdateAllMissions();
+        } else {
+            //update from list: changed missions
+            for (UUID uuid: changedMissions) {
+                updateMission(uuid);
+            }
+
+
+        }
+
+        if (isFlaggedForSynch) {
+            synchPlayer();
+        }
+
+        isFlaggedUpdateAll = false;
+        isFlaggedForSynch = false;
+    }
+
+    private void forceUpdateAllMissions() {
         for (Mission m: M_GineCore.instance.getMissions()) {
-            updateMission(m);
+            updateMission(m.getUuid());
         }
     }
 
-    public void updateMission(Mission m) {
+    /**
+     * will update the given mission for the player. mission will be synched on next cylce.
+     * @param uuid mission to update and flag for synching.
+     */
+    private void updateMission(UUID uuid) {
         PlayerState player = GameServerState.instance.getPlayerStatesByName().get(playerName);
         if (player == null)
             return;
 
-        if (M_GineCore.instance.getMissionByUUID(m.getUuid())==null) {
+        Mission m = M_GineCore.instance.getMissionByUUID(uuid);
+
+        boolean existGl = m!=null;
+        boolean canSee = existGl && m.isVisibleFor(player) || (player.isAdmin()&&showAll);
+        boolean existLc = missions.contains(m.getUuid());
+
+        //remove if mission isnt listed globally or player cant see it.
+        if (existLc &&  (!canSee || !existGl)) {
             missions.remove(m.getUuid());
+            removeQueue.add(uuid);
+            flagForSynch();
             return;
         }
 
-        if ( m.isVisibleFor(player) || (player.isAdmin()&&showAll)) {
+        if (canSee && existGl) {
+            //add mission
             missions.add(m.getUuid());
-        } else {
-            missions.remove(m.getUuid());
+            synchQueue.add(uuid);
+            flagForSynch();
         }
     }
 
-    public void synchPlayer() {
+    private void synchPlayer() {
         synchPlayer(null);
     }
 
-    public void synchPlayer(UUID uuid) {
+    private void synchPlayer(UUID uuid) {
         synchPlayer(uuid,false);
     }
 
@@ -69,7 +108,7 @@ public class MissionPlayer implements Serializable {
      * @param uuid
      * @param force
      */
-    public void synchPlayer(UUID uuid, boolean force) {
+    private void synchPlayer(UUID uuid, boolean force) {
         if (!force && (uuid != null && !missions.contains(uuid)))
             return;
 
@@ -108,7 +147,31 @@ public class MissionPlayer implements Serializable {
 
     public void setShowAll(boolean showAll) {
         this.showAll = showAll;
-        updateMissions();
+        forceUpdateAllMissions();
         synchPlayer();
+    }
+
+    public boolean isFlaggedForSynch() {
+        return isFlaggedForSynch;
+    }
+
+    public void flagForSynch() {
+        isFlaggedForSynch = true;
+    }
+
+    public boolean isFlaggedUpdateAll() {
+        return isFlaggedUpdateAll;
+    }
+
+    /**
+     * flag to update player-dependent changes: can i still see all missions that i have?
+     */
+    public void flagUpdateLocal() { //TODO find a better way that doesnt involve bruteforcing all missions.
+        flagUpdateAll();
+    }
+
+    public void flagUpdateAll() {
+        isFlaggedUpdateAll = true;
+        flagForSynch();
     }
 }
