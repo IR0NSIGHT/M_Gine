@@ -1,8 +1,10 @@
 package me.iron.mGine.mod.clientside;
 
+import api.ModPlayground;
 import api.common.GameClient;
+
 import api.listener.Listener;
-import api.listener.events.input.KeyPressEvent;
+import api.listener.events.player.PlayerChangeSectorEvent;
 import api.mod.StarLoader;
 import api.utils.StarRunnable;
 import api.utils.gui.ModGUIHandler;
@@ -10,7 +12,6 @@ import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.clientside.GUI.GUISelectedMissionTab;
 import me.iron.mGine.mod.clientside.GUI.GUIMissionListTab;
 import me.iron.mGine.mod.clientside.GUI.MissionGUIControlManager;
-import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.clientside.map.MapMarker;
 import me.iron.mGine.mod.clientside.map.MissionMapDrawer;
 import me.iron.mGine.mod.clientside.map.TaskMarker;
@@ -18,11 +19,9 @@ import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.network.PacketInteractMission;
-import org.apache.poi.ss.formula.functions.T;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.client.data.GameClientState;
 
-import javax.vecmath.Vector3f;
 import java.util.*;
 
 /**
@@ -102,6 +101,13 @@ public class MissionClient {
                 ModGUIHandler.registerNewControlManager(ModMain.instance.getSkeleton(), controlManager);
             }
         }.runLater(ModMain.instance,100);
+
+        StarLoader.registerListener(PlayerChangeSectorEvent.class, new Listener<PlayerChangeSectorEvent>() {
+            @Override
+            public void onEvent(PlayerChangeSectorEvent playerChangeSectorEvent) {
+                updateSelectedMission();
+            }
+        },ModMain.instance);
     }
 
     public void update() {
@@ -122,7 +128,6 @@ public class MissionClient {
     }
 
     private void updateSelectedMission() { //TODO gets called every frame.
-    //    ModPlayground.broadcastMessage("client update selected mission");
         if (selectedMission == null)
             return;
 
@@ -133,7 +138,7 @@ public class MissionClient {
             }
         }
         for (Mission m: available) {
-            if (selectedMission.equals(m)) {
+            if (selectedMission.equals(m) && getMission(m.getUuid())!=null) {
                 setSelectedMission(m);
                 return;
             }
@@ -146,7 +151,7 @@ public class MissionClient {
         }
 
 
-        selectedMission = null; //old mission doesnt exist anymore in lists.
+        setSelectedMission(null); //old mission doesnt exist anymore in lists.
     }
 
     private void updateSelectedTask() {
@@ -157,9 +162,6 @@ public class MissionClient {
         if (selectedTask == null || selectedTask.mission != selectedMission || !selectedTask.getCurrentState().equals(MissionState.IN_PROGRESS)) {
             selectedTask = getNextActiveTask(selectedMission);
         }
-    }
-    private void onSelectedMissionChange() {
-
     }
 
     public void navigateTo(Vector3i sector) {
