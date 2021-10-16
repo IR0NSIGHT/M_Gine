@@ -54,7 +54,7 @@ public class PacketMissionSynch extends Packet {
     }
 
     public void addRemoveList(ArrayList<UUID> removeList) {
-        this.removeList.addAll(removeList);
+        this.removeList.addAll(removeList);//ist null gross?
     }
 
     public PacketMissionSynch() {} //default constructor for starloader

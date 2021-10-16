@@ -59,6 +59,10 @@ public class MissionPlayer implements Serializable {
     }
 
     private void forceUpdateAllMissions() {
+        ArrayList<UUID> uuids = new ArrayList<>(missions);
+        for (UUID uuid: uuids) {
+            updateMission(uuid);
+        }
         for (Mission m: M_GineCore.instance.getMissions()) {
             updateMission(m.getUuid());
         }
@@ -77,11 +81,11 @@ public class MissionPlayer implements Serializable {
 
         boolean existGl = m!=null;
         boolean canSee = existGl && m.isVisibleFor(player) || (player.isAdmin()&&showAll);
-        boolean existLc = m!=null && missions.contains(m.getUuid());
+        boolean existLc = missions.contains(uuid);
 
         //remove if mission isnt listed globally or player cant see it.
         if (existLc &&  (!canSee || !existGl)) {
-            missions.remove(m.getUuid());
+            missions.remove(uuid);
             removeQueue.add(uuid);
             flagForSynch();
             return;

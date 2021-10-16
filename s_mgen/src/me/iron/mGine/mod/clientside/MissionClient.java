@@ -46,10 +46,10 @@ public class MissionClient {
 
     private HashMap<UUID,Mission> uuidMissionHashMap = new HashMap<>();
 
-    public static boolean autoNav = true;
+    public static boolean autoNav = true; //currently obsolete
     private Mission selectedMission;
+    private boolean drawOpenMarkers = true; //show the open quest markers on map
 
-    private boolean drawOpenMarkers;
     private ArrayList<TaskMarker> activeTaskMarkers = new ArrayList<>();
     public void setSelectedMission(Mission selectedMission) {
         for (TaskMarker t: activeTaskMarkers) {
@@ -82,16 +82,6 @@ public class MissionClient {
     public MissionClient() {
         instance = this;
         MissionMapDrawer drawer = new MissionMapDrawer();
-        new StarRunnable(){
-            long lastRan = System.currentTimeMillis();
-            @Override
-            public void run() {
-                if (lastRan + 2000 < System.currentTimeMillis()) {
-                    lastRan =System.currentTimeMillis();
-                //    update();
-                }
-            }
-        }.runTimer(ModMain.instance,5);
 
         //register the GUI window controller
         new StarRunnable() {
@@ -180,7 +170,6 @@ public class MissionClient {
     }
 
     public void overwriteMissions(Collection<Mission> missions) {
-        //TODO get missions from server
         available.clear();
         active.clear();
         finished.clear();
@@ -188,7 +177,6 @@ public class MissionClient {
         for (Mission m: missions) {
             addMission(m);
         }
-    //    ModPlayground.broadcastMessage("OVERWRITE");
         update();
     }
 

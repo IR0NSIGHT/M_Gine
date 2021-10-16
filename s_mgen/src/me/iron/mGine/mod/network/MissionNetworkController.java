@@ -1,5 +1,6 @@
 package me.iron.mGine.mod.network;
 
+import api.ModPlayground;
 import api.listener.Listener;
 import api.listener.events.player.PlayerChangeSectorEvent;
 import api.listener.events.player.PlayerJoinWorldEvent;
@@ -44,6 +45,9 @@ public class MissionNetworkController {
             public void onEvent(PlayerChangeSectorEvent playerChangeSectorEvent) {
                 String player =playerChangeSectorEvent.getPlayerState().getName();
                 MissionPlayer mp = getPlayerByName(player);
+                if (mp == null)
+                    return;
+
                 mp.flagUpdateLocal(); //update visibility for open quests.
             }
         },ModMain.instance);
@@ -53,6 +57,13 @@ public class MissionNetworkController {
      * global update clock ticks, update and synch all players.
      */
     public void onGlobalUpdate() {
+        for (PlayerState p: GameServerState.instance.getPlayerStatesByName().values()) {
+            if (getPlayerByName(p.getName())==null) {
+                ModPlayground.broadcastMessage("created mp for " + p.getName());
+                addPlayer(p.getName());
+            }
+        }
+
         for (MissionPlayer mp: playersByName.values()) {
             mp.onGlobalUpdate(changedQueue);
         }

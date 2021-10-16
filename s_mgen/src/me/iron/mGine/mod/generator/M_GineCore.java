@@ -52,9 +52,8 @@ public class M_GineCore implements Serializable { //TODO make serializable
     }
 
     private void updateAll() {
-
-        //this.missionsLimit = 30;
-        this.garbageCollectorInterval = 10;
+        this.garbageCollectorInterval = 1000 * 10; //TODO debug value
+        this.missionsLimit = 20;
         ArrayList<Mission> removeQueue = new ArrayList<>();
         for(Mission m: missions) {
             try {

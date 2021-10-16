@@ -147,7 +147,7 @@ public class MissionUtil {
         while (i < 50) {
             i++;
             ei = ElementKeyMap.getInformationKeyMap().get((short)r.nextInt(256));
-            if (ei.isShoppable() && !ei.isDeprecated())
+            if (ei != null && ei.isShoppable() && !ei.isDeprecated()) //TODO threw a nullpoint once?!
                 break;
         }
 

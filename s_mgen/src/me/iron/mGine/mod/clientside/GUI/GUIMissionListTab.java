@@ -1,18 +1,27 @@
 package me.iron.mGine.mod.clientside.GUI;
 
+import api.ModPlayground;
+import api.utils.StarRunnable;
+import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.missions.MissionUtil;
 import org.schema.game.client.data.GameClientState;
 import org.schema.game.common.controller.observer.DrawerObservable;
 import org.schema.game.common.controller.observer.DrawerObserver;
+import org.schema.schine.common.language.Lng;
 import org.schema.schine.graphicsengine.core.MouseEvent;
 import org.schema.schine.graphicsengine.forms.font.FontLibrary;
 import org.schema.schine.graphicsengine.forms.gui.*;
 import org.schema.schine.input.InputState;
+import org.schema.schine.network.server.ServerMessage;
 
+import javax.vecmath.Vector4f;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.HashSet;
+
+import static org.lwjgl.opengl.GL11.glGetError;
 
 /**
  * STARMADE MOD
@@ -24,6 +33,7 @@ import java.util.HashSet;
 public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObserver, GUICallback {
     private GUIElementList list;
     private ListType type;
+    private boolean updateFlag;
     protected enum ListType {
         ACTIVE("Active"),
         OPEN("Open"),
@@ -37,8 +47,14 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
             return name;
         }
     }
-    private HashSet<Mission> missions = new HashSet<>();
+    private final HashSet<Mission> missions = new HashSet<>();
+    private boolean lockFlag;
 
+    public static Vector4f selectedColor = new Vector4f(0.35f,0.35f,0.35f,1);
+    public static Vector4f unselectedColor = new Vector4f(0.298f,0.298f,0.298f,1);
+
+    private int blockSize = 40;
+    private int blockWidth = blockSize *20;
     public GUIMissionListTab(float width, float height, GUIElement dependent, InputState inputState, ListType type) {
         super(width, height, dependent, inputState);
         this.type = type;
@@ -54,10 +70,21 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
                 break;
         }
     }
+    public void flagForUpdate() {
+        updateFlag = true;
+    }
 
     public void setMissions(HashSet<Mission> missions) {
-        this.missions = missions;
-        updateList();
+        synchronized (this.missions) {
+            this.missions.clear();
+            this.missions.addAll(missions);
+            try {
+                flagForUpdate();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
     }
 
     @Override
@@ -79,45 +106,66 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
     }
 
     private void updateList() {
-        try {
-            if (list == null)
-                return;
-            //TODO button with "navigate to"
-            int i = 0;
-            for (GUIListElement listElement: list) {
-                if (listElement.getContent() instanceof GUITextOverlay) {
-                    ((GUITextOverlay) listElement.getContent()).getText().clear();
-                }
-            }
+        synchronized (this.missions) { //missions is accessed by the main(?) thread that updates it and the GUI/GL thread that creates the GUI. gotta restrict access to one at a time.
+            try {
+                list.clear();
+                Mission selected = MissionClient.instance.getSelectedMission();
+                for (Mission m: missions) {
+                    boolean isSelected = m.equals(selected);
+                    int blockHeight = blockSize*(isSelected?3:1);
+                    final GUIColoredRectangle background = new GUIColoredRectangle(getState(),blockWidth-blockSize,blockHeight,isSelected?selectedColor:unselectedColor);
 
-            for (final Mission m: missions) {
-                if (i>=list.size())
-                    break;
-                //overwrite the text of each mission
-                GUIListElement listEl = list.get(i);
-                if (listEl.getContent() instanceof GUITextOverlay) {
-                    GUITextOverlay content = (GUITextOverlay) listEl.getContent();
-                    content.getText().clear();
-                    content.getText().add(new Object(){
+                    GUITextOverlay textBox1 = new GUITextOverlay(blockWidth-blockSize,blockHeight, FontLibrary.FontSize.BIG,getState());
+                    textBox1.onInit();
+                    textBox1.getText().add(m.getName());
+                    if (isSelected) {
+                        textBox1.getText().add(m.getBriefing());
+                    }
+                    textBox1.autoHeight = true;
+                    textBox1.autoWrapOn = background;
+                    background.setHeight(textBox1.getHeight());
+
+                    final Mission fm = m;
+                    GUITextButton dropButton = new GUITextButton(getState(), blockSize,blockSize, isSelected?"^":"v", new GUICallback() {
                         @Override
-                        public String toString() {
-                            String s = m.getName() + "\nremaining time:" + MissionUtil.getRemainingTime(m);
-                            if (false && GameClientState.instance.getPlayer().isAdmin()) {
-                                s += "\n"+ (m.isVisibleFor(GameClientState.instance.getPlayer())?"visible":"invisible");
-                                s += "\n" + (m.canClaim(GameClientState.instance.getPlayer())?"can claim":"can not claim");
-                                s += "\n publish time:" + (MissionUtil.formatTime((System.currentTimeMillis()-m.getPublishTime())/1000));
+                        public void callback(GUIElement guiElement, MouseEvent mouseEvent) {
+                            if (mouseEvent.pressedLeftMouse()) {
+                                Mission selected = MissionClient.instance.getSelectedMission();
+                                if (fm.equals(selected)) {
+                                    MissionClient.instance.setSelectedMission(null);
+                                } else {
+                                    MissionClient.instance.setSelectedMission(fm);
+                                }
                             }
-                            return s;
+                        }
+
+                        @Override
+                        public boolean isOccluded() {
+                            return false;
                         }
                     });
-                    LIST_TO_MISSION.put(listEl,m);
-                }
-                i+=2;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
+                    textBox1.setPos(0,0,0);
+                    dropButton.setPos(blockWidth-blockSize,0,0);
+                    background.attach(textBox1);
+                    background.attach(dropButton);
+                    list.addWithoutUpdate(new GUIListElement(background,getState())); //wrap text in list element, and add to list
+                }
+                list.updateDim();
+            } catch (ConcurrentModificationException|NullPointerException ex) {
+                ex.printStackTrace();
+            }
+
+        }
+    }
+
+    @Override
+    public void draw() {
+        super.draw();
+        if (updateFlag) {
+            updateFlag = false;
+            updateList();
+        }
     }
 
     private HashMap<GUITextButton, GUIListElement> BUTTON_TO_LIST = new HashMap<>();
@@ -143,7 +191,7 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
 
     @Override
     public void update(DrawerObservable drawerObservable, Object o, Object o1) {
-        updateList();
+        flagForUpdate();
     }
 
     @Override
