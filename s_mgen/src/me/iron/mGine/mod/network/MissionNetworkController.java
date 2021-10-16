@@ -39,10 +39,19 @@ public class MissionNetworkController {
                 mp.flagForSynch();
             }
         }, ModMain.instance);
+        addSectorChangeListener();
+    }
 
-        StarLoader.registerListener(PlayerChangeSectorEvent.class, new Listener<PlayerChangeSectorEvent>() {
+    public Listener<PlayerChangeSectorEvent> playerChangeSectorEventListener;
+    public void addSectorChangeListener() {
+        playerChangeSectorEventListener = new Listener<PlayerChangeSectorEvent>() {
             @Override
             public void onEvent(PlayerChangeSectorEvent playerChangeSectorEvent) {
+                if (!this.equals(MissionNetworkController.instance.playerChangeSectorEventListener)) {
+                    StarLoader.unregisterListener(PlayerChangeSectorEvent.class,this);
+                    ModPlayground.broadcastMessage("two sector change listeners detected, will commit sudoku");
+                    return;
+                }
                 String player =playerChangeSectorEvent.getPlayerState().getName();
                 MissionPlayer mp = getPlayerByName(player);
                 if (mp == null)
@@ -50,7 +59,8 @@ public class MissionNetworkController {
 
                 mp.flagUpdateLocal(); //update visibility for open quests.
             }
-        },ModMain.instance);
+        };
+        StarLoader.registerListener(PlayerChangeSectorEvent.class, playerChangeSectorEventListener,ModMain.instance);
     }
 
     /**
@@ -59,7 +69,6 @@ public class MissionNetworkController {
     public void onGlobalUpdate() {
         for (PlayerState p: GameServerState.instance.getPlayerStatesByName().values()) {
             if (getPlayerByName(p.getName())==null) {
-                ModPlayground.broadcastMessage("created mp for " + p.getName());
                 addPlayer(p.getName());
             }
         }

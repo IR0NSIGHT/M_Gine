@@ -113,5 +113,7 @@ mission has
     - actually the marker system on the server only allows one marker per sector, overlapping missions just dont get shown.
 - seeAll false doesnt delete sent missions from client (but does correctly update open markers)
 - questiontag sprite has very very light edges
+- sectorchange on server doesnt trigger synch/update for players
+- transport missions dont unload: either cross faction transfer or temportary stations.
 # Test
 - do missions get locked down if they get claimed or are double claims possible?

@@ -1,6 +1,9 @@
 package me.iron.mGine.mod.debug;
 
 import api.ModPlayground;
+import api.listener.Listener;
+import api.listener.events.player.PlayerChangeSectorEvent;
+import api.mod.StarLoader;
 import api.mod.StarMod;
 import api.utils.game.chat.CommandInterface;
 import me.iron.mGine.mod.ModMain;
@@ -10,11 +13,14 @@ import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.network.MissionNetworkController;
 import me.iron.mGine.mod.network.MissionPlayer;
 import org.hsqldb.server.Server;
+import org.newdawn.slick.util.pathfinding.navmesh.Link;
+import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.server.ServerMessage;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -89,6 +95,14 @@ public class DebugCommand implements CommandInterface {
         }
         if (strings.length == 1 && strings[0].equals("restart")) {
             M_GineCore.instance.updateLoop(1);
+            MissionNetworkController.instance.addSectorChangeListener();
+            return true;
+        }
+        if (strings.length == 1 && strings[0].equals("listen")) {
+            ArrayList<Listener> listeners = StarLoader.listeners.get(PlayerChangeSectorEvent.class);
+            for (Listener l: listeners) {
+                StarLoader.fireEvent(new PlayerChangeSectorEvent(playerState,1,2),true);
+            }
             return true;
         }
         return false;
