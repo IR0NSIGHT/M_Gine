@@ -180,4 +180,17 @@ public class MissionPlayer implements Serializable {
         isFlaggedUpdateAll = true;
         flagForSynch();
     }
+
+    @Override
+    public String toString() {
+        return "MissionPlayer{" +
+                "playerName='" + playerName + '\'' +
+                ", showAll=" + showAll +
+                ", missions=" + missions.size() +
+                ", isFlaggedForSynch=" + isFlaggedForSynch +
+                ", isFlaggedUpdateAll=" + isFlaggedUpdateAll +
+                ", removeQueue=" + removeQueue.size() +
+                ", synchQueue=" + synchQueue.size() +
+                '}';
+    }
 }

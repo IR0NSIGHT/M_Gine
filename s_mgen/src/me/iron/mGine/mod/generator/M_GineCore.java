@@ -2,6 +2,7 @@ package me.iron.mGine.mod.generator;
 
 
 
+import api.ModPlayground;
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.network.MissionNetworkController;
@@ -24,31 +25,43 @@ public class M_GineCore implements Serializable { //TODO make serializable
 
     private Random rand;
     private Random randomGC = new Random();
-
+    private StarRunnable gameLoop;
     private HashSet<Mission> missions = new HashSet<>();
     private transient HashMap<UUID,Mission> uuidMissionHashMap = new HashMap<>();
     private HashSet<Vector3i> questMarkers = new HashSet<>();
 
     public M_GineCore() {
         instance = this;
-        updateLoop(1);
         rand = new Random();
         new MissionNetworkController();
         new LoreGenerator();
+        updateLoop(1);
     }
 
+    public long lastUpdate;
+    public boolean pingPong;
     public void updateLoop(final int intervallSeconds) {
-        new StarRunnable() {
-            long last = 0;
+         gameLoop = new StarRunnable() {
+            long last = System.currentTimeMillis()+1000*5;
+            boolean ping;
             @Override
             public void run() {
-
+                if (!this.equals(gameLoop)) {
+                    ModPlayground.broadcastMessage("double gameloop detected, will suicide now.");
+                    cancel();
+                }
                 if (last + intervallSeconds*1000<System.currentTimeMillis() && GameServerState.instance.getPlayerStatesByName().values().size() != 0) {
                     last = System.currentTimeMillis();
+                    lastUpdate = last;
+                    if (M_GineCore.instance.pingPong) {
+                        ModPlayground.broadcastMessage("m_gine core mainloop: "+ (ping?"ping":"pong"));
+                        ping = !ping;
+                    }
                     updateAll();
                 }
             }
-        }.runTimer(ModMain.instance,1);
+        };
+        gameLoop.runTimer(ModMain.instance,5);
     }
 
     private void updateAll() {
@@ -60,24 +73,35 @@ public class M_GineCore implements Serializable { //TODO make serializable
                     removeQueue.add(m);
                 }
             } catch (Exception ex) {
-
+                ex.printStackTrace();
             }
-
         }
 
 
         for (Mission m: removeQueue) {
-            removeMission(m);
+            try {
+                removeMission(m);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
 
         //add new missions to keep amount always at missionsLimit
         while (missions.size()<missionsLimit) {
-            addMission(generateMission(rand.nextLong()));
+            try {
+                addMission(generateMission(rand.nextLong()));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         //update and synch players
-        MissionNetworkController.instance.onGlobalUpdate();
+        try {
+            MissionNetworkController.instance.onGlobalUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void addMission(Mission m) {
@@ -154,5 +178,12 @@ public class M_GineCore implements Serializable { //TODO make serializable
         //generate that type
         Mission m = type.generate(rand, seed);
         return m;
+    }
+
+    private class GameLoop extends StarRunnable {
+        @Override
+        public void run() {
+
+        }
     }
 }

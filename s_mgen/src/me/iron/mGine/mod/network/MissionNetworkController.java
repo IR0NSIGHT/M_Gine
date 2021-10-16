@@ -26,6 +26,7 @@ public class MissionNetworkController {
     private HashMap<String,MissionPlayer> playersByName = new HashMap<>();
     private ArrayList<UUID> changedQueue = new ArrayList<>();
 
+    private boolean flagUpdateSynchAll;
     public MissionNetworkController() {
         instance = this;
         initMissionPlayers();
@@ -33,8 +34,10 @@ public class MissionNetworkController {
             @Override
             public void onEvent(PlayerSpawnEvent event) {
                 addPlayer(event.getPlayer().getName());
+                MissionPlayer mp = getPlayerByName(event.getPlayer().getName());
+                mp.flagUpdateAll();
+                mp.flagForSynch();
             }
-
         }, ModMain.instance);
 
         StarLoader.registerListener(PlayerChangeSectorEvent.class, new Listener<PlayerChangeSectorEvent>() {
@@ -62,9 +65,14 @@ public class MissionNetworkController {
         }
 
         for (MissionPlayer mp: playersByName.values()) {
+            if (flagUpdateSynchAll) {
+                mp.flagUpdateAll();
+                mp.flagForSynch();
+            }
             mp.onGlobalUpdate(changedQueue);
         }
         changedQueue.clear();
+        flagUpdateSynchAll = false;
     }
 
     /**
@@ -109,4 +117,11 @@ public class MissionNetworkController {
         mp.setShowAll(seeAll);
     }
 
+    public void setFlagUpdateSynchAll() {
+        this.flagUpdateSynchAll = true;
+    }
+
+    public Collection<MissionPlayer> getMissionPlayers() {
+        return playersByName.values();
+    }
 }

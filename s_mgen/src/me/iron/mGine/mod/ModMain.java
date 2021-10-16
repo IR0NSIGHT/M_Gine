@@ -2,10 +2,12 @@ package me.iron.mGine.mod;
 
 import api.listener.events.controller.ClientInitializeEvent;
 import api.listener.events.controller.ServerInitializeEvent;
+import api.mod.StarLoader;
 import api.mod.StarMod;
 import api.network.packets.PacketUtil;
 import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.clientside.map.SpriteList;
+import me.iron.mGine.mod.debug.DebugCommand;
 import me.iron.mGine.mod.debug.DebugUI;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.missions.DataBaseManager;
@@ -28,6 +30,7 @@ public class ModMain extends StarMod {
         instance = this;
         PacketUtil.registerPacket(PacketMissionSynch.class);
         PacketUtil.registerPacket(PacketInteractMission.class);
+        StarLoader.registerCommand(new DebugCommand());
         super.onEnable();
     }
 
