@@ -31,8 +31,7 @@ public class MissionPatrolSectors extends Mission {
     int cargoAmount;
     float completionRadius;
     float distanceTotal;
-    int clientFactionID;
-    String clientFactionName;
+
     Vector3i center;
     public MissionPatrolSectors(final Random rand, long seed) {
         super(rand,seed);

@@ -29,10 +29,7 @@ import java.util.Random;
 * DATE: 22.09.2021
 * TIME: 00:47
 */public class MissionScout extends Mission {
-    private int clientFactionID;
-    private String clientFactionName;
     private ArrayList<Vector3i> sectors;
-    private float distanceTotal;
     public MissionScout(Random rand, long seed, Vector3i center) {
         super(rand,seed);
 

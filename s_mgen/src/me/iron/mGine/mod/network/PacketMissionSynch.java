@@ -69,6 +69,10 @@ public class PacketMissionSynch extends Packet {
                 try {
                     Class<?> clazz = Class.forName(packetReadBuffer.readString());
                     Mission m = (Mission) packetReadBuffer.readObject(clazz);
+                    if (m == null) {
+                        new NullPointerException("tried reading mission from synch packet buffer").printStackTrace();
+                        continue;
+                    }
                     m.readFromBuffer(packetReadBuffer);
                     missions.add(m);
                 } catch (ClassNotFoundException | ClassCastException ex) {

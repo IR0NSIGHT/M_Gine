@@ -25,6 +25,9 @@ public class Mission implements Serializable {
     private String captain = ""; //captain of mission who controls party.
     private HashSet<String> party = new HashSet<>();
 
+    protected int clientFactionID;
+    protected String clientFactionName;
+
     //generation parameters
     protected MissionType type;
     protected int duration; //in seconds
@@ -394,6 +397,10 @@ public class Mission implements Serializable {
      * @return true or false, you know, a boolean.
      */
     public boolean canClaim(PlayerState p) {
+        int pFaction = p.getFactionId();
+        if  (GameServerState.instance.getFactionManager().isEnemy(pFaction,clientFactionID))
+            return false;
+
         if (getSector() != null && !p.getCurrentSector().equals(getSector())) {
             return false;
         }

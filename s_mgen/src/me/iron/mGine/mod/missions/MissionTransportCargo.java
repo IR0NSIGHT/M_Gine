@@ -1,5 +1,6 @@
 package me.iron.mGine.mod.missions;
 
+import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.LoreGenerator;
 import me.iron.mGine.mod.generator.Mission;
@@ -11,17 +12,20 @@ import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
 import org.hsqldb.Database;
 import org.hsqldb.DatabaseManager;
+import org.hsqldb.lib.Collection;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.element.ElementInformation;
+import org.schema.game.common.data.player.PlayerState;
+import org.schema.game.common.data.player.faction.Faction;
 import org.schema.game.common.data.world.*;
+import org.schema.game.server.data.FactionState;
 import org.schema.game.server.data.GameServerState;
+import org.schema.game.server.data.simulation.npc.NPCFaction;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
 
 /**
  * STARMADE MOD
@@ -37,13 +41,19 @@ public class MissionTransportCargo extends Mission {
     private String cargoName; //block name
     private int cargoUnits; //amount to transport
 
+    private int receiverFactionID;
+    private String receveiverFactionName;
+
     public MissionTransportCargo(Random rand, long seed) {
         super(rand, seed);
         this.name = "Transport cargo";
         //get station in from sector
         try {
+            NPCFaction f = DataBaseManager.instance.getNPCFactions().get(rand.nextInt(DataBaseManager.instance.getNPCFactions().size()));
+            clientFactionID = f.getIdFaction();
+            clientFactionName = f.getName();
             //get origin
-            from = MissionUtil.getRandomNPCStationByFaction(-10000000,null,rand);
+            from = MissionUtil.getRandomNPCStationByFaction(clientFactionID,null,rand);
             if (from == null) {
                 new NullPointerException().printStackTrace();
                 return;
@@ -58,9 +68,29 @@ public class MissionTransportCargo extends Mission {
             Vector3i fromSector = from.getPosition();
 
             //get target
+            receiverFactionID = clientFactionID;
+            receveiverFactionName = clientFactionName;
+
+            //ship to another (neutral/friendly NPC) faction
+            List<NPCFaction> friends = new ArrayList<>(DataBaseManager.instance.getNPCFactions());
+            Collections.shuffle(friends);
+
+            Iterator<NPCFaction> factionObjectIterator = friends.iterator();
+
+            while (factionObjectIterator.hasNext()) {
+                Faction ff = factionObjectIterator.next();
+                //sort out non-npcs and enemies
+                if (clientFactionID==ff.getIdFaction() || !ff.isNPC() || (((FactionState)f.getState()).getFactionManager().isEnemy(clientFactionID,ff.getIdFaction())))
+                    continue;
+                receiverFactionID = ff.getIdFaction();
+                receveiverFactionName = ff.getName();
+                break;
+            }
+
+
             Vector3i startSearch = new Vector3i(fromSector); startSearch.sub(1000,1000,1000);
             Vector3i endSearch = new Vector3i(fromSector); endSearch.add(1000,1000,1000);
-            ArrayList<DataBaseSystem> systems = DataBaseManager.instance.getSystems(-10000000); //traders
+            ArrayList<DataBaseSystem> systems = DataBaseManager.instance.getSystems(receiverFactionID);
             Collections.shuffle(systems,rand);
             to = DataBaseManager.instance.getExistingRandomStation(systems,from.getPosition(), SpaceStation.SpaceStationType.FACTION,seed);
 
@@ -85,11 +115,18 @@ public class MissionTransportCargo extends Mission {
 
             //set UI stuff
             this.briefing = LoreGenerator.instance.generateTransportBriefing(from,to,cargoName,cargoUnits,rand.nextLong());
-            this.name = LoreGenerator.instance.generateTransportName(from,to,cargoName,cargoUnits,rand.nextLong());
+            this.name = LoreGenerator.instance.generateTransportName(from,to,cargoName,cargoUnits,rand.nextLong()) + " for " + clientFactionName;
             //TODO requirements: big cargo
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean canClaim(PlayerState p) {
+        int pFaction = p.getFactionId();
+        boolean isEnemyWithReceiver = GameServerState.instance.getFactionManager().isEnemy(pFaction,receiverFactionID);
+        return super.canClaim(p) && !isEnemyWithReceiver;
     }
 
     @Override
