@@ -1,6 +1,5 @@
 package me.iron.mGine.mod.clientside;
 
-import api.ModPlayground;
 import api.common.GameClient;
 
 import api.listener.Listener;

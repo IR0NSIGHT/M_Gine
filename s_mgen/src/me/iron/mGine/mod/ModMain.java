@@ -40,7 +40,6 @@ public class ModMain extends StarMod {
     public void onServerCreated(ServerInitializeEvent serverInitializeEvent) {
         super.onServerCreated(serverInitializeEvent);
         new M_GineCore();
-        DebugUI.init();
         try {
             new DataBaseManager();
         } catch (SQLException throwables) {
@@ -51,9 +50,6 @@ public class ModMain extends StarMod {
     @Override
     public void onClientCreated(ClientInitializeEvent clientInitializeEvent) {
         new MissionClient();
-        //DebugUI.localInit();
-
-
         super.onClientCreated(clientInitializeEvent);
     }
 

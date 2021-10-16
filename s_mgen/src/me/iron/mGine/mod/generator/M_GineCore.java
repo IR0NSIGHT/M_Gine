@@ -2,10 +2,8 @@ package me.iron.mGine.mod.generator;
 
 
 
-import api.ModPlayground;
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
-import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.network.MissionNetworkController;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.server.data.GameServerState;
@@ -103,9 +101,6 @@ public class M_GineCore implements Serializable { //TODO make serializable
         randomGC.setSeed(m.getSeed());
         boolean finished = m.getState().equals(MissionState.SUCCESS)||m.getState().equals(MissionState.FAILED);
         boolean unclaimedForToLong = (m.getState().equals(MissionState.OPEN) && (System.currentTimeMillis()-m.getPublishTime())> (0.75+0.5* randomGC.nextFloat())*(garbageCollectorInterval));
-        if (unclaimedForToLong) {
-            ModPlayground.broadcastMessage("obsolete after " + MissionUtil.formatTime((System.currentTimeMillis()-m.getPublishTime())/1000));
-        }
         return finished || unclaimedForToLong;
     }
 

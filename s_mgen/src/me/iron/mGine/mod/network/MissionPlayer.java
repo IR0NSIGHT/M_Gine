@@ -85,6 +85,8 @@ public class MissionPlayer implements Serializable {
 
         //remove if mission isnt listed globally or player cant see it.
         if (existLc &&  (!canSee || !existGl)) {
+            //TODO dont tell client to delete finished mission.
+
             missions.remove(uuid);
             removeQueue.add(uuid);
             flagForSynch();
