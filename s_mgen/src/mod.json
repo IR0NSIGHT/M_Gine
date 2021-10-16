@@ -1,13 +1,13 @@
 {
-  "name": "mGine",
+  "name": "M_Gine",
   "author": "IR0NSIGHT",
-  "description": "random mission generator",
+  "description": "procedural mission generator",
   "version": "0.0.1",
-  "starmade_version": "dev - v0.202.118",
+  "starmade_version": "dev - v0.202.127",
   "client_mod": false,
   "server_mod": false,
   "main_class": "me.iron.mGine.mod.ModMain",
-  "smd_resource_id": 12345,
+  "smd_resource_id": 8297,
   "dependencies": [-1],
   "core_mod": false,
   "requires_class_resize": false
