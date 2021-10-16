@@ -420,6 +420,10 @@ public class Mission implements Serializable {
         this.rewardCredits = rewardCredits;
     }
 
+    public long getSeed() {
+        return seed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

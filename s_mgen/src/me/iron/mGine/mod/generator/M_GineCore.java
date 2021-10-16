@@ -5,8 +5,8 @@ package me.iron.mGine.mod.generator;
 import api.ModPlayground;
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
+import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.network.MissionNetworkController;
-import me.iron.mGine.mod.network.PacketMissionSynch;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.server.data.GameServerState;
 
@@ -21,10 +21,12 @@ import java.util.*;
  */
 public class M_GineCore implements Serializable { //TODO make serializable
     public static M_GineCore instance;
-    public int missionsLimit = 3;
-    public int garbageCollectorInterval =1000*10*1; //in millis
+    public int missionsLimit = 25;
+    public int garbageCollectorInterval =1000*60*30; //in millis, after 0.75..1.25 * intervall, an unclaimed mission will be deleted, replaced by a new one
 
     private Random rand;
+    private Random randomGC = new Random();
+
     private HashSet<Mission> missions = new HashSet<>();
     private transient HashMap<UUID,Mission> uuidMissionHashMap = new HashMap<>();
     private HashSet<Vector3i> questMarkers = new HashSet<>();
@@ -52,8 +54,7 @@ public class M_GineCore implements Serializable { //TODO make serializable
     }
 
     private void updateAll() {
-        this.garbageCollectorInterval = 1000 * 10; //TODO debug value
-        this.missionsLimit = 20;
+        garbageCollectorInterval = 1000*60*2;
         ArrayList<Mission> removeQueue = new ArrayList<>();
         for(Mission m: missions) {
             try {
@@ -100,8 +101,12 @@ public class M_GineCore implements Serializable { //TODO make serializable
      * @return
      */
     private boolean isObsolete(Mission m) {
+        randomGC.setSeed(m.getSeed());
         boolean finished = m.getState().equals(MissionState.SUCCESS)||m.getState().equals(MissionState.FAILED);
-        boolean unclaimedForToLong = (m.getState().equals(MissionState.OPEN) && (System.currentTimeMillis()-m.getPublishTime())> garbageCollectorInterval);
+        boolean unclaimedForToLong = (m.getState().equals(MissionState.OPEN) && (System.currentTimeMillis()-m.getPublishTime())> (0.75+0.5* randomGC.nextFloat())*(garbageCollectorInterval));
+        if (unclaimedForToLong) {
+            ModPlayground.broadcastMessage("obsolete after " + MissionUtil.formatTime((System.currentTimeMillis()-m.getPublishTime())/1000));
+        }
         return finished || unclaimedForToLong;
     }
 
