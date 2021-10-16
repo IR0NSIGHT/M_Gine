@@ -53,11 +53,13 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
     public static Vector4f selectedColor = new Vector4f(0.35f,0.35f,0.35f,1);
     public static Vector4f unselectedColor = new Vector4f(0.298f,0.298f,0.298f,1);
 
-    private int blockSize = 40;
-    private int blockWidth = blockSize *20;
+    public static int blockSize = 40;
+    public static int blockWidth = blockSize *20;
     public GUIMissionListTab(float width, float height, GUIElement dependent, InputState inputState, ListType type) {
         super(width, height, dependent, inputState);
         this.type = type;
+        blockSize = 40;
+        blockWidth = (int) getWidth();
         switch (type) {
             case OPEN:
                 MissionClient.instance.guiOpenMissionsList = this;

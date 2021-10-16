@@ -84,7 +84,7 @@ public class MissionTaskUnloadCargo extends MissionTask {
 
     @Override
     protected boolean successCondition() {
-        return (units == 0);
+        return (units == 0) || currentState.equals(MissionState.SUCCESS);
     }
 
     private void tryUnload(PlayerState player) {
