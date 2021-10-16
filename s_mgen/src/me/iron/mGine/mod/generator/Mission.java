@@ -397,8 +397,7 @@ public class Mission implements Serializable {
      * @return true or false, you know, a boolean.
      */
     public boolean canClaim(PlayerState p) {
-        int pFaction = p.getFactionId();
-        if  (GameServerState.instance.getFactionManager().isEnemy(pFaction,clientFactionID))
+        if  (GameServerState.instance.getFactionManager().isEnemy(clientFactionID,p))
             return false;
 
         if (getSector() != null && !p.getCurrentSector().equals(getSector())) {

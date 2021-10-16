@@ -124,8 +124,7 @@ public class MissionTransportCargo extends Mission {
 
     @Override
     public boolean canClaim(PlayerState p) {
-        int pFaction = p.getFactionId();
-        boolean isEnemyWithReceiver = GameServerState.instance.getFactionManager().isEnemy(pFaction,receiverFactionID);
+        boolean isEnemyWithReceiver = GameServerState.instance.getFactionManager().isEnemy(receiverFactionID,p);
         return super.canClaim(p) && !isEnemyWithReceiver;
     }
 
