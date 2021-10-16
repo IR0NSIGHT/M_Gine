@@ -3,7 +3,12 @@ M_Gine ("mission engine") is a framework that will procedurally generate mission
 
 #### THIS IS AN ALPHA VERSION, BUGS MIGHT OCCUR
 ## Basic structure
-A mission consists of 1 or more MissionTasks, once all tasks are complete, the mission is successfull and the reward is payed. If at least one mandatory task is failed or the time runs out, the mission will fail.
+- Every mission has one or more tasks.
+- Tasks can be mandatory or optional
+- Tasks can have preconditions: Other tasks that need to be completed first.
+- If all mandatory tasks are complete, the mission is successfull
+- If at least one mandatory task fails, the mission fails.
+
 ## Type of missions
 Right now 3 types of missions exist:
 - patrol: fly to a bunch of sectors
