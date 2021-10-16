@@ -54,7 +54,6 @@ public class M_GineCore implements Serializable { //TODO make serializable
     }
 
     private void updateAll() {
-        garbageCollectorInterval = 1000*60*2;
         ArrayList<Mission> removeQueue = new ArrayList<>();
         for(Mission m: missions) {
             try {

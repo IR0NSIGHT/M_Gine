@@ -8,13 +8,11 @@ import me.iron.mGine.mod.missions.wrappers.DataBaseSector;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
-import org.schema.game.common.data.world.Sector;
 import org.schema.game.common.data.world.SectorInformation;
 import org.schema.game.common.data.world.StellarSystem;
 import org.schema.game.common.data.world.VoidSystem;
 import org.schema.game.server.data.GameServerState;
 import org.schema.game.server.data.simulation.npc.NPCFaction;
-import org.schema.game.server.data.simulation.npc.NPCFactionManager;
 import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.server.ServerMessage;
 
@@ -80,7 +78,7 @@ import java.util.Random;
         this.name = "Scout " + amountSectors +" sectors for " + clientFactionName + " faction.";
         this.duration = (int) (60 + 60*(1-difficulty))* amountSectors; //~2 mins per sector
         this.rewardCredits = MissionUtil.calculateReward((int) (amountSectors* VoidSystem.SYSTEM_SIZE*GameServerState.instance.getSectorSize()),3,1,rand.nextLong());
-        this.briefing = LoreGenerator.instance.generateScoutBriefing(clientFactionID,rand.nextLong());
+        this.briefing = LoreGenerator.instance.enemySpottedNearby(clientFactionID,rand.nextLong()) + "\n Scan these sectors.";
     }
 
     private void createWaypoints(ArrayList<DataBaseSector> sectors, long seed) {

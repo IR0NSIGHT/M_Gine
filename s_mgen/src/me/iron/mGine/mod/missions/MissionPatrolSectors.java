@@ -1,6 +1,7 @@
 package me.iron.mGine.mod.missions;
 
 
+import me.iron.mGine.mod.generator.LoreGenerator;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
@@ -13,7 +14,6 @@ import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.world.VoidSystem;
 import org.schema.game.server.data.simulation.npc.NPCFaction;
 import org.schema.schine.common.language.Lng;
-import org.schema.schine.network.server.ServerMessage;
 
 import javax.vecmath.Vector3f;
 import java.sql.SQLException;
@@ -31,12 +31,16 @@ public class MissionPatrolSectors extends Mission {
     int cargoAmount;
     float completionRadius;
     float distanceTotal;
+    int clientFactionID;
+    String clientFactionName;
     Vector3i center;
     public MissionPatrolSectors(final Random rand, long seed) {
         super(rand,seed);
         Vector3i center = new Vector3i(0,rand.nextInt(69),69);
         try {
             NPCFaction f = DataBaseManager.instance.getNPCFactions().get(rand.nextInt(DataBaseManager.instance.getNPCFactions().size()));
+            clientFactionID = f.getIdFaction();
+            clientFactionName = f.getName();
             ArrayList<DataBaseSystem> systems = DataBaseManager.instance.getSystems(f.getIdFaction());
             DataBaseStation s = DataBaseManager.instance.getExistingRandomStation(systems,null, SpaceStation.SpaceStationType.FACTION,rand.nextLong());
             if (s != null) {
@@ -50,7 +54,9 @@ public class MissionPatrolSectors extends Mission {
         setSector(center);
         cargoAmount = 20 + Math.abs(rand.nextInt())%80;
         completionRadius = 0.5f;
-        name = "Patrol sectors";
+        name = "Patrol sectors for " + clientFactionName;
+        this.briefing = LoreGenerator.instance.enemySpottedNearby(clientFactionID,rand.nextLong()) + "\n Patrol these sectors and engage any enemy craft.";
+
         int waypoints = 4 + Math.abs(rand.nextInt())%6;
         final MissionTask[] tasks = new MissionTask[waypoints];
 
@@ -65,6 +71,8 @@ public class MissionPatrolSectors extends Mission {
             if (i > 0) {
                 int[] precond = new int[]{i-1};
                 move.setPreconditions(precond);
+            } else {
+                setSector(sectorTemp); //make this the starting sector == first move WP
             }
             tasks[i] = move;
             if (i > 0) {

@@ -25,7 +25,7 @@ public class LoreGenerator {
         instance = this;
     }
 
-    public String generateScoutBriefing(int factionID, long seed) {
+    public String enemySpottedNearby(int factionID, long seed) {
         Random rand = new Random(seed);
         List<Faction> enemies = GameServerState.instance.getFactionManager().getFaction(factionID).getEnemies();
         Faction enemyF = null;
@@ -51,7 +51,6 @@ public class LoreGenerator {
         text = text.replace("$faction$",enemy);
         text = text.replace("$location$",getRand(location,rand)+".");
         text = text.replace("$spotted$",getRand(spotted,rand));
-        text += "\n Scan these sectors.";
         return text;
     }
 

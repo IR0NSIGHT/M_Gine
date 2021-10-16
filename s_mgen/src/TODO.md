@@ -107,6 +107,8 @@ mission has
 # BUGS
 - missions don't get synched on joining world.
 - missions that share the same position have (probably) overlapping quest markers
+    - actually the marker system on the server only allows one marker per sector, overlapping missions just dont get shown.
 - seeAll false doesnt delete sent missions from client (but does correctly update open markers)
+- questiontag sprite has very very light edges
 # Test
 - do missions get locked down if they get claimed or are double claims possible?
