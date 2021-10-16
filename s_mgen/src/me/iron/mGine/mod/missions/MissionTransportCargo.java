@@ -110,8 +110,8 @@ public class MissionTransportCargo extends Mission {
 
             Vector3i distance = new Vector3i(fromSector); distance.sub(to.getPosition());
             float difficulty = rand.nextFloat();
-            duration = (int) ((int) (distance.length()* 16000 / 450) * (1 + 3* difficulty)); //time needed to travel distance at max speed plus random bonus of 0..300%
-            this.rewardCredits = MissionUtil.calculateReward((int) (distance.length()*GameServerState.instance.getSectorSize()),1,1,rand.nextLong());
+            duration = (int) MissionUtil.estimateTimeByDistance(distance.length()*GameServerState.instance.getSectorSize(),0.3f); //time needed to travel distance at max speed plus random bonus of 0..300%
+            this.rewardCredits = MissionUtil.calculateReward(duration,1,1,rand.nextLong());
 
             //set UI stuff
             this.briefing = LoreGenerator.instance.generateTransportBriefing(from,to,cargoName,cargoUnits,rand.nextLong());

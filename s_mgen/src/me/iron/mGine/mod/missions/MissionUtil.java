@@ -1,34 +1,20 @@
 package me.iron.mGine.mod.missions;
 
-import api.config.BlockConfig;
-import com.sun.xml.internal.bind.v2.model.core.ElementInfo;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
-import org.hsqldb.server.Server;
 import org.lwjgl.Sys;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.element.ElementInformation;
 import org.schema.game.common.data.element.ElementKeyMap;
 import org.schema.game.common.data.player.PlayerState;
-import org.schema.game.common.data.world.FTLConnection;
 import org.schema.game.common.data.world.SimpleTransformableSendableObject;
-import org.schema.game.common.data.world.VoidSystem;
 import org.schema.game.server.data.GameServerState;
 import org.schema.schine.common.language.Lng;
-import org.schema.schine.graphicsengine.core.Controller;
-import org.schema.schine.graphicsengine.core.GLFrame;
-import org.schema.schine.graphicsengine.core.GlUtil;
-import org.schema.schine.graphicsengine.core.settings.EngineSettings;
 import org.schema.schine.network.server.ServerMessage;
 
 import javax.annotation.Nullable;
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -40,7 +26,7 @@ import java.util.*;
  * TIME: 21:20
  */
 public class MissionUtil {
-    private static int creditsPerDistance = 1; //credits payed per meter
+    private static int creditsPerSecond = 1000; //credits payed per meter
     private static float dangerModifier = 1.2f;
     private static float reputationModifier = 1.2f;
 
@@ -91,8 +77,22 @@ public class MissionUtil {
         return formatTime(Math.max(0,r));
     }
 
+    /**
+     * estimate time needed to travel this distance (using warpspace)
+     * @param distance distance in km
+     * @param travelSpeed % of maximum serverspeed
+     * @return seconds needed
+     */
+    public static float estimateTimeByDistance(float distance, float travelSpeed) {
+        float warpKMs = distance/10;
+        float rspKMs = distance%10;
+        float maxGalaxySpeed = GameServerState.instance.getGameState().getMaxGalaxySpeed();
+        float assumedSpeed = maxGalaxySpeed * travelSpeed;
+        float totalKMs = warpKMs + rspKMs;
+        return totalKMs/assumedSpeed;
+    }
+
     public static void main(String[] args) {
-        System.out.println(formatTime(2135987125397124587L));
     }
 
     /**
@@ -156,15 +156,16 @@ public class MissionUtil {
 
     /**
      * will calculate a reward amount based on distance, danger, reputation and random.
-     * @param distanceTravelled distance travelled overall
+     * @param timeNeeded time needed for mission (in seconds)
      * @param dangerLevel danger level 1..10
      * @param reputation reputation 1..10
      * @param seed seed for random factor
      * @return
      */
-    public static int calculateReward(int distanceTravelled, int dangerLevel, int reputation, long seed) {
-        creditsPerDistance = 1;
+    public static int calculateReward(float timeNeeded, int dangerLevel, int reputation, long seed) {
         Random rand = new Random(seed);
-        return (int) ((distanceTravelled * creditsPerDistance)*Math.pow(dangerModifier,dangerLevel)*Math.pow(reputationModifier,reputation)*(0.5f+0.5f*rand.nextFloat()));
+        int reward=  (int) ((timeNeeded * creditsPerSecond)*Math.pow(dangerModifier,dangerLevel)*Math.pow(reputationModifier,reputation)*(0.5f+0.5f*rand.nextFloat()));
+        System.out.println("reward for " + MissionUtil.formatTime((long)timeNeeded) +" at danger: " + dangerLevel +": " + formatMoney(reward));
+        return reward;
     }
 }

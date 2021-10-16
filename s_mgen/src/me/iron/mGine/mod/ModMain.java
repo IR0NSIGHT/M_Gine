@@ -45,6 +45,7 @@ public class ModMain extends StarMod {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        //DebugUI.init();
     }
 
     @Override

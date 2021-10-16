@@ -47,6 +47,9 @@
     - same system/nearby
     
 # design choices:
+### mission design
+- a mission should take between 15 to 30 minutes
+
 ### mission markers:
  - open missions are marked with an "!" marker, visible from far away (at least 1 system) : "quest available here"
  - detailed info avaialbe when "in comms range": closeby (within loading range) "get quest infos"

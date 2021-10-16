@@ -1,7 +1,9 @@
 package me.iron.mGine.mod.generator;
 
+import api.DebugFile;
 import api.network.PacketReadBuffer;
 import api.network.PacketWriteBuffer;
+import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.missions.MissionUtil;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
@@ -73,6 +75,7 @@ public class Mission implements Serializable {
     protected void onSuccess() {
         MissionUtil.notifyParty(getActiveParty(),getSuccessText(), ServerMessage.MESSAGE_TYPE_DIALOG);
         state = MissionState.SUCCESS;
+        DebugFile.log("Mission '"+name+"' complete after" + MissionUtil.formatTime(System.currentTimeMillis()-startTime) + ", done by " + Arrays.toString(getParty().toArray()) + " total reward: " + rewardCredits, ModMain.instance);
         flagForSynch();
     }
 
@@ -196,7 +199,6 @@ public class Mission implements Serializable {
                 MissionUtil.notifyParty(getActiveParty(),"Task failed: " + checkpoint.getName(), ServerMessage.MESSAGE_TYPE_INFO); break;
 
         }
-        System.out.println("Task '"+checkpoint.name+"' " + oldState.getName() +">>" + newState.getName());
         flagForSynch();
     }
 

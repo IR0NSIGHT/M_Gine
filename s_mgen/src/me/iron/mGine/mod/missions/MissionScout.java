@@ -54,7 +54,7 @@ import java.util.Random;
         DataBaseSystem sys = null;
         ArrayList<DataBaseSector> sectors = new ArrayList<>();
         //find sectors with ungenerated stations.
-        int amountSectors = -1;
+        int wantedAmount = 4 + rand.nextInt(4);
         try {
             while ((sectors.size() <= 4) && systemIterator.hasNext()) {
                 sys = systemIterator.next();
@@ -64,17 +64,28 @@ import java.util.Random;
                     sectors.addAll(secTemp);
                 }
             }
-            amountSectors = sectors.size();
+            while (sectors.size() > wantedAmount) {
+                sectors.remove(0);
+            }
             createWaypoints(sectors,rand.nextLong());
         } catch ( IOException throwables) {
             throwables.printStackTrace();
         }
 
-        float difficulty = rand.nextFloat();
-        float rewardMulti = rand.nextFloat();
-        this.name = "Scout " + amountSectors +" sectors for " + clientFactionName + " faction.";
-        this.duration = (int) (60 + 60*(1-difficulty))* amountSectors; //~2 mins per sector
-        this.rewardCredits = MissionUtil.calculateReward((int) (amountSectors* VoidSystem.SYSTEM_SIZE*GameServerState.instance.getSectorSize()),3,1,rand.nextLong());
+        float totalDistance = 0;
+        Vector3i pos = new Vector3i(getMissionTasks()[0].getTaskSector());
+        for (i = 0; i< getMissionTasks().length; i++) {
+            MissionTask t = missionTasks[i];
+            pos.sub(t.getTaskSector());
+            totalDistance += pos.length();
+            pos.set(t.getTaskSector());
+        }
+        totalDistance *= GameServerState.instance.getSectorSize();
+
+        this.name = "Scout " + sectors.size() +" sectors for " + clientFactionName + " faction.";
+
+        this.duration = (int) (MissionUtil.estimateTimeByDistance(totalDistance,0.75f)); //~2 mins per sector
+        this.rewardCredits = MissionUtil.calculateReward(duration,4,1,rand.nextLong());
         this.briefing = LoreGenerator.instance.enemySpottedNearby(clientFactionID,rand.nextLong()) + "\n Scan these sectors.";
     }
 

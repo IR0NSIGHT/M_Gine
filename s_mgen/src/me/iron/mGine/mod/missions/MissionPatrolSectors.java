@@ -8,10 +8,12 @@ import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.tasks.MissionTaskMoveTo;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
+import org.lwjgl.Sys;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.world.VoidSystem;
+import org.schema.game.server.data.GameServerState;
 import org.schema.game.server.data.simulation.npc.NPCFaction;
 import org.schema.schine.common.language.Lng;
 
@@ -56,14 +58,14 @@ public class MissionPatrolSectors extends Mission {
         name = "Patrol sectors for " + clientFactionName;
         this.briefing = LoreGenerator.instance.enemySpottedNearby(clientFactionID,rand.nextLong()) + "\n Patrol these sectors and engage any enemy craft.";
 
-        int waypoints = 4 + Math.abs(rand.nextInt())%6;
+        int waypoints = 4 + rand.nextInt(4);
         final MissionTask[] tasks = new MissionTask[waypoints];
 
         for (int i = 0; i < waypoints;i++) {
             Vector3i sectorTemp = new Vector3i(
-                    rand.nextInt()%VoidSystem.SYSTEM_SIZE,
-                    rand.nextInt()%VoidSystem.SYSTEM_SIZE,
-                    rand.nextInt()%VoidSystem.SYSTEM_SIZE
+            rand.nextInt()%VoidSystem.SYSTEM_SIZE*0.75f,
+            rand.nextInt()%VoidSystem.SYSTEM_SIZE*0.75f,
+            rand.nextInt()%VoidSystem.SYSTEM_SIZE*0.75f
              );
             sectorTemp.add(center);
             MissionTask move = new MissionTaskMoveTo(this,"move","go to sector " + sectorTemp.toString(),sectorTemp,false);
@@ -77,13 +79,13 @@ public class MissionPatrolSectors extends Mission {
             if (i > 0) {
                 Vector3f dist = tasks[i].getTaskSector().toVector3f();
                 dist.sub(tasks[i-1].getTaskSector().toVector3f());
-                distanceTotal += dist.length()* VoidSystem.SYSTEM_SIZE;
+                distanceTotal += dist.length()* GameServerState.instance.getSectorSize();
             }
-
         }
-        int minutesNeeded = (int) (distanceTotal/36);
-        this.rewardCredits = minutesNeeded * (50000 + Math.abs(rand.nextInt())%50000);
-        this.duration = (int) (minutesNeeded * 60 * (2+Math.abs(rand.nextFloat())%3));
+        float secondsNeeded = MissionUtil.estimateTimeByDistance(distanceTotal,0.75f);
+        this.rewardCredits = MissionUtil.calculateReward(secondsNeeded,3,1,rand.nextLong());
+        this.duration = (int)(secondsNeeded * 1f+0.3f* rand.nextFloat());
+
         this.setMissionTasks(tasks);
     }
 

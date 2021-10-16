@@ -17,6 +17,7 @@ import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.DataBaseManager;
+import me.iron.mGine.mod.missions.MissionPatrolSectors;
 import me.iron.mGine.mod.network.MissionNetworkController;
 import me.iron.mGine.mod.network.MissionPlayer;
 import org.schema.common.util.linAlg.Vector3i;
@@ -31,6 +32,7 @@ import org.schema.schine.common.language.Lng;
 
 import javax.vecmath.Vector4f;
 import java.io.IOException;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -47,10 +49,14 @@ import org.schema.schine.network.objects.Sendable;
  */
 public class DebugUI {
     public static void main(String[] args) {
-         for (int i = 0; i < 100; i++) {
-            String txt = Integer.toHexString ((int)System.currentTimeMillis());
-            System.out.println(txt);
-         }
+        Random random = new Random(420);
+        ArrayList<Mission> patrols = new ArrayList<>(10);
+        for (int i = 0; i < 10; i++) {
+            long seed = random.nextLong();
+            random.setSeed(seed);
+            patrols.add(new MissionPatrolSectors(random,seed));
+
+        }
     }
 
     //serverside
