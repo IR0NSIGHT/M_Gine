@@ -9,16 +9,19 @@ import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import org.schema.game.common.controller.SegmentController;
+import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.element.ElementInformation;
 import org.schema.game.common.data.element.ElementKeyMap;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.player.inventory.Inventory;
+import org.schema.game.common.data.world.SimpleTransformableSendableObject;
 import org.schema.game.server.data.GameServerState;
 import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.objects.Sendable;
 import org.schema.schine.network.server.ServerMessage;
 
 import javax.vecmath.Vector3f;
+import java.util.Set;
 
 /**
  * STARMADE MOD
@@ -92,19 +95,33 @@ public class MissionTaskUnloadCargo extends MissionTask {
         if (!player.getCurrentSector().equals(target.getPosition()))
             return;
 
+        //special case for random stations that might not exist yet. attempt to get any station in the target sector with a matching faction ID.
+        if (target.getUID().equals("")) {
+            try {
+                Set<SimpleTransformableSendableObject<?>> entitiesInTargetSector = GameServerState.instance.getUniverse().getSector(target.getPosition()).getEntities();
+                for (SimpleTransformableSendableObject<?> obj: entitiesInTargetSector) {
+                    if (obj instanceof SpaceStation && obj.getFactionId()==target.getFactionID()) {
+                        target.setUID(obj.getUniqueIdentifier());
+                    }
+                }
+            } catch (Exception ex) {
+                DebugFile.logError(new NullPointerException("target station for transport mission doesn't exist in sector " + target.getPosition() +" :" + target.getUID()), ModMain.instance);
+                MissionUtil.notifyParty(mission.getActiveParty(),"target station doesn't exist. contact admin.",ServerMessage.MESSAGE_TYPE_ERROR);
+                return;
+            }
+        }
+
+        //get the segmentcontorller by UID
         Sendable s = GameServerState.instance.getLocalAndRemoteObjectContainer().getUidObjectMap().get(target.getUID());
-        if (s == null || !(s instanceof SegmentController))
-            return;
-
-        SegmentController sc = (SegmentController)s;        //GameServerState.instance.getSegmentControllersByName().get(target.getUID());
-
-        if (sc == null) {
-            //station is not here.
-            DebugFile.logError(new NullPointerException("target station for transport mission doesnt exist in sector " + target.getPosition() +" :" + target.getUID()), ModMain.instance);
+        if (s == null || !(s instanceof SegmentController)) {
+            DebugFile.logError(new NullPointerException("target station for transport mission doesn't exist in sector " + target.getPosition() +" :" + target.getUID()), ModMain.instance);
             MissionUtil.notifyParty(mission.getActiveParty(),"target station doesn't exist. contact admin.",ServerMessage.MESSAGE_TYPE_ERROR);
             return;
         }
 
+        SegmentController sc = (SegmentController)s;        //GameServerState.instance.getSegmentControllersByName().get(target.getUID());
+
+        //get distance to station based on bounding sphere of ship and station
         Vector3f playerVsStationOffset = sc.getWorldTransform().origin;
         playerVsStationOffset.sub(player.getFirstControlledTransformableWOExc().getWorldTransform().origin);
         float minDist =Math.round(2*(sc.getBoundingSphereTotal().radius+player.getFirstControlledTransformableWOExc().getBoundingSphereTotal().radius));
@@ -146,8 +163,6 @@ public class MissionTaskUnloadCargo extends MissionTask {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
 
     }
 

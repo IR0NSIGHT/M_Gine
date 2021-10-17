@@ -150,16 +150,29 @@ public class DataBaseManager {
      * @param blackList not at this pos
      * @param stationType type of station
      * @param seed seed for random
-     * @return
+     * @return database station of a randomly selected station. !!might be empty, only "a station(flag) exists at this pos" is known!!
+     * if station exists in DB, its returned.
      */
-    public DataBaseStation getExistingRandomStation(ArrayList<DataBaseSystem> systems, @Nullable Vector3i blackList, @Nullable SpaceStation.SpaceStationType stationType, long seed) {
+    public DataBaseStation getRandomStation(ArrayList<DataBaseSystem> systems, @Nullable Vector3i blackList, @Nullable SpaceStation.SpaceStationType stationType, long seed) {
         Random r = new Random(seed);
         Iterator<DataBaseSystem> systemIterator = systems.iterator();
         while (systemIterator.hasNext()) {
             DataBaseSystem system = systemIterator.next();
             ArrayList<DataBaseSector> sectors = getSectorsWithStations(getSystem(system.getPos()), SectorInformation.SectorType.SPACE_STATION,stationType);
-            if (sectors.size()!=0)
-                return new DataBaseStation("","",sectors.get(r.nextInt(sectors.size())).getPos(),Integer.MIN_VALUE, SimpleTransformableSendableObject.EntityType.SPACE_STATION.dbTypeId);
+            if (sectors.size()!=0) {
+                //attempt to get the actual station if it exists in this sector
+                Vector3i sectorPos = sectors.get(r.nextInt(sectors.size())).getPos();
+                try {
+                    ArrayList<DataBaseStation> existingStations = getEntitiesNear(sectorPos,sectorPos, SimpleTransformableSendableObject.EntityType.SPACE_STATION,null,null);
+                    if (existingStations.size()>0) {
+                        return existingStations.get(r.nextInt(existingStations.size()));
+                    }
+                } catch (SQLException ex) {
+
+                }
+                //return an empty template
+                return new DataBaseStation("","",sectorPos,Integer.MIN_VALUE, SimpleTransformableSendableObject.EntityType.SPACE_STATION.dbTypeId);
+            }
         }
         return null;
     }

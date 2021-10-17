@@ -113,5 +113,8 @@ mission has
     - actually the marker system on the server only allows one marker per sector, overlapping missions just dont get shown.
 - seeAll false doesnt delete sent missions from client (but does correctly update open markers)
 - questiontag sprite has very very light edges
+
+- transport mission unloading is broken
+- map is clickable through the GUI window.
 # Test
 - do missions get locked down if they get claimed or are double claims possible?
