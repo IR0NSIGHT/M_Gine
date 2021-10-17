@@ -22,13 +22,13 @@ public class MissionPlayer implements Serializable {
     private boolean showAll; //admin feature to always see all missions.
     private int sectorID;
 
-    private HashSet<UUID> missions = new HashSet();
+    private HashSet<UUID> missions = new HashSet<>();
 
     private boolean isFlaggedForSynch; //flagged for synching
     private boolean isFlaggedUpdateAll; //flagged to update all missions: basically reboot this player
 
-    private ArrayList<UUID> removeQueue = new ArrayList<>(); //missions to remove on client
-    private ArrayList<UUID> synchQueue = new ArrayList<>(); //missions to add/update on client
+    private final ArrayList<UUID> removeQueue = new ArrayList<>(); //missions to remove on client
+    private final ArrayList<UUID> synchQueue = new ArrayList<>(); //missions to add/update on client
 
     public MissionPlayer(String playername) {
         this.playerName = playername;

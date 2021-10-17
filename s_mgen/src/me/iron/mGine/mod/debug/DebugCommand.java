@@ -95,7 +95,6 @@ public class DebugCommand implements CommandInterface {
         }
         if (strings.length == 1 && strings[0].equals("restart")) {
             M_GineCore.instance.updateLoop(1);
-            MissionNetworkController.instance.addSectorChangeListener();
             return true;
         }
         if (strings.length == 1 && strings[0].equals("listen")) {

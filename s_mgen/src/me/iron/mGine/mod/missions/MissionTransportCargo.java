@@ -126,31 +126,5 @@ public class MissionTransportCargo extends Mission {
     @Override
     public void update(long time) {
         super.update(time);
-        tryUpdateTargetStation();
-        updateTaskTargets();
-    }
-
-    /**
-     * at mission generation, the station might not have been generated yet. try and update the missions stored values if station now exists.
-     */
-    private void tryUpdateTargetStation() {
-        //target was an unknown/not yet generated station, fill with UID and name.
-        if (to.getUID().equals("") && GameServerState.instance.getUniverse().isSectorLoaded(to.getPosition())) {
-            try {
-                for (SimpleTransformableSendableObject obj :GameServerState.instance.getUniverse().getSector(to.getPosition()).getEntities()) {
-                    if (obj instanceof SpaceStation && obj.getFactionId() == to.getFactionID()) {
-                        to.setUID(obj.getUniqueIdentifier());
-                        to.setName(obj.getName());
-                    }
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    private void updateTaskTargets() {
-        if (!to.getUID().equals("") && ((MissionTaskDockTo)missionTasks[1]).getTargetUID().equals(""))
-            ((MissionTaskDockTo)missionTasks[1]).setTargetUID(to.getUID());
     }
 }
