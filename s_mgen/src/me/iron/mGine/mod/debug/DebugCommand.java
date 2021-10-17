@@ -15,8 +15,14 @@ import me.iron.mGine.mod.network.MissionPlayer;
 import org.hsqldb.server.Server;
 import org.newdawn.slick.util.pathfinding.navmesh.Link;
 import org.schema.common.util.linAlg.Vector3i;
+import org.schema.game.common.controller.ManagedUsableSegmentController;
+import org.schema.game.common.controller.SegmentController;
 import org.schema.game.common.data.player.PlayerState;
+import org.schema.game.server.data.GameServerState;
+import org.schema.game.server.data.simulation.SimulationManager;
+import org.schema.game.server.data.simulation.groups.SimulationGroup;
 import org.schema.schine.common.language.Lng;
+import org.schema.schine.network.objects.Sendable;
 import org.schema.schine.network.server.ServerMessage;
 
 import javax.annotation.Nullable;
@@ -104,6 +110,17 @@ public class DebugCommand implements CommandInterface {
             }
             return true;
         }
+        if (strings.length== 1 && strings[0].equals("spawn")) {
+            Sendable selected = getSelectedObject(playerState);
+            if (selected == null || !(selected instanceof ManagedUsableSegmentController)) {
+                notify(playerState,"nothing/wrong selected");
+                return true;
+            }
+            ManagedUsableSegmentController msc = (ManagedUsableSegmentController) selected;
+            SimulationManager simMan = GameServerState.instance.getSimulationManager();
+            SimulationGroup simGroup = simMan.sendToAttackSpecific(msc,-1,3);
+
+        }
         return false;
     }
 
@@ -115,5 +132,14 @@ public class DebugCommand implements CommandInterface {
     @Override
     public StarMod getMod() {
         return ModMain.instance;
+    }
+
+    private Sendable getSelectedObject(PlayerState p) {
+        Sendable s = GameServerState.instance.getLocalAndRemoteObjectContainer().getLocalObjects().get(p.getSelectedEntityId());
+        return s;
+    }
+
+    private void notify(PlayerState p, String mssg) {
+        p.sendServerMessage(Lng.astr(mssg),ServerMessage.MESSAGE_TYPE_DIALOG);
     }
 }
