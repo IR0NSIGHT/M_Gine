@@ -1,18 +1,12 @@
 package me.iron.mGine.mod.missions;
 
-import it.unimi.dsi.fastutil.objects.ObjectCollection;
-import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.LoreGenerator;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.tasks.MissionTaskDockTo;
 import me.iron.mGine.mod.missions.tasks.MissionTaskUnloadCargo;
-import me.iron.mGine.mod.missions.wrappers.DataBaseSector;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
-import org.hsqldb.Database;
-import org.hsqldb.DatabaseManager;
-import org.hsqldb.lib.Collection;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.element.ElementInformation;
@@ -92,7 +86,8 @@ public class MissionTransportCargo extends Mission {
             Vector3i endSearch = new Vector3i(fromSector); endSearch.add(1000,1000,1000);
             ArrayList<DataBaseSystem> systems = DataBaseManager.instance.getSystems(receiverFactionID);
             Collections.shuffle(systems,rand);
-            to = DataBaseManager.instance.getExistingRandomStation(systems,from.getPosition(), SpaceStation.SpaceStationType.FACTION,seed);
+            to = DataBaseManager.instance.getRandomStation(systems,from.getPosition(), SpaceStation.SpaceStationType.FACTION,seed);
+            to.setFactionID(receiverFactionID);
 
             //MissionTask pick_up_cargo = new MissionTaskDockTo(this,"pick up cargo","pick up the cargo at station " + from.getName(),false,from.getUID());
             MissionTask pick_up_cargo = new MissionTaskUnloadCargo(this,"Load cargo","load the cargo at station " + from.getName(),from,cargoID,cargoUnits,true,false);

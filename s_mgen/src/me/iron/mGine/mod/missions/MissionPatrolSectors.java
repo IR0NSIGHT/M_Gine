@@ -8,7 +8,6 @@ import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.tasks.MissionTaskMoveTo;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
-import org.lwjgl.Sys;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.player.PlayerState;
@@ -43,7 +42,7 @@ public class MissionPatrolSectors extends Mission {
             clientFactionID = f.getIdFaction();
             clientFactionName = f.getName();
             ArrayList<DataBaseSystem> systems = DataBaseManager.instance.getSystems(f.getIdFaction());
-            DataBaseStation s = DataBaseManager.instance.getExistingRandomStation(systems,null, SpaceStation.SpaceStationType.FACTION,rand.nextLong());
+            DataBaseStation s = DataBaseManager.instance.getRandomStation(systems,null, SpaceStation.SpaceStationType.FACTION,rand.nextLong());
             if (s != null) {
                 center = s.getPosition();
             }

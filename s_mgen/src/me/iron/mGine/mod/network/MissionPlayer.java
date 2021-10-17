@@ -20,6 +20,7 @@ import java.util.*;
 public class MissionPlayer implements Serializable {
     private final String playerName;
     private boolean showAll; //admin feature to always see all missions.
+    private int sectorID;
 
     private HashSet<UUID> missions = new HashSet();
 
@@ -192,5 +193,13 @@ public class MissionPlayer implements Serializable {
                 ", removeQueue=" + removeQueue.size() +
                 ", synchQueue=" + synchQueue.size() +
                 '}';
+    }
+
+    public int getSectorID() {
+        return sectorID;
+    }
+
+    public void setSectorID(int id) {
+        sectorID = id;
     }
 }

@@ -39,28 +39,19 @@ public class MissionNetworkController {
                 mp.flagForSynch();
             }
         }, ModMain.instance);
-        addSectorChangeListener();
-    }
 
-    public Listener<PlayerChangeSectorEvent> playerChangeSectorEventListener;
-    public void addSectorChangeListener() {
-        playerChangeSectorEventListener = new Listener<PlayerChangeSectorEvent>() {
-            @Override
-            public void onEvent(PlayerChangeSectorEvent playerChangeSectorEvent) {
-                if (!this.equals(MissionNetworkController.instance.playerChangeSectorEventListener)) {
-                    StarLoader.unregisterListener(PlayerChangeSectorEvent.class,this);
-                    ModPlayground.broadcastMessage("two sector change listeners detected, will commit sudoku");
-                    return;
-                }
-                String player =playerChangeSectorEvent.getPlayerState().getName();
-                MissionPlayer mp = getPlayerByName(player);
-                if (mp == null)
-                    return;
+        //TODO sectorchange listener never fired for v0.0.2 on SOE, it did work after redownloading the jar locally for local testserver. to unreliable.
+    //   StarLoader.registerListener(PlayerChangeSectorEvent.class, new Listener<PlayerChangeSectorEvent>() {
+    //       @Override
+    //       public void onEvent(PlayerChangeSectorEvent playerChangeSectorEvent) {
+    //           String player =playerChangeSectorEvent.getPlayerState().getName();
+    //           MissionPlayer mp = getPlayerByName(player);
+    //           if (mp == null)
+    //               return;
 
-                mp.flagUpdateLocal(); //update visibility for open quests.
-            }
-        };
-        StarLoader.registerListener(PlayerChangeSectorEvent.class, playerChangeSectorEventListener,ModMain.instance);
+    //           mp.flagUpdateLocal(); //update visibility for open quests.
+    //       }
+    //   },ModMain.instance);
     }
 
     /**
@@ -68,15 +59,24 @@ public class MissionNetworkController {
      */
     public void onGlobalUpdate() {
         for (PlayerState p: GameServerState.instance.getPlayerStatesByName().values()) {
+
+
             if (getPlayerByName(p.getName())==null) {
+                ModPlayground.broadcastMessage("created mp for " + p.getName());
                 addPlayer(p.getName());
+            } else {
+                //bootleg sector change EH
+                MissionPlayer mp = getPlayerByName(p.getName());
+                int old = mp.getSectorID();;
+                mp.setSectorID(p.getCurrentSectorId());
+                if (old != mp.getSectorID())
+                    mp.flagUpdateLocal();
             }
         }
 
         for (MissionPlayer mp: playersByName.values()) {
             if (flagUpdateSynchAll) {
                 mp.flagUpdateAll();
-                mp.flagForSynch();
             }
             mp.onGlobalUpdate(changedQueue);
         }
@@ -112,6 +112,10 @@ public class MissionNetworkController {
         return playersByName.get(name);
     }
 
+    /**
+     * add a missionplayer. auto detects if already exists. new player gets flagged for update all and synch
+     * @param playerName
+     */
     public void addPlayer(String playerName) {
         if (getPlayerByName(playerName)!=null)
             return;
@@ -126,6 +130,9 @@ public class MissionNetworkController {
         mp.setShowAll(seeAll);
     }
 
+    /**
+     * flag to update and synch all players over all missions in the next cycle.
+     */
     public void setFlagUpdateSynchAll() {
         this.flagUpdateSynchAll = true;
     }
