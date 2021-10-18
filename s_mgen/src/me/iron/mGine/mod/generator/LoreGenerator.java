@@ -78,6 +78,37 @@ public class LoreGenerator {
         Random random = new Random(seed);
         return getRand(transportSs,random)+ MissionUtil.formatMoney(cargoUnits)+"x "+cargoName+" from "+from.getName()+" ("+from.getPosition().toStringPure() +") to "+ to.getName()+" (" +to.getPosition().toStringPure()+")";
     }
+
+    public String generateAttackStory(String enemyFactionName, String entity,long seed) {
+        Random r = new Random(seed);
+        String[] bases =  {
+                "This $faction$ $entity$ has $often$ $raided$ our $homes$.",
+                "$often$ has this $entity$ $raided$ our $homes$"
+        };
+        String base = getRand(bases,r);
+
+        String[] raided = {"launched attacks against","threatened","sent their savages against","waged war against"};
+        String[] often = {"for to long","long enough","for the last time","to often","to many times"};
+        String[] homes = {"homes","trading routes","stations","ships"};
+        base = base.replace("$entity$",entity);
+        base = base.replace("$faction$",enemyFactionName);
+        base = base.replace("$raided$",getRand(raided,r));
+        base = base.replace("$often$",getRand(often,r));
+        base = base.replace("$homes$",getRand(homes,r));
+        return base;
+    }
+
+    public String generateKillEntity(SimpleTransformableSendableObject.EntityType type, long seed) {
+        Random r = new Random(seed);
+        String base = "$destroy$ this $type$$extra$.";
+        String[] destroy = new String[]{"Destroy","Kill","Annihilate","Eradicate","Wipe out","Obliterate","Purge"};
+        String[] extra = new String[]{" once and for all"," for the glory of Morg"," to revenge the fallen",""};
+        base = base.replace("$destroy$",getRand(destroy,r));
+        base = base.replace("$extra$",getRand(extra,r));
+        base = base.replace("$type$",type.getName());
+        return base;
+    }
+
     private String getRand(String[] arr, Random random) {
         return arr[random.nextInt(arr.length)];
     }
@@ -93,6 +124,5 @@ public class LoreGenerator {
         for (int i = 0; i < amount; i++) {
             System.out.println(g.generateTransportBriefing(start,end,cargoName,units, random.nextLong())+"\n\n");
         }
-
     }
 }

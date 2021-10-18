@@ -1,5 +1,6 @@
 package me.iron.mGine.mod.missions.tasks;
 
+import api.ModPlayground;
 import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
@@ -33,7 +34,7 @@ public class MissionTaskClearSector extends MissionTask {
 
     private boolean isSectorClear() {
         try {
-            if (GameServerState.instance.getUniverse().isSectorLoaded(getTaskSector()))
+            if (!GameServerState.instance.getUniverse().isSectorLoaded(getTaskSector()))
                 return false;
             //test if any unwanted objects exist in sector
             for (SimpleTransformableSendableObject obj: GameServerState.instance.getUniverse().getSector(getTaskSector()).getEntities()) {

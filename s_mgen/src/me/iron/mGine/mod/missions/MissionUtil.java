@@ -26,7 +26,7 @@ import java.util.*;
  * TIME: 21:20
  */
 public class MissionUtil {
-    private static int creditsPerSecond = 1000; //credits payed per meter
+    private static int creditsPerSecond = 500; //credits payed per second, 500*60 = 30k/minute, 1.8m/hour
     private static float dangerModifier = 1.2f;
     private static float reputationModifier = 1.2f;
 
@@ -84,7 +84,7 @@ public class MissionUtil {
      * @return seconds needed
      */
     public static float estimateTimeByDistance(float distance, float travelSpeed) {
-        float warpKMs = distance/10;
+        float warpKMs = ((int)distance)/10f;
         float rspKMs = distance%10;
         float maxGalaxySpeed = GameServerState.instance.getGameState().getMaxGalaxySpeed();
         float assumedSpeed = maxGalaxySpeed * travelSpeed;
