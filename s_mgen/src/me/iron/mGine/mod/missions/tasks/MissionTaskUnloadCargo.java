@@ -1,6 +1,7 @@
 package me.iron.mGine.mod.missions.tasks;
 
 import api.DebugFile;
+import api.ModPlayground;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
@@ -9,6 +10,7 @@ import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
 import org.schema.game.common.controller.SegmentController;
+import org.schema.game.common.controller.Ship;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.element.ElementInformation;
 import org.schema.game.common.data.element.ElementKeyMap;
@@ -113,7 +115,7 @@ public class MissionTaskUnloadCargo extends MissionTask {
 
         //get the segmentcontorller by UID
         Sendable s = GameServerState.instance.getLocalAndRemoteObjectContainer().getUidObjectMap().get(target.getUID());
-        if (s == null || !(s instanceof SegmentController)) {
+        if (!(s instanceof SegmentController)) {
             DebugFile.logError(new NullPointerException("target station for transport mission doesn't exist in sector " + target.getPosition() +" :" + target.getUID()), ModMain.instance);
             MissionUtil.notifyParty(mission.getActiveParty(),"target station doesn't exist. contact admin.",ServerMessage.MESSAGE_TYPE_ERROR);
             return;
@@ -123,8 +125,18 @@ public class MissionTaskUnloadCargo extends MissionTask {
 
         //get distance to station based on bounding sphere of ship and station
         Vector3f playerVsStationOffset = sc.getWorldTransform().origin;
-        playerVsStationOffset.sub(player.getFirstControlledTransformableWOExc().getWorldTransform().origin);
-        float minDist =Math.round(2*(sc.getBoundingSphereTotal().radius+player.getFirstControlledTransformableWOExc().getBoundingSphereTotal().radius));
+        SimpleTransformableSendableObject playerS = player.getFirstControlledTransformableWOExc();
+        if (!(playerS instanceof SegmentController)) {
+            inform(player,"Must be in a ship");
+            return;
+        }
+
+        if (playerS instanceof Ship && ((Ship)playerS).railController.isDocked()) {
+            playerS = ((Ship) player.getFirstControlledTransformableWOExc()).railController.getRoot();
+        }
+
+        playerVsStationOffset.sub(playerS.getWorldTransform().origin);
+        float minDist =Math.round(2*(sc.getBoundingSphereTotal().radius+playerS.getBoundingSphereTotal().radius));
 
         if (playerVsStationOffset.length()>= minDist) {
             inform(player,"Must be closer than "+minDist+"m to station " + target.getName() +".");
@@ -142,6 +154,7 @@ public class MissionTaskUnloadCargo extends MissionTask {
             inform(player,"Must select cargo in player inventory.");
             return;
         }
+
 
         try {
             int amount;
@@ -176,5 +189,25 @@ public class MissionTaskUnloadCargo extends MissionTask {
     @Override
     public String getTaskSummary() {
         return (load?"Load ":"Unload ") + MissionUtil.formatMoney(units) + "x "+ blockName+" at " + target.getName()+" " + target.getPosition().toStringPure();
+    }
+
+    public short getBlockID() {
+        return blockID;
+    }
+
+    public int getUnits() {
+        return units;
+    }
+
+    public int getUnitsStart() {
+        return unitsStart;
+    }
+
+    public float getBlockVolume() {
+        return blockVolume;
+    }
+
+    public String getBlockName() {
+        return blockName;
     }
 }

@@ -113,6 +113,9 @@ mission has
 - questiontag sprite has very very light edges
 - finished missions dont show up in "finished" GUI window (except transport mission)
 - map is clickable through the GUI window.
-
+- transport mission has no repercussions if you steal the cargo
+    - only use worthless cargo
+    - insurance?
+    - declare war
 # Test
 - do missions get locked down if they get claimed or are double claims possible?

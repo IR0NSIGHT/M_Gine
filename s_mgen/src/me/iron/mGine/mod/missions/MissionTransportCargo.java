@@ -2,6 +2,7 @@ package me.iron.mGine.mod.missions;
 
 import me.iron.mGine.mod.generator.LoreGenerator;
 import me.iron.mGine.mod.generator.Mission;
+import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.missions.tasks.MissionTaskDockTo;
 import me.iron.mGine.mod.missions.tasks.MissionTaskUnloadCargo;
@@ -10,6 +11,7 @@ import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.element.ElementInformation;
+import org.schema.game.common.data.element.ElementKeyMap;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.player.faction.Faction;
 import org.schema.game.common.data.world.*;
@@ -38,6 +40,11 @@ public class MissionTransportCargo extends Mission {
     private int receiverFactionID;
     private String receveiverFactionName;
 
+    private short[] allowedCargo = new short[]{
+            452,453,454,456,457,458,459, //crytals
+            93,9,102,106,95,103,99,107,96,104,100,108,97,101,105,109,278,279,280,281, //planet ground stuff
+            86,87,85,89,90,91,92,86 //terrain stuff
+    };
     public MissionTransportCargo(Random rand, long seed) {
         super(rand, seed);
         this.name = "Transport cargo";
@@ -54,10 +61,11 @@ public class MissionTransportCargo extends Mission {
             }
 
             int cargoVol = (int) ((10+30*rand.nextFloat())*1000);
-            ElementInformation elementI = MissionUtil.getRandomElement(rand.nextLong());
+            cargoID = allowedCargo[rand.nextInt(allowedCargo.length)];
+            ElementInformation elementI = ElementKeyMap.getInfo(cargoID);
+
             int cargoUnits =(int) (cargoVol / elementI.getVolume());
             cargoName = elementI.getName();//TODO get random from existing blocks
-            cargoID = elementI.getId();
 
             Vector3i fromSector = from.getPosition();
 
@@ -126,5 +134,23 @@ public class MissionTransportCargo extends Mission {
     @Override
     public void update(long time) {
         super.update(time);
+    }
+
+    @Override
+    protected void onFailure() {
+        MissionTaskUnloadCargo load = (MissionTaskUnloadCargo) getMissionTasks()[0];
+        MissionTaskUnloadCargo unload = (MissionTaskUnloadCargo) getMissionTasks()[1];
+        int loaded = load.getUnitsStart()-load.getUnits();
+        int unloaded = unload.getUnitsStart()-unload.getUnits();
+        if (loaded>unloaded) {
+            failText = "We have noticed that you have not delivered the cargo and instead kept it for yourself. This will have consequences.";
+        }
+        super.onFailure();
+
+    }
+
+    @Override
+    public String getFailText() {
+        return super.getFailText();
     }
 }
