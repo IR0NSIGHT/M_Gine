@@ -18,9 +18,19 @@ import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.ManagedUsableSegmentController;
 import org.schema.game.common.controller.SegmentController;
 import org.schema.game.common.data.player.PlayerState;
+import org.schema.game.common.data.player.catalog.CatalogPermission;
+import org.schema.game.server.ai.program.simpirates.PirateSimulationProgram;
+import org.schema.game.server.ai.program.simpirates.TradingRouteSimulationProgram;
 import org.schema.game.server.data.GameServerState;
 import org.schema.game.server.data.simulation.SimulationManager;
+import org.schema.game.server.data.simulation.groups.AttackSingleEntitySimulationGroup;
+import org.schema.game.server.data.simulation.groups.ShipSimulationGroup;
 import org.schema.game.server.data.simulation.groups.SimulationGroup;
+import org.schema.game.server.data.simulation.jobs.SimulationJob;
+import org.schema.schine.ai.AiEntityStateInterface;
+import org.schema.schine.ai.MachineProgram;
+import org.schema.schine.ai.stateMachines.FiniteStateMachine;
+import org.schema.schine.ai.stateMachines.Message;
 import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.objects.Sendable;
 import org.schema.schine.network.server.ServerMessage;
@@ -111,17 +121,57 @@ public class DebugCommand implements CommandInterface {
             return true;
         }
         if (strings.length== 1 && strings[0].equals("spawn")) {
-            Sendable selected = getSelectedObject(playerState);
-            if (selected == null || !(selected instanceof ManagedUsableSegmentController)) {
-                notify(playerState,"nothing/wrong selected");
-                return true;
-            }
-            ManagedUsableSegmentController msc = (ManagedUsableSegmentController) selected;
-            SimulationManager simMan = GameServerState.instance.getSimulationManager();
-            SimulationGroup simGroup = simMan.sendToAttackSpecific(msc,-1,3);
-
+            spawnAdvancedPirates(playerState);
+        }
+        if (strings.length==1 && strings[0].equals("clear")) {
+            M_GineCore.instance.clearMissions();
+            ModPlayground.broadcastMessage("clearing all missions.");
+            return true;
         }
         return false;
+    }
+
+    private void spawnSimplePirates(PlayerState p) {
+        Sendable selected = getSelectedObject(p);
+        if (selected == null || !(selected instanceof ManagedUsableSegmentController)) {
+            notify(p,"nothing/wrong selected");
+            return;
+        }
+        ManagedUsableSegmentController msc = (ManagedUsableSegmentController) selected;
+        SimulationManager simMan = GameServerState.instance.getSimulationManager();
+        SimulationGroup simGroup = simMan.sendToAttackSpecific(msc,-1,3);
+    }
+
+    private void spawnAdvancedPirates(PlayerState p) {
+        final Vector3i spawnPos = new Vector3i(p.getCurrentSector());
+        final GameServerState state = GameServerState.instance;
+        final String targetUID = p.getFirstControlledTransformableWOExc().getUniqueIdentifier();
+        //create a job for the simulationManager to execute
+        final SimulationJob simJob = new SimulationJob() {
+            @Override
+            public void execute(SimulationManager simMan) {
+                Vector3i unloadedPos = simMan.getUnloadedSectorAround(spawnPos,new Vector3i());
+                //create group
+                ShipSimulationGroup myGroup = new AttackSingleEntitySimulationGroup(state,unloadedPos, targetUID);
+                simMan.addGroup(myGroup);
+                //spawn members
+                int factionID = -1;
+                CatalogPermission[] bps = simMan.getBlueprintList(3,1,factionID);
+                if (bps.length == 0) {
+                    new NullPointerException("no blueprints avaialbe for faction " + factionID).printStackTrace();
+                    return;
+                }
+                myGroup.createFromBlueprints(unloadedPos,simMan.getUniqueGroupUId(),factionID,bps); //seems to try and work but doesnt spawn stuff?
+                //add program to group
+                PirateSimulationProgram myProgram = new PirateSimulationProgram(myGroup, false);
+                myGroup.setCurrentProgram(myProgram);
+            }
+        };
+        state.getSimulationManager().addJob(simJob); //adds job, is synchronized.
+    }
+
+    private FiniteStateMachine getCustomSimulationMachine(final AiEntityStateInterface obj, final PirateSimulationProgram program) {
+        return null;
     }
 
     @Override
@@ -142,4 +192,21 @@ public class DebugCommand implements CommandInterface {
     private void notify(PlayerState p, String mssg) {
         p.sendServerMessage(Lng.astr(mssg),ServerMessage.MESSAGE_TYPE_DIALOG);
     }
+
+    class CustomSimulationMachine extends FiniteStateMachine {
+        public CustomSimulationMachine(AiEntityStateInterface obj, MachineProgram program, Object parameter) {
+            super(obj, program, parameter);
+        }
+
+        @Override
+        public void createFSM(Object o) {
+
+        }
+
+        @Override
+        public void onMsg(Message message) {
+
+        }
+    }
 }
+

@@ -1,5 +1,6 @@
 package me.iron.mGine.mod.generator;
 
+import me.iron.mGine.mod.missions.MissionDestroyStation;
 import me.iron.mGine.mod.missions.MissionPatrolSectors;
 import me.iron.mGine.mod.missions.MissionScout;
 import me.iron.mGine.mod.missions.MissionTransportCargo;
@@ -14,7 +15,8 @@ import java.util.Random;
 public enum MissionType {
     TRANSPORT_CARGO(MissionTransportCargo.class, "transport cargo"),
     PATROL(MissionPatrolSectors.class,"patrol"),
-    SCOUT(MissionScout.class,"scout");
+    SCOUT(MissionScout.class,"scout"),
+    DESTROY_STATION(MissionDestroyStation.class,"destroy station");
     /*
     FERRY_PASSENGER(null,"Ferry passengers"),
     DELIVER_GOODS(null,"deliver goods"),
@@ -45,6 +47,8 @@ public enum MissionType {
             case TRANSPORT_CARGO:
                 return new MissionTransportCargo(rand, seed);
 
+            case DESTROY_STATION:
+                return new MissionDestroyStation(rand, seed);
         }
         return null;
 

@@ -165,7 +165,7 @@ public class MissionUtil {
     public static int calculateReward(float timeNeeded, int dangerLevel, int reputation, long seed) {
         Random rand = new Random(seed);
         int reward=  (int) ((timeNeeded * creditsPerSecond)*Math.pow(dangerModifier,dangerLevel)*Math.pow(reputationModifier,reputation)*(0.5f+0.5f*rand.nextFloat()));
-        System.out.println("reward for " + MissionUtil.formatTime((long)timeNeeded) +" at danger: " + dangerLevel +": " + formatMoney(reward));
+    //    System.out.println("reward for " + MissionUtil.formatTime((long)timeNeeded) +" at danger: " + dangerLevel +": " + formatMoney(reward));
         return reward;
     }
 }

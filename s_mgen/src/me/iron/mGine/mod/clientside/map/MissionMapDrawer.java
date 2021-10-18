@@ -136,6 +136,10 @@ public class MissionMapDrawer implements GameMapDrawListener {
         //add new ones that dont exist yet
         for (Map.Entry<UUID,Vector3i> entry: newMarkers.entrySet()) {
             if (!openMarkers.containsKey(entry.getKey())) {
+                if (entry.getValue() == null) {
+                    new NullPointerException().printStackTrace();
+                    continue;
+                }
                 MissionMarker mm = new MissionMarker(entry.getValue(),"Open mission",entry.getKey(), MapIcon.WP_QUEST, MapIcon.WP_QUEST_CIRCLE, brightYellow);
                 Vector3f halfSector = new Vector3f(posFromSector(new Vector3i(1,1,1),false));
                 halfSector.scale(0.25f);

@@ -24,10 +24,7 @@ import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 /**
  * STARMADE MOD
@@ -84,9 +81,36 @@ public class DataBaseManager {
     }
 
     public ArrayList<DataBaseSystem> getSystems(int ownerFaction) throws SQLException {
+       return getSystems(ownerFaction,null);
+    }
+
+    /**
+     * does sql query into DB. must be given at least one parameter, will throw exception otherwise.
+     * @param ownerFaction
+     * @param systemType
+     * @return
+     * @throws SQLException
+     * @throws IllegalArgumentException
+     */
+    public ArrayList<DataBaseSystem> getSystems(@Nullable Integer ownerFaction,@Nullable SectorInformation.SectorType systemType) throws SQLException, IllegalArgumentException {
         ArrayList<DataBaseSystem> stellarIDs = new ArrayList<>();
         Statement s = connection.createStatement();
-        ResultSet query = s.executeQuery("SELECT ID, X, Y, Z FROM SYSTEMS WHERE OWNER_FACTION = "+ownerFaction+";");
+        String queryString = "SELECT ID, X, Y, Z FROM SYSTEMS WHERE ";
+        queryString += "X BETWEEN -63 AND 63 AND Y BETWEEN -63 AND 63 AND Z BETWEEN -63 AND 63 AND ";
+        if (ownerFaction != null) {
+            queryString += ("OWNER_FACTION = " + ownerFaction);
+        }
+        if (ownerFaction != null && systemType != null) {
+            queryString += " AND ";
+        }
+        if (systemType != null) {
+            queryString += ("TYPE = "+systemType.ordinal());
+        }
+        queryString += ";";
+        if (ownerFaction == null && systemType == null) {
+            throw new IllegalArgumentException("must give at minimum ownerfaction or systemtype ");
+        }
+        ResultSet query = s.executeQuery(queryString);
         while (query.next()) {
             long stellarID = query.getLong(1);
             Vector3i pos = new Vector3i(query.getInt(2),query.getInt(3),query.getInt(4));
@@ -146,15 +170,17 @@ public class DataBaseManager {
 
     /**
      * gets an assured existing station of this faction that is not at blacklist position.
-     * @param systems stellar systems to search/choose from
+     * @param systemsIn stellar systems to search/choose from
      * @param blackList not at this pos
      * @param stationType type of station
      * @param seed seed for random
      * @return database station of a randomly selected station. !!might be empty, only "a station(flag) exists at this pos" is known!!
      * if station exists in DB, its returned.
      */
-    public DataBaseStation getRandomStation(ArrayList<DataBaseSystem> systems, @Nullable Vector3i blackList, @Nullable SpaceStation.SpaceStationType stationType, long seed) {
+    public DataBaseStation getRandomStation(ArrayList<DataBaseSystem> systemsIn, @Nullable Vector3i blackList, @Nullable SpaceStation.SpaceStationType stationType, long seed) {
         Random r = new Random(seed);
+        ArrayList<DataBaseSystem> systems = new ArrayList<>(systemsIn);
+        Collections.shuffle(systems,r);
         Iterator<DataBaseSystem> systemIterator = systems.iterator();
         while (systemIterator.hasNext()) {
             DataBaseSystem system = systemIterator.next();

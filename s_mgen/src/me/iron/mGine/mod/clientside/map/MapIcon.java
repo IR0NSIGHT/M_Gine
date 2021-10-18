@@ -12,13 +12,13 @@ import org.schema.schine.graphicsengine.forms.Sprite;
 public enum MapIcon {
     WP_MOVE(SpriteList.MAPICONS,16),
     WP_SCAN(SpriteList.MAPICONS,17),
-    //WP_ATTACK(SpriteList.MAPICONS,18),
-    //WP_DEFEND(SpriteList.MAPICONS,19),
-    WP_COMM(SpriteList.MAPICONS,19),
+    WP_ATTACK(SpriteList.MAPICONS,18),
+    WP_DEFEND(SpriteList.MAPICONS,19),
     WP_PICKUP(SpriteList.MAPICONS,20),
     WP_DROPOFF(SpriteList.MAPICONS,21),
     WP_QUEST(SpriteList.MAPICONS,22),
-    WP_QUEST_CIRCLE(SpriteList.MAPICONS,23);
+    WP_QUEST_CIRCLE(SpriteList.MAPICONS,23),
+    WP_COMM(SpriteList.MAPICONS,24);
 
 
     private SpriteList spriteList;

@@ -179,11 +179,4 @@ public class M_GineCore implements Serializable { //TODO make serializable
         Mission m = type.generate(rand, seed);
         return m;
     }
-
-    private class GameLoop extends StarRunnable {
-        @Override
-        public void run() {
-
-        }
-    }
 }
