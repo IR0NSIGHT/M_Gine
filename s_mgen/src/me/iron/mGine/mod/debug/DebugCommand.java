@@ -62,7 +62,8 @@ public class DebugCommand implements CommandInterface {
                 "mg synch (synch all players)\n"+
                 "mg info (send info about mgine core)\n" +
                 "mp ping (activate pingpong message)\n" +
-                "mp restart (attempt restarting gameloop)";
+                "mp restart (attempt restarting gameloop)\n" +
+                "mp seeAll true (make this admin see all missions)";
     }
 
     @Override
@@ -112,16 +113,6 @@ public class DebugCommand implements CommandInterface {
         if (strings.length == 1 && strings[0].equals("restart")) {
             M_GineCore.instance.updateLoop(1);
             return true;
-        }
-        if (strings.length == 1 && strings[0].equals("listen")) {
-            ArrayList<Listener> listeners = StarLoader.listeners.get(PlayerChangeSectorEvent.class);
-            for (Listener l: listeners) {
-                StarLoader.fireEvent(new PlayerChangeSectorEvent(playerState,1,2),true);
-            }
-            return true;
-        }
-        if (strings.length== 1 && strings[0].equals("spawn")) {
-            spawnAdvancedPirates(playerState);
         }
         if (strings.length==1 && strings[0].equals("clear")) {
             M_GineCore.instance.clearMissions();
