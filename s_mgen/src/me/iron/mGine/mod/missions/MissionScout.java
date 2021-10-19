@@ -39,6 +39,10 @@ import java.util.Random;
         int i = 0;
         while (systems.size() == 0 && i < 10) {
             i++;
+            if (DataBaseManager.instance.getNPCFactions().size() == 0) {
+                new NullPointerException("NO NPC FACTIONS DETECTED").printStackTrace();
+                return;
+            }
             NPCFaction npcFaction = DataBaseManager.instance.getNPCFactions().get(rand.nextInt(DataBaseManager.instance.getNPCFactions().size()));
             int factionID = npcFaction.getIdFaction();
             this.clientFactionID = factionID;

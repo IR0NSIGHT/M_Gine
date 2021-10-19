@@ -38,6 +38,10 @@ public class MissionPatrolSectors extends Mission {
         super(rand,seed);
         Vector3i center = new Vector3i(0,rand.nextInt(69),69);
         try {
+            if (DataBaseManager.instance.getNPCFactions().size() == 0) {
+                new NullPointerException("NO NPC FACTIONS DETECTED").printStackTrace();
+                return;
+            }
             NPCFaction f = DataBaseManager.instance.getNPCFactions().get(rand.nextInt(DataBaseManager.instance.getNPCFactions().size()));
             clientFactionID = f.getIdFaction();
             clientFactionName = f.getName();

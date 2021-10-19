@@ -50,6 +50,10 @@ public class MissionTransportCargo extends Mission {
         this.name = "Transport cargo";
         //get station in from sector
         try {
+            if (DataBaseManager.instance.getNPCFactions().size() == 0) {
+                new NullPointerException("NO NPC FACTIONS DETECTED").printStackTrace();
+                return;
+            }
             NPCFaction f = DataBaseManager.instance.getNPCFactions().get(rand.nextInt(DataBaseManager.instance.getNPCFactions().size()));
             clientFactionID = f.getIdFaction();
             clientFactionName = f.getName();

@@ -31,6 +31,10 @@ public class MissionDestroyStation extends Mission {
         super(rand, seed);
         try {
         //get a startpoint in NPC territory/get client
+            if (DataBaseManager.instance.getNPCFactions().size() == 0) {
+                new NullPointerException("NO NPC FACTIONS DETECTED").printStackTrace();
+                return;
+            }
             NPCFaction client = DataBaseManager.instance.getNPCFactions().get(rand.nextInt(DataBaseManager.instance.getNPCFactions().size()));
             DataBaseStation clientStation = DataBaseManager.instance.getRandomStation(
                     DataBaseManager.instance.getSystems(client.getIdFaction()),
