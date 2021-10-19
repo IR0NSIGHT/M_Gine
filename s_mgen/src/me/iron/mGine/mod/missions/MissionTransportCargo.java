@@ -144,6 +144,7 @@ public class MissionTransportCargo extends Mission {
         int unloaded = unload.getUnitsStart()-unload.getUnits();
         if (loaded>unloaded) {
             failText = "We have noticed that you have not delivered the cargo and instead kept it for yourself. This will have consequences.";
+            diplomacyGain[1]*=3;
         }
         super.onFailure();
 

@@ -108,14 +108,11 @@ mission has
         - leave
     
 # BUGS
+- Diplomatic gain is not appplied to offline players.
 - missions that share the same position have (probably) overlapping quest markers
     - actually the marker system on the server only allows one marker per sector, overlapping missions just dont get shown.
 - questiontag sprite has very very light edges
 - finished missions dont show up in "finished" GUI window (except transport mission)
 - map is clickable through the GUI window.
-- transport mission has no repercussions if you steal the cargo
-    - only use worthless cargo
-    - insurance?
-    - declare war
 # Test
 - do missions get locked down if they get claimed or are double claims possible?

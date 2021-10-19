@@ -56,13 +56,13 @@ public class LoreGenerator {
 
     public String generateTransportBriefing(DataBaseStation from, DataBaseStation to, String cargoName, int cargoUnits, long seed) {
         String[] excuses = new String[]{
-                "Our warehouse has completely sold all its stocks of"+cargoUnits+". ",
-                "A fire has destroyed our warehouse. ",
-                "A group of hoppys escaped from the zoo and ate our supplies of " + cargoName+" .",
-                "A skirmish with pirates forced us to abandon a crate of " + cargoName +" .",
-                "Pirates intercepted a shipment of ours. ",
-                "The local manager stole the complete supplies of "+cargoName+". ",
-                "An intern accidentally threw away all "+cargoName+". "
+                "Our warehouse has completely sold all its stocks of"+cargoUnits+", we need to get more ASAP! Otherwise we'll loose out on a huge sum of money.",
+                "A fire has destroyed our warehouse, and its vital that we restock so the customers dont get angry.",
+                "A group of hoppys escaped from the zoo and ate our complete supply of " + cargoName+" . The police has caught them by now, but the damage is done.",
+                "A skirmish with pirates forced us to abandon a crate of " + cargoName +" . We tried to recover it, but its gone. Probably already sold on the black market.",
+                "Pirates intercepted a shipment of ours. And what does our navy do? Getting drunk in the ports as usual, while we loose lives and cargo.",
+                "The local manager stole the complete supplies of "+cargoName+". I hope he chokes on it, i was supposed to retire tomorrow, and now this mess.",
+                "An intern accidentally threw away all "+cargoName+". Sadly he's the bosses wife's affair's cousin, so theres nothing we can do about it.."
         };
         String[] orderSs = new String[]{"Transport ", "We need you to transport ","We require a delivery of ","We need to ship a supply of "};
         String[] fromSs = new String[]{" from "," stored at ", " out of "," starting at ", " from our base ", " from station "};
