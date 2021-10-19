@@ -9,6 +9,7 @@ import api.utils.game.chat.CommandInterface;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
+import me.iron.mGine.mod.missions.DataBaseManager;
 import me.iron.mGine.mod.missions.MissionUtil;
 import me.iron.mGine.mod.network.MissionNetworkController;
 import me.iron.mGine.mod.network.MissionPlayer;
@@ -19,6 +20,7 @@ import org.schema.game.common.controller.ManagedUsableSegmentController;
 import org.schema.game.common.controller.SegmentController;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.player.catalog.CatalogPermission;
+import org.schema.game.common.data.player.faction.FactionManager;
 import org.schema.game.server.ai.program.simpirates.PirateSimulationProgram;
 import org.schema.game.server.ai.program.simpirates.TradingRouteSimulationProgram;
 import org.schema.game.server.data.GameServerState;
@@ -27,6 +29,11 @@ import org.schema.game.server.data.simulation.groups.AttackSingleEntitySimulatio
 import org.schema.game.server.data.simulation.groups.ShipSimulationGroup;
 import org.schema.game.server.data.simulation.groups.SimulationGroup;
 import org.schema.game.server.data.simulation.jobs.SimulationJob;
+import org.schema.game.server.data.simulation.npc.NPCFaction;
+import org.schema.game.server.data.simulation.npc.NPCFactionManager;
+import org.schema.game.server.data.simulation.npc.diplomacy.DiplomacyAction;
+import org.schema.game.server.data.simulation.npc.diplomacy.NPCDiplomacy;
+import org.schema.game.server.data.simulation.npc.diplomacy.NPCDiplomacyEntity;
 import org.schema.schine.ai.AiEntityStateInterface;
 import org.schema.schine.ai.MachineProgram;
 import org.schema.schine.ai.stateMachines.FiniteStateMachine;
@@ -118,6 +125,21 @@ public class DebugCommand implements CommandInterface {
             M_GineCore.instance.clearMissions();
             ModPlayground.broadcastMessage("clearing all missions.");
             return true;
+        }
+        if (strings.length==2 && strings[0].equals("npc")) {
+            try {
+                int mod = Integer.parseInt(strings[1]);
+                NPCFaction traders = DataBaseManager.instance.getNPCFactions().get(2);
+                NPCDiplomacyEntity ent = traders.getDiplomacy().entities.get(playerState.getFactionId());
+                for (int i = 0; i <3; i++) {
+                    GameServerState.instance.getFactionManager().diplomacyAction(DiplomacyAction.DiplActionType.TRADING_WITH_US,playerState.getFactionId(),traders.getIdFaction());
+                }
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace();
+            }
+
+
+           return true;
         }
         return false;
     }

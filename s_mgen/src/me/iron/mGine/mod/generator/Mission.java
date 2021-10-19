@@ -4,10 +4,13 @@ import api.DebugFile;
 import api.network.PacketReadBuffer;
 import api.network.PacketWriteBuffer;
 import me.iron.mGine.mod.ModMain;
+import me.iron.mGine.mod.missions.DiplomacyManager;
 import me.iron.mGine.mod.missions.MissionUtil;
+import me.iron.mGine.mod.missions.ReputationRank;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
+import org.schema.game.server.data.simulation.npc.diplomacy.DiplomacyAction;
 import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.server.ServerMessage;
 
@@ -55,6 +58,9 @@ public class Mission implements Serializable {
     //checkpoints
     protected transient MissionTask[] missionTasks = new MissionTask[0];
 
+    //NPC diplomacy
+    private ReputationRank requiredRank = ReputationRank.NEUTRAL; //rank with clientfaction thats at least required to do the mission
+
     public Mission(Random rand, long seed) {
         this.uuid = UUID.randomUUID();
         this.publishTime = System.currentTimeMillis();
@@ -69,11 +75,14 @@ public class Mission implements Serializable {
         this.uuid = uuid;
     }
 
+    protected final int[] diplomacyGain = new int[]{100,-75}; //first index is onSuccess, second onFailure
+
     /**
      * sets state to success, runs extra code for special stuff: reward payments etc
      */
     protected void onSuccess() {
         MissionUtil.notifyParty(getActiveParty(),getSuccessText(), ServerMessage.MESSAGE_TYPE_DIALOG);
+        DiplomacyManager.applyDiplomacyActions(getActiveParty(),clientFactionID,diplomacyGain[0]);
         state = MissionState.SUCCESS;
         DebugFile.log("Mission '"+name+"' complete after" + MissionUtil.formatTime(System.currentTimeMillis()-startTime) + ", done by " + Arrays.toString(getParty().toArray()) + " total reward: " + rewardCredits, ModMain.instance);
         flagForSynch();
@@ -84,6 +93,7 @@ public class Mission implements Serializable {
      */
     protected void onFailure() {
         MissionUtil.notifyParty(getActiveParty(),getFailText(),ServerMessage.MESSAGE_TYPE_DIALOG);
+        DiplomacyManager.applyDiplomacyActions(getActiveParty(),clientFactionID,diplomacyGain[1]);
         state = MissionState.FAILED;
         flagForSynch();
     }
@@ -398,6 +408,10 @@ public class Mission implements Serializable {
      * @return true or false, you know, a boolean.
      */
     public boolean canClaim(PlayerState p) {
+        if (clientFactionID != 0 && !DiplomacyManager.isReputationHighEnough(p,clientFactionID,requiredRank)) {
+            p.sendServerMessage(Lng.astr("Mission requires reputation " + requiredRank + ", you only have " + DiplomacyManager.getPlayerReputation(p,clientFactionID)),ServerMessage.MESSAGE_TYPE_DIALOG);
+            return false;
+        }
         if  (GameServerState.instance.getFactionManager().isEnemy(clientFactionID,p))
             return false;
 
@@ -429,6 +443,14 @@ public class Mission implements Serializable {
 
     public long getSeed() {
         return seed;
+    }
+
+    public int getClientFactionID() {
+        return clientFactionID;
+    }
+
+    public ReputationRank getRequiredRank() {
+        return requiredRank;
     }
 
     @Override

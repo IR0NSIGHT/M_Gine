@@ -62,7 +62,9 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
                 String out = activeMission.getName()+"\n";
                 out += activeMission.getBriefing()+"\n";
                 out += MissionUtil.getRemainingTime(activeMission) + "\n";
-                out += MissionUtil.formatMoney(activeMission.getRewardCredits());
+                out += MissionUtil.formatMoney(activeMission.getRewardCredits())+"\n";
+                if (activeMission.getClientFactionID()!=0)
+                    out += "Required reputation rank: " + activeMission.getRequiredRank().name();
                 return out;
             }
         });
