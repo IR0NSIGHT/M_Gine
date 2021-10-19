@@ -1,17 +1,13 @@
 package me.iron.mGine.mod.missions;
 
-import api.ModPlayground;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.player.faction.Faction;
-import org.schema.game.common.data.player.faction.FactionManager;
 import org.schema.game.server.data.GameServerState;
 import org.schema.game.server.data.simulation.npc.NPCFaction;
-import org.schema.game.server.data.simulation.npc.diplomacy.DiplomacyAction;
 import org.schema.game.server.data.simulation.npc.diplomacy.NPCDiplomacyEntity;
 import org.schema.schine.network.server.ServerMessage;
 
 import java.util.HashSet;
-import java.util.Random;
 
 /**
  * STARMADE MOD
@@ -27,26 +23,25 @@ public class DiplomacyManager {
     }
 
     public static boolean isReputationHighEnough(PlayerState playerState, int clientFactionID, ReputationRank requiredRank) {
-        int diplPoints = getPlayerDiplPoints(playerState,clientFactionID);
+        int diplPoints = getDiplPoints(playerState.getFactionId(),clientFactionID);
         return requiredRank.getPoints()<=diplPoints;
     }
 
     public static ReputationRank getPlayerReputation(PlayerState playerState, int clientFactionID) {
-        int points = getPlayerDiplPoints(playerState,clientFactionID);
+        int points = getDiplPoints(playerState.getFactionId(),clientFactionID);
         return ReputationRank.getReputation(points);
     }
-    private static int getPlayerDiplPoints(PlayerState p, int factionID) {
+    private static int getDiplPoints(int id, int factionID) {
         Faction f = GameServerState.instance.getFactionManager().getFaction(factionID);
         if (f instanceof NPCFaction) //TODO do all factions have a diplomacy ?
         {
             int diplPoints = 0;
-            NPCDiplomacyEntity ent = ((NPCFaction) f).getDiplomacy().entities.get(p.getDbId());
-            if (ent == null && p.getFactionId() != 0)
-                ent = ((NPCFaction) f).getDiplomacy().entities.get(p.getFactionId());
-            if (ent != null) {
-                diplPoints = ent.getPoints();
+            NPCDiplomacyEntity ent = ((NPCFaction) f).getDiplomacy().entities.get(id);
+            if (ent == null) {
+                return 0;
+            }else {
+                return ent.getPoints();
             }
-            return diplPoints;
         } else {
             return 0;
         }

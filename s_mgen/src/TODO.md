@@ -106,7 +106,8 @@ mission has
         - invite
         - kick
         - leave
-    
+# Diplomacy
+- make sure relations move back to zero over time, otherwise failing som missions will mean permanent "no mor emissions for you"   
 # BUGS
 - Diplomatic gain is not appplied to offline players.
 - missions that share the same position have (probably) overlapping quest markers
