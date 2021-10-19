@@ -87,6 +87,7 @@ import java.util.Random;
         this.duration = (int) (MissionUtil.estimateTimeByDistance(totalDistance,0.75f)); //~2 mins per sector
         this.rewardCredits = MissionUtil.calculateReward(duration,4,1,rand.nextLong());
         this.briefing = LoreGenerator.instance.enemySpottedNearby(clientFactionID,rand.nextLong()) + "\n Scan these sectors.";
+        this.requiredRank = ReputationRank.OUTCAST;
     }
 
     private void createWaypoints(ArrayList<DataBaseSector> sectors, long seed) {

@@ -59,7 +59,8 @@ public class Mission implements Serializable {
     protected transient MissionTask[] missionTasks = new MissionTask[0];
 
     //NPC diplomacy
-    private ReputationRank requiredRank = ReputationRank.NEUTRAL; //rank with clientfaction thats at least required to do the mission
+    protected ReputationRank requiredRank = ReputationRank.VAGABOND; //rank with clientfaction thats at least required to do the mission
+    protected final int[] diplomacyGain = new int[]{100,-75}; //first index is onSuccess, second onFailure
 
     public Mission(Random rand, long seed) {
         this.uuid = UUID.randomUUID();
@@ -75,7 +76,6 @@ public class Mission implements Serializable {
         this.uuid = uuid;
     }
 
-    protected final int[] diplomacyGain = new int[]{100,-75}; //first index is onSuccess, second onFailure
 
     /**
      * sets state to success, runs extra code for special stuff: reward payments etc
