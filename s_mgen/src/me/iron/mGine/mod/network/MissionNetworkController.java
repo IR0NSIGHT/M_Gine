@@ -62,7 +62,6 @@ public class MissionNetworkController {
 
 
             if (getPlayerByName(p.getName())==null) {
-                ModPlayground.broadcastMessage("created mp for " + p.getName());
                 addPlayer(p.getName());
             } else {
                 //bootleg sector change EH

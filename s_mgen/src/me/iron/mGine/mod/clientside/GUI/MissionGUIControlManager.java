@@ -37,7 +37,6 @@ public class MissionGUIControlManager extends GUIControlManager {
     @Override
     public GUIMenuPanel createMenuPanel() { //gets called twice
         created ++;
-        DebugFile.log("GUIControlManager created menu panel: " + created);
         int width = GLFrame.getWidth();
         int heigt = GLFrame.getHeight();
         p = new MissionMenuPanel(getState(),"menu panel",width/2, heigt/2);
