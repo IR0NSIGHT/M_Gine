@@ -52,7 +52,7 @@ public class MissionUtil {
 
     public static void notifyParty(Collection<PlayerState> players, String message, int type) {
         for (PlayerState p: players) {
-            p.sendServerMessage(Lng.astr(message),type);
+            p.sendServerMessage(new ServerMessage(Lng.astr(message),type,p.getId()));
         }
     }
 
