@@ -119,7 +119,6 @@ import java.util.Random;
     protected void onSuccess() {
         super.onSuccess();
         for (PlayerState p: getActiveParty()) {
-            MissionUtil.giveMoney( rewardCredits/getActiveParty().size(),p);
             String out = "Thank you for scouting out these " + sectors.size() + " sectors.\n Take these " +
                     MissionUtil.formatMoney(rewardCredits / getActiveParty().size()) + " as compensation for your efforts.\nGodspeed pilot!";
             p.sendServerMessage(Lng.astr(out), ServerMessage.MESSAGE_TYPE_DIALOG);

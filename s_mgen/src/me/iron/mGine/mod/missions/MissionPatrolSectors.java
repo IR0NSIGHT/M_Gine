@@ -122,9 +122,6 @@ public class MissionPatrolSectors extends Mission {
         b.append("You have completed Patrol ").append(getUuid().toString()).append(". \n"); //TODO proper name generation
         b.append("Your reward of ").append(MissionUtil.formatMoney(rewardCredits))
                 .append(" has been added to your account. Thank you for your service");
-        for (PlayerState p: getActiveParty()) {
-            MissionUtil.giveMoney(rewardCredits,p);
-        }
         return b.toString();
     }
 

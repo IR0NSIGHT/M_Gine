@@ -84,6 +84,9 @@ public class Mission implements Serializable {
         MissionUtil.notifyParty(getActiveParty(),getSuccessText(), ServerMessage.MESSAGE_TYPE_DIALOG);
         DiplomacyManager.applyDiplomacyActions(getActiveParty(),clientFactionID,diplomacyGain[0]);
         state = MissionState.SUCCESS;
+        for (PlayerState playerState: getActiveParty()) {
+            MissionUtil.giveMoney(rewardCredits/getActiveParty().size(), playerState);
+        }
         DebugFile.log("Mission '"+name+"' complete after" + MissionUtil.formatTime(System.currentTimeMillis()-startTime) + ", done by " + Arrays.toString(getParty().toArray()) + " total reward: " + rewardCredits, ModMain.instance);
         flagForSynch();
     }
