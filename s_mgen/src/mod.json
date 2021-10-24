@@ -1,8 +1,8 @@
 {
   "name": "M_Gine",
   "author": "IR0NSIGHT",
-  "description": "procedural mission generator",
-  "version": "0.2.3",
+  "description": "procedural mission generator DEV",
+  "version": "0.2.4",
   "starmade_version": "release - v0.203.101",
   "client_mod": false,
   "server_mod": false,

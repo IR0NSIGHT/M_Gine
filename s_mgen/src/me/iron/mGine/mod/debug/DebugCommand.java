@@ -81,7 +81,7 @@ public class DebugCommand implements CommandInterface {
     @Override
     public boolean onCommand(PlayerState playerState, String[] strings) {
         if (strings.length == 1 && strings[0].equals("synch")) {
-            playerState.sendServerMessage(Lng.astr("synching all players"), ServerMessage.MESSAGE_TYPE_DIALOG);
+            notify(playerState,"synching all players");
             MissionNetworkController.instance.setFlagUpdateSynchAll();
             return true;
         }
@@ -97,14 +97,14 @@ public class DebugCommand implements CommandInterface {
             for (MissionPlayer mp: mps) {
                 out.append(mp.toString()).append("\n");
             }
-            playerState.sendServerMessage(Lng.astr(out.toString()),ServerMessage.MESSAGE_TYPE_DIALOG);
+            notify(playerState,out.toString());
             return true;
         }
         if (strings.length == 2 && strings[0].equals("seeAll")) {
             boolean showAll = strings[1].equals("true");
             MissionPlayer p = MissionNetworkController.instance.getPlayerByName(playerState.getName());
             if (p == null) {
-                playerState.sendServerMessage(Lng.astr("no mp found for " + playerState.getName()),ServerMessage.MESSAGE_TYPE_DIALOG);
+                notify(playerState,"no mp found for " + playerState.getName());
                 return true;
             }
             p.setShowAll(showAll);
@@ -114,7 +114,7 @@ public class DebugCommand implements CommandInterface {
         }
         if (strings.length == 1 && strings[0].equals("ping")) {
             M_GineCore.instance.pingPong = !M_GineCore.instance.pingPong;
-            playerState.sendServerMessage(Lng.astr("ping pong now: " + M_GineCore.instance.pingPong), ServerMessage.MESSAGE_TYPE_DIALOG);
+            notify(playerState, "no mp found for " + playerState.getName());
             return true;
         }
         if (strings.length == 1 && strings[0].equals("restart")) {
@@ -203,7 +203,7 @@ public class DebugCommand implements CommandInterface {
     }
 
     private void notify(PlayerState p, String mssg) {
-        p.sendServerMessage(Lng.astr(mssg),ServerMessage.MESSAGE_TYPE_DIALOG);
+        MissionUtil.notifyPlayer(p,mssg,ServerMessage.MESSAGE_TYPE_DIALOG);
     }
 
     class CustomSimulationMachine extends FiniteStateMachine {

@@ -45,6 +45,7 @@ public class MissionTransportCargo extends Mission {
             93,9,102,106,95,103,99,107,96,104,100,108,97,101,105,109,278,279,280,281, //planet ground stuff
             86,87,85,89,90,91,92,86 //terrain stuff
     };
+
     public MissionTransportCargo(Random rand, long seed) {
         super(rand, seed);
         this.name = "Transport cargo";
@@ -130,9 +131,18 @@ public class MissionTransportCargo extends Mission {
     }
 
     @Override
-    public boolean canClaim(PlayerState p) {
-        boolean isEnemyWithReceiver = GameServerState.instance.getFactionManager().isEnemy(receiverFactionID,p);
-        return super.canClaim(p) && !isEnemyWithReceiver;
+    protected int canClaimCode(PlayerState p) {
+        if (GameServerState.instance.getFactionManager().isEnemy(receiverFactionID,p)) {
+            return 4;
+        }
+        return super.canClaimCode(p);
+    }
+
+    @Override
+    public String claimError(int errorCode) {
+        if (errorCode == 4)
+            return "claimant is enemy with receiver faction " + receveiverFactionName;
+        return super.claimError(errorCode);
     }
 
     @Override

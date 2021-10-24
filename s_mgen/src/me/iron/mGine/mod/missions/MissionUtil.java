@@ -32,7 +32,7 @@ public class MissionUtil {
 
     public static void giveMoney(int amount, PlayerState player) {
         player.setCredits(player.getCredits()+amount);
-        player.sendServerMessage(Lng.astr( formatMoney(amount)+" credits received."), ServerMessage.MESSAGE_TYPE_INFO);
+        notifyPlayer(player,formatMoney(amount)+" credits received.",ServerMessage.MESSAGE_TYPE_INFO);
     }
 
     public static void giveMoney(int amount,String playerName) {
@@ -52,10 +52,13 @@ public class MissionUtil {
 
     public static void notifyParty(Collection<PlayerState> players, String message, int type) {
         for (PlayerState p: players) {
-            p.sendServerMessage(new ServerMessage(Lng.astr(message),type,p.getId()));
+            notifyPlayer(p,message,type);
         }
     }
 
+    public static void notifyPlayer(PlayerState p, String mssg, int type) {
+        p.sendServerMessage(new ServerMessage(Lng.astr(mssg),type,p.getId()));
+    }
     /**
      * format into hh:mm:ss
      * @param time in seconds

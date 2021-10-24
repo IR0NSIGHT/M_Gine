@@ -56,7 +56,7 @@ public class LoreGenerator {
 
     public String generateTransportBriefing(DataBaseStation from, DataBaseStation to, String cargoName, int cargoUnits, long seed) {
         String[] excuses = new String[]{
-                "Our warehouse has completely sold all its stocks of"+cargoUnits+", we need to get more ASAP! Otherwise we'll loose out on a huge sum of money.",
+                "Our warehouse has completely sold all its stocks of "+cargoName+", we need to get more ASAP! Otherwise we'll loose out on a huge sum of money.",
                 "A fire has destroyed our warehouse, and its vital that we restock so the customers dont get angry.",
                 "A group of hoppys escaped from the zoo and ate our complete supply of " + cargoName+" . The police has caught them by now, but the damage is done.",
                 "A skirmish with pirates forced us to abandon a crate of " + cargoName +" . We tried to recover it, but its gone. Probably already sold on the black market.",

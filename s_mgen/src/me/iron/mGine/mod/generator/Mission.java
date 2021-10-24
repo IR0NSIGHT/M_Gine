@@ -225,7 +225,7 @@ public class Mission implements Serializable {
 
         PlayerState p = GameServerState.instance.getPlayerStatesByName().get(playerName);
         if (!canClaim(p)) {
-            p.sendServerMessage(Lng.astr("can not claim mission."),ServerMessage.MESSAGE_TYPE_ERROR);
+            MissionUtil.notifyPlayer(p,"can not claim mission: "+claimError(canClaimCode(p)),ServerMessage.MESSAGE_TYPE_DIALOG);
             return;
         }
 
@@ -411,17 +411,36 @@ public class Mission implements Serializable {
      * @return true or false, you know, a boolean.
      */
     public boolean canClaim(PlayerState p) {
-        if (clientFactionID != 0 && !DiplomacyManager.isReputationHighEnough(p,clientFactionID,requiredRank)) {
-            p.sendServerMessage(Lng.astr("Mission requires reputation " + requiredRank + ", you only have " + DiplomacyManager.getPlayerReputation(p,clientFactionID)),ServerMessage.MESSAGE_TYPE_DIALOG);
-            return false;
-        }
-        if  (GameServerState.instance.getFactionManager().isEnemy(clientFactionID,p))
-            return false;
+        return 0==canClaimCode(p);
+    }
 
-        if (getSector() != null && !p.getCurrentSector().equals(getSector())) {
-            return false;
+    /**
+     * returns error code for dealing with how
+     * @param p
+     * @return 0: okay, see claimError for more info on error code
+     */
+    protected int canClaimCode(PlayerState p) {
+        if  (GameServerState.instance.getFactionManager().isEnemy(clientFactionID,p))
+            return 3;
+
+        if (clientFactionID != 0 && !DiplomacyManager.isReputationHighEnough(p,clientFactionID,requiredRank)) {
+            return 2;
         }
-        return true;
+
+        return 0;
+    }
+
+    public String claimError(int errorCode) {
+        switch (errorCode) {
+            case 0:
+                return "can claim. no error.";
+            case 2:
+                return "required reputation rank " + requiredRank.name() +" not met.";
+            case 3:
+                return "claimant is enemy with client faction " + clientFactionName;
+            default:
+                return "unknown error code: " + errorCode;
+        }
     }
 
     public Vector3i getSector() {
