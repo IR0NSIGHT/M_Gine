@@ -12,6 +12,7 @@ import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import org.lwjgl.util.vector.Vector;
 import org.schema.common.util.linAlg.Vector3i;
+import org.schema.game.client.data.GameClientState;
 import org.schema.game.client.view.effects.ConstantIndication;
 import org.schema.game.client.view.gamemap.GameMapDrawer;
 import org.schema.game.client.view.gui.shiphud.HudIndicatorOverlay;
@@ -65,7 +66,8 @@ public class MissionMapDrawer implements GameMapDrawListener {
                     }
                 }
                 if (mouseEvent.getRawEvent().pressedRightMouse() && selected != null) {
-                    MissionClient.instance.navigateTo(selected.getSector());
+                    if (GameClientState.instance.getWorldDrawer().getGameMapDrawer().isMapActive())
+                        MissionClient.instance.navigateTo(selected.getSector());
                 }
             }
         }, ModMain.instance);
