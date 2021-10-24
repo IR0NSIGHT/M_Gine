@@ -1,13 +1,14 @@
-package me.iron.mGine.mod.missions;
+package me.iron.mGine.mod.quests.missions;
 
 import me.iron.mGine.mod.generator.LoreGenerator;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionTask;
-import me.iron.mGine.mod.missions.tasks.MissionTaskClearSector;
-import me.iron.mGine.mod.missions.tasks.MissionTaskMoveTo;
-import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
-import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
-import org.lwjgl.Sys;
+import me.iron.mGine.mod.DataBaseManager;
+import me.iron.mGine.mod.MissionUtil;
+import me.iron.mGine.mod.quests.tasks.MissionTaskClearSector;
+import me.iron.mGine.mod.quests.tasks.MissionTaskMoveTo;
+import me.iron.mGine.mod.quests.wrappers.DataBaseStation;
+import me.iron.mGine.mod.quests.wrappers.DataBaseSystem;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.world.SectorInformation;

@@ -1,6 +1,5 @@
-package me.iron.mGine.mod.missions.tasks;
+package me.iron.mGine.mod.quests.tasks;
 
-import api.ModPlayground;
 import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;

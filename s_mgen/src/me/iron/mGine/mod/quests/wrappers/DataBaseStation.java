@@ -1,4 +1,4 @@
-package me.iron.mGine.mod.missions.wrappers;
+package me.iron.mGine.mod.quests.wrappers;
 
 import org.schema.common.util.linAlg.Vector3i;
 

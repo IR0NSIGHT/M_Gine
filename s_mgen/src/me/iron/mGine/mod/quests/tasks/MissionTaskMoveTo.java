@@ -1,4 +1,4 @@
-package me.iron.mGine.mod.missions.tasks;
+package me.iron.mGine.mod.quests.tasks;
 
 import me.iron.mGine.mod.clientside.map.MapIcon;
 import me.iron.mGine.mod.generator.Mission;

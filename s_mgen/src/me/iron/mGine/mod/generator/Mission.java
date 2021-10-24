@@ -4,14 +4,12 @@ import api.DebugFile;
 import api.network.PacketReadBuffer;
 import api.network.PacketWriteBuffer;
 import me.iron.mGine.mod.ModMain;
-import me.iron.mGine.mod.missions.DiplomacyManager;
-import me.iron.mGine.mod.missions.MissionUtil;
-import me.iron.mGine.mod.missions.ReputationRank;
+import me.iron.mGine.mod.DiplomacyManager;
+import me.iron.mGine.mod.MissionUtil;
+import me.iron.mGine.mod.ReputationRank;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.server.data.GameServerState;
-import org.schema.game.server.data.simulation.npc.diplomacy.DiplomacyAction;
-import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.server.ServerMessage;
 
 import java.io.IOException;

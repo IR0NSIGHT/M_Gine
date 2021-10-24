@@ -1,4 +1,4 @@
-package me.iron.mGine.mod.missions;
+package me.iron.mGine.mod;
 
 /**
  * STARMADE MOD

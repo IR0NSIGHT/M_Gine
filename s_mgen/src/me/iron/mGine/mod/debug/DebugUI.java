@@ -16,8 +16,8 @@ import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
-import me.iron.mGine.mod.missions.DataBaseManager;
-import me.iron.mGine.mod.missions.MissionPatrolSectors;
+import me.iron.mGine.mod.DataBaseManager;
+import me.iron.mGine.mod.quests.missions.MissionPatrolSectors;
 import me.iron.mGine.mod.network.MissionNetworkController;
 import me.iron.mGine.mod.network.MissionPlayer;
 import org.schema.common.util.linAlg.Vector3i;
@@ -32,13 +32,12 @@ import org.schema.schine.common.language.Lng;
 
 import javax.vecmath.Vector4f;
 import java.io.IOException;
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
 
-import me.iron.mGine.mod.missions.wrappers.*;
+import me.iron.mGine.mod.quests.wrappers.*;
 import org.schema.schine.network.objects.Sendable;
 
 /**

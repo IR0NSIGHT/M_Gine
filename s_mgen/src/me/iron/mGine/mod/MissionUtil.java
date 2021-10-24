@@ -1,10 +1,9 @@
-package me.iron.mGine.mod.missions;
+package me.iron.mGine.mod;
 
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
-import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
-import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
-import org.lwjgl.Sys;
+import me.iron.mGine.mod.quests.wrappers.DataBaseStation;
+import me.iron.mGine.mod.quests.wrappers.DataBaseSystem;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.element.ElementInformation;
 import org.schema.game.common.data.element.ElementKeyMap;

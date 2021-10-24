@@ -1,16 +1,18 @@
-package me.iron.mGine.mod.missions;
+package me.iron.mGine.mod.quests.missions;
 
 import me.iron.mGine.mod.generator.LoreGenerator;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionTask;
-import me.iron.mGine.mod.missions.tasks.MissionTaskScanSector;
-import me.iron.mGine.mod.missions.wrappers.DataBaseSector;
-import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
+import me.iron.mGine.mod.DataBaseManager;
+import me.iron.mGine.mod.MissionUtil;
+import me.iron.mGine.mod.ReputationRank;
+import me.iron.mGine.mod.quests.tasks.MissionTaskScanSector;
+import me.iron.mGine.mod.quests.wrappers.DataBaseSector;
+import me.iron.mGine.mod.quests.wrappers.DataBaseSystem;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.world.SectorInformation;
 import org.schema.game.common.data.world.StellarSystem;
-import org.schema.game.common.data.world.VoidSystem;
 import org.schema.game.server.data.GameServerState;
 import org.schema.game.server.data.simulation.npc.NPCFaction;
 import org.schema.schine.common.language.Lng;

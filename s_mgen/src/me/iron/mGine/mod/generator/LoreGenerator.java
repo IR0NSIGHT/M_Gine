@@ -1,8 +1,7 @@
 package me.iron.mGine.mod.generator;
 
-import me.iron.mGine.mod.missions.MissionUtil;
-import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
-import org.apache.xmlbeans.impl.piccolo.xml.Entity;
+import me.iron.mGine.mod.MissionUtil;
+import me.iron.mGine.mod.quests.wrappers.DataBaseStation;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.faction.Faction;
 import org.schema.game.common.data.world.SimpleTransformableSendableObject;

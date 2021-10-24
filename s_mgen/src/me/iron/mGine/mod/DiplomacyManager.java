@@ -1,4 +1,4 @@
-package me.iron.mGine.mod.missions;
+package me.iron.mGine.mod;
 
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.player.faction.Faction;

@@ -1,4 +1,4 @@
-package me.iron.mGine.mod.missions.tasks;
+package me.iron.mGine.mod.quests.tasks;
 
 import api.listener.Listener;
 import api.listener.events.entity.EntityScanEvent;
@@ -10,14 +10,7 @@ import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
 import org.schema.common.util.linAlg.Vector3i;
-import org.schema.game.common.controller.SegmentController;
-import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.player.PlayerState;
-import org.schema.game.common.data.world.Sector;
-import org.schema.game.common.data.world.SimpleTransformableSendableObject;
-import org.schema.game.server.data.GameServerState;
-
-import java.io.IOException;
 
 public class MissionTaskScanSector extends MissionTask {
 

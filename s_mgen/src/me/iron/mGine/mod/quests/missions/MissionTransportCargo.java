@@ -1,25 +1,25 @@
-package me.iron.mGine.mod.missions;
+package me.iron.mGine.mod.quests.missions;
 
 import me.iron.mGine.mod.generator.LoreGenerator;
 import me.iron.mGine.mod.generator.Mission;
-import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
-import me.iron.mGine.mod.missions.tasks.MissionTaskDockTo;
-import me.iron.mGine.mod.missions.tasks.MissionTaskUnloadCargo;
-import me.iron.mGine.mod.missions.wrappers.DataBaseStation;
-import me.iron.mGine.mod.missions.wrappers.DataBaseSystem;
+import me.iron.mGine.mod.DataBaseManager;
+import me.iron.mGine.mod.MissionUtil;
+import me.iron.mGine.mod.quests.events.NPCSupportFleetEvent;
+import me.iron.mGine.mod.quests.tasks.MissionTaskUnloadCargo;
+import me.iron.mGine.mod.quests.wrappers.DataBaseStation;
+import me.iron.mGine.mod.quests.wrappers.DataBaseSystem;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.SpaceStation;
 import org.schema.game.common.data.element.ElementInformation;
 import org.schema.game.common.data.element.ElementKeyMap;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.player.faction.Faction;
-import org.schema.game.common.data.world.*;
 import org.schema.game.server.data.FactionState;
 import org.schema.game.server.data.GameServerState;
 import org.schema.game.server.data.simulation.npc.NPCFaction;
+import org.schema.schine.network.server.ServerMessage;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -161,6 +161,23 @@ public class MissionTransportCargo extends Mission {
             diplomacyGain[1]*=3;
         }
         super.onFailure();
+
+    }
+
+    @Override
+    public void start(long time) {
+        super.start(time);
+        Faction client = GameServerState.instance.getFactionManager().getFaction(clientFactionID);
+        if (client instanceof NPCFaction) {
+            MissionUtil.notifyParty(getActiveParty(),"An armed convoi is on the same way. Join them if you like for security.", ServerMessage.MESSAGE_TYPE_DIALOG);
+            Vector3i start = missionTasks[0].getTaskSector();
+            Vector3i target = missionTasks[1].getTaskSector();
+            if (start == null || target == null)
+                throw new NullPointerException("start or target sector for transport mission is null");
+
+
+            new NPCSupportFleetEvent((NPCFaction)client,start,target,seed);
+        }
 
     }
 

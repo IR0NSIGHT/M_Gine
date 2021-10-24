@@ -1,4 +1,4 @@
-package me.iron.mGine.mod.missions;/**
+package me.iron.mGine.mod.quests.missions;/**
 * STARMADE MOD
 * CREATOR: Max1M
 * DATE: 21.09.2021

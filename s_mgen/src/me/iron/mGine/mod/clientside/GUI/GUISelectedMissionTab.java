@@ -4,7 +4,7 @@ import me.iron.mGine.mod.clientside.MissionClient;
 import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionState;
 import me.iron.mGine.mod.generator.MissionTask;
-import me.iron.mGine.mod.missions.MissionUtil;
+import me.iron.mGine.mod.MissionUtil;
 import me.iron.mGine.mod.network.PacketInteractMission;
 import org.newdawn.slick.UnicodeFont;
 import org.schema.game.client.data.GameClientState;

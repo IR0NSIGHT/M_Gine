@@ -1,28 +1,20 @@
 package me.iron.mGine.mod.debug;
 
 import api.ModPlayground;
-import api.listener.Listener;
-import api.listener.events.player.PlayerChangeSectorEvent;
-import api.mod.StarLoader;
 import api.mod.StarMod;
 import api.utils.game.chat.CommandInterface;
 import me.iron.mGine.mod.ModMain;
 import me.iron.mGine.mod.generator.M_GineCore;
 import me.iron.mGine.mod.generator.Mission;
-import me.iron.mGine.mod.missions.DataBaseManager;
-import me.iron.mGine.mod.missions.MissionUtil;
+import me.iron.mGine.mod.DataBaseManager;
+import me.iron.mGine.mod.MissionUtil;
 import me.iron.mGine.mod.network.MissionNetworkController;
 import me.iron.mGine.mod.network.MissionPlayer;
-import org.hsqldb.server.Server;
-import org.newdawn.slick.util.pathfinding.navmesh.Link;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.ManagedUsableSegmentController;
-import org.schema.game.common.controller.SegmentController;
 import org.schema.game.common.data.player.PlayerState;
 import org.schema.game.common.data.player.catalog.CatalogPermission;
-import org.schema.game.common.data.player.faction.FactionManager;
 import org.schema.game.server.ai.program.simpirates.PirateSimulationProgram;
-import org.schema.game.server.ai.program.simpirates.TradingRouteSimulationProgram;
 import org.schema.game.server.data.GameServerState;
 import org.schema.game.server.data.simulation.SimulationManager;
 import org.schema.game.server.data.simulation.groups.AttackSingleEntitySimulationGroup;
@@ -30,20 +22,16 @@ import org.schema.game.server.data.simulation.groups.ShipSimulationGroup;
 import org.schema.game.server.data.simulation.groups.SimulationGroup;
 import org.schema.game.server.data.simulation.jobs.SimulationJob;
 import org.schema.game.server.data.simulation.npc.NPCFaction;
-import org.schema.game.server.data.simulation.npc.NPCFactionManager;
 import org.schema.game.server.data.simulation.npc.diplomacy.DiplomacyAction;
-import org.schema.game.server.data.simulation.npc.diplomacy.NPCDiplomacy;
 import org.schema.game.server.data.simulation.npc.diplomacy.NPCDiplomacyEntity;
 import org.schema.schine.ai.AiEntityStateInterface;
 import org.schema.schine.ai.MachineProgram;
 import org.schema.schine.ai.stateMachines.FiniteStateMachine;
 import org.schema.schine.ai.stateMachines.Message;
-import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.objects.Sendable;
 import org.schema.schine.network.server.ServerMessage;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**

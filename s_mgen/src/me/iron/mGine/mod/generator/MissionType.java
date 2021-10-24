@@ -1,9 +1,9 @@
 package me.iron.mGine.mod.generator;
 
-import me.iron.mGine.mod.missions.MissionDestroyStation;
-import me.iron.mGine.mod.missions.MissionPatrolSectors;
-import me.iron.mGine.mod.missions.MissionScout;
-import me.iron.mGine.mod.missions.MissionTransportCargo;
+import me.iron.mGine.mod.quests.missions.MissionDestroyStation;
+import me.iron.mGine.mod.quests.missions.MissionPatrolSectors;
+import me.iron.mGine.mod.quests.missions.MissionScout;
+import me.iron.mGine.mod.quests.missions.MissionTransportCargo;
 import org.schema.common.util.linAlg.Vector3i;
 
 import java.util.HashMap;
