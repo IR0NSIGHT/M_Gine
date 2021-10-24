@@ -10,6 +10,7 @@ import me.iron.mGine.mod.DataBaseManager;
 import me.iron.mGine.mod.MissionUtil;
 import me.iron.mGine.mod.network.MissionNetworkController;
 import me.iron.mGine.mod.network.MissionPlayer;
+import me.iron.mGine.mod.quests.events.NPCSupportFleetEvent;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.controller.ManagedUsableSegmentController;
 import org.schema.game.common.data.player.PlayerState;
@@ -28,10 +29,12 @@ import org.schema.schine.ai.AiEntityStateInterface;
 import org.schema.schine.ai.MachineProgram;
 import org.schema.schine.ai.stateMachines.FiniteStateMachine;
 import org.schema.schine.ai.stateMachines.Message;
+import org.schema.schine.common.language.Lng;
 import org.schema.schine.network.objects.Sendable;
 import org.schema.schine.network.server.ServerMessage;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -128,6 +131,37 @@ public class DebugCommand implements CommandInterface {
 
 
            return true;
+        }
+
+        if (strings.length==1&&strings[0].equals("npcs")) {
+            ArrayList<NPCFaction> npcs = DataBaseManager.instance.getNPCFactions();
+            StringBuilder out = new StringBuilder();
+            for (int i = 0; i < npcs.size(); i++) {
+                out.append(i).append(" -- ").append(npcs.get(i).getName());
+            }
+            MissionUtil.notifyPlayer(playerState,out.toString(),ServerMessage.MESSAGE_TYPE_DIALOG);
+            return true;
+        }
+        if (strings.length==8&&strings[0].equals("fleet")) {
+            try {
+                Vector3i start = new Vector3i(
+                        Integer.parseInt(strings[1]),
+                        Integer.parseInt(strings[2]),
+                        Integer.parseInt(strings[3])
+                );
+                Vector3i target = new Vector3i(
+                        Integer.parseInt(strings[4]),
+                        Integer.parseInt(strings[5]),
+                        Integer.parseInt(strings[6])
+                );
+                NPCFaction f = DataBaseManager.instance.getNPCFactions().get(
+                                Integer.parseInt(strings[7])
+                );
+                new NPCSupportFleetEvent(f,start,target,420);
+            } catch (NumberFormatException | IndexOutOfBoundsException ex) {
+                ModPlayground.broadcastMessage("failed fleet spawn" + ex.getMessage());
+            }
+            return true;
         }
         return false;
     }

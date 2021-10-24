@@ -1,6 +1,9 @@
 package me.iron.mGine.mod.quests.events;
 
 import api.ModPlayground;
+import api.listener.Listener;
+import api.listener.events.player.PlayerChatEvent;
+import api.mod.StarLoader;
 import api.utils.StarRunnable;
 import me.iron.mGine.mod.ModMain;
 import org.lwjgl.util.vector.Vector;
@@ -46,7 +49,26 @@ public class NPCSupportFleetEvent {
 
         updateLoop();
         fleet = faction.getFleetManager().spawnFleet(target,3+r.nextInt(8));
+
+        for (FleetMember m: fleet.getMembers()) {
+            m.getSector().set(start);
+        }
         ModPlayground.broadcastMessage("spawned attack fleet for faction " + faction.getName() + " target " + target);
+        StarLoader.registerListener(PlayerChatEvent.class, new Listener<PlayerChatEvent>() {
+            @Override
+            public void onEvent(PlayerChatEvent event) {
+                if (event.getText().contains("STOP")) {
+                    flagForRemove = true;
+                    final Listener<PlayerChatEvent> l = this;
+                    new StarRunnable(){
+                        @Override
+                        public void run() {
+                            StarLoader.unregisterListener(PlayerChatEvent.class,l);
+                        }
+                    }.runLater(ModMain.instance,200);
+                }
+            }
+        },ModMain.instance);
     }
 
     private void updateLoop() {
@@ -72,6 +94,20 @@ public class NPCSupportFleetEvent {
     }
     private void update() {
         List<Fleet> fleets = fleetManager.fleets;
+
+        if (flagForRemove) { //delete unloaded members
+            for (FleetMember member: fleet.getMembers()) {
+                if (GameServerState.instance.getUniverse().isSectorLoaded(member.getSector())) {
+                    ModPlayground.broadcastMessage("removing unloaded member " + member.name +" in " + member.getSector().toStringPure());
+                    fleet.removeMemberByDbIdUID(member.entityDbId,true);
+                }
+            }
+            if (fleet.getMembers().isEmpty()) {
+                fleetManager.getFleetManager().removeFleet(fleet);
+                deleted = true;
+            }
+        }
+
         NPCSystemFleetManager.FleetType type = fleet.getNpcType();
         Vector3i currentSector = fleet.getFlagShip().getSector();
         if (fleet.getMembers().size()>1) {
@@ -112,17 +148,7 @@ public class NPCSupportFleetEvent {
         if (waitAtStartTime <= 0)
             flagForRemove = true;
 
-        if (flagForRemove) { //delete unloaded members
-            for (FleetMember member: fleet.getMembers()) {
-                if (GameServerState.instance.getUniverse().isSectorLoaded(member.getSector())) {
-                    fleet.removeMemberByDbIdUID(member.entityDbId,true);
-                }
-            }
-            if (fleet.getMembers().isEmpty()) {
-                fleetManager.getFleetManager().removeFleet(fleet);
-                deleted = true;
-            }
-        }
+
 
         Vector3i off = new Vector3i(fleet.getCurrentMoveTarget());
         off.sub(currentSector);
