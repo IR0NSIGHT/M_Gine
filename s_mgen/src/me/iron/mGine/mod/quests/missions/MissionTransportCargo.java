@@ -176,7 +176,7 @@ public class MissionTransportCargo extends Mission {
                 throw new NullPointerException("start or target sector for transport mission is null");
 
 
-            new NPCSupportFleetEvent((NPCFaction)client,start,target,seed);
+        //    new NPCSupportFleetEvent((NPCFaction)client,start,target,seed);
         }
 
     }

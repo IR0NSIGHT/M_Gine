@@ -3,7 +3,6 @@
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
       <artifact name="mGine" />
-      <artifact name="mGineServer" />
     </artifacts-to-build>
   </component>
   <component name="BranchesTreeState">
@@ -31,7 +30,10 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f3eb8280-9571-4adc-bac7-66101878c882" name="Default Changelist" comment="" />
+    <list default="true" id="f3eb8280-9571-4adc-bac7-66101878c882" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/s_mgen/src/me/iron/mGine/mod/quests/missions/MissionTransportCargo.java" beforeDir="false" afterPath="$PROJECT_DIR$/s_mgen/src/me/iron/mGine/mod/quests/missions/MissionTransportCargo.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -87,7 +89,7 @@
       <recent name="C:\Users\Max1M\IdeaProjects\MissionGenerator\s_mgen\src\me\iron\mGine\mod\res" />
     </key>
   </component>
-  <component name="RunManager" selected="JAR Application.client">
+  <component name="RunManager" selected="JAR Application.SP">
     <configuration name="DiplomacyManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="me.iron.mGine.mod.DiplomacyManager" />
       <module name="MissionGenerator" />
@@ -129,7 +131,7 @@
     </configuration>
     <configuration name="SP" type="JarApplication">
       <option name="JAR_PATH" value="$USER_HOME$/Desktop/Starmade/server testarea/client/StarMade/StarMade.jar" />
-      <option name="PROGRAM_PARAMETERS" value="-force -uplink localhost 4242 12345,-1" />
+      <option name="PROGRAM_PARAMETERS" value="-force -uplink localhost 4242 8297,-1" />
       <option name="WORKING_DIRECTORY" value="C:\Users\Max1M\Desktop\Starmade\server testarea\client\StarMade" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="ALTERNATIVE_JRE_PATH" value="1.7" />
@@ -189,13 +191,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1633797486846</updated>
-    </task>
-    <task id="LOCAL-00025" summary="removed debug messages from transport mission. jank &quot;show task&quot; button in selected tab. TODO update">
-      <created>1634119988508</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1634119988508</updated>
     </task>
     <task id="LOCAL-00026" summary="&quot;success&quot; debug command fixed.">
       <created>1634156369702</created>
@@ -533,7 +528,14 @@
       <option name="project" value="LOCAL" />
       <updated>1639246719942</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="unfinished npc stuff">
+      <created>1639246787581</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1639246787581</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -561,7 +563,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.0.3 dev" />
     <MESSAGE value="removed obsolete stuff from transport MissionTransportCargo" />
     <MESSAGE value="testing out npc simulation" />
     <MESSAGE value="added start of &quot;destroy pirate station&quot; mission" />
@@ -586,16 +587,18 @@
     <MESSAGE value="spawned NPC fleet does despawn on command.&#10;TODO: despawn on server shutdown" />
     <MESSAGE value="using glossar lib" />
     <MESSAGE value="workspace idk" />
-    <option name="LAST_COMMIT_MESSAGE" value="workspace idk" />
+    <MESSAGE value="unfinished npc stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="unfinished npc stuff" />
   </component>
   <component name="WindowStateProjectService">
     <state x="2480" y="512" key="#BuildArtifactsBeforeRunChooser" timestamp="1635074442161">
       <screen x="1920" y="155" width="1680" height="1010" />
     </state>
     <state x="2480" y="512" key="#BuildArtifactsBeforeRunChooser/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635074442161" />
-    <state x="2154" y="338" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1635074443819">
-      <screen x="1920" y="155" width="1680" height="1010" />
+    <state x="2154" y="313" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1639246995990">
+      <screen x="1920" y="130" width="1680" height="1010" />
     </state>
+    <state x="2154" y="313" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.130.1680.1010/0.0.1920.1040@1920.130.1680.1010" timestamp="1639246995990" />
     <state x="2154" y="338" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635074443819" />
     <state x="2589" y="353" width="733" height="568" key="#com.intellij.ide.util.MemberChooser" timestamp="1634654850192">
       <screen x="1920" y="155" width="1680" height="1010" />
@@ -631,44 +634,56 @@
     </state>
     <state x="605" y="253" key="FileChooserDialogImpl/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634224257651" />
     <state x="2449" y="401" key="FileChooserDialogImpl/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634416017968" />
-    <state width="1637" height="465" key="GridCell.Tab.0.bottom" timestamp="1635091997651">
-      <screen x="1920" y="155" width="1680" height="1010" />
+    <state width="1637" height="540" key="GridCell.Tab.0.bottom" timestamp="1639246997624">
+      <screen x="1920" y="130" width="1680" height="1010" />
     </state>
+    <state width="1877" height="540" key="GridCell.Tab.0.bottom/1920.130.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1639246798183" />
+    <state width="1637" height="540" key="GridCell.Tab.0.bottom/1920.130.1680.1010/0.0.1920.1040@1920.130.1680.1010" timestamp="1639246997624" />
     <state width="1877" height="315" key="GridCell.Tab.0.bottom/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
     <state width="1637" height="465" key="GridCell.Tab.0.bottom/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997651" />
-    <state width="1637" height="465" key="GridCell.Tab.0.center" timestamp="1635091997651">
-      <screen x="1920" y="155" width="1680" height="1010" />
+    <state width="1637" height="540" key="GridCell.Tab.0.center" timestamp="1639246997624">
+      <screen x="1920" y="130" width="1680" height="1010" />
     </state>
+    <state width="1877" height="540" key="GridCell.Tab.0.center/1920.130.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1639246798183" />
+    <state width="1637" height="540" key="GridCell.Tab.0.center/1920.130.1680.1010/0.0.1920.1040@1920.130.1680.1010" timestamp="1639246997624" />
     <state width="1877" height="315" key="GridCell.Tab.0.center/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
     <state width="1637" height="465" key="GridCell.Tab.0.center/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997651" />
-    <state width="1637" height="465" key="GridCell.Tab.0.left" timestamp="1635091997651">
-      <screen x="1920" y="155" width="1680" height="1010" />
+    <state width="1637" height="540" key="GridCell.Tab.0.left" timestamp="1639246997624">
+      <screen x="1920" y="130" width="1680" height="1010" />
     </state>
+    <state width="1877" height="540" key="GridCell.Tab.0.left/1920.130.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1639246798183" />
+    <state width="1637" height="540" key="GridCell.Tab.0.left/1920.130.1680.1010/0.0.1920.1040@1920.130.1680.1010" timestamp="1639246997624" />
     <state width="1877" height="315" key="GridCell.Tab.0.left/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
     <state width="1637" height="465" key="GridCell.Tab.0.left/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997651" />
-    <state width="1637" height="465" key="GridCell.Tab.0.right" timestamp="1635091997651">
-      <screen x="1920" y="155" width="1680" height="1010" />
+    <state width="1637" height="540" key="GridCell.Tab.0.right" timestamp="1639246997624">
+      <screen x="1920" y="130" width="1680" height="1010" />
     </state>
+    <state width="1877" height="540" key="GridCell.Tab.0.right/1920.130.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1639246798183" />
+    <state width="1637" height="540" key="GridCell.Tab.0.right/1920.130.1680.1010/0.0.1920.1040@1920.130.1680.1010" timestamp="1639246997624" />
     <state width="1877" height="315" key="GridCell.Tab.0.right/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
     <state width="1637" height="465" key="GridCell.Tab.0.right/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997651" />
-    <state width="1637" height="465" key="GridCell.Tab.1.bottom" timestamp="1635091997547">
-      <screen x="1920" y="155" width="1680" height="1010" />
+    <state width="1637" height="540" key="GridCell.Tab.1.bottom" timestamp="1639247064610">
+      <screen x="1920" y="130" width="1680" height="1010" />
     </state>
+    <state width="1637" height="540" key="GridCell.Tab.1.bottom/1920.130.1680.1010/0.0.1920.1040@1920.130.1680.1010" timestamp="1639247064610" />
     <state width="1877" height="315" key="GridCell.Tab.1.bottom/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851757" />
     <state width="1637" height="465" key="GridCell.Tab.1.bottom/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997547" />
-    <state width="1637" height="465" key="GridCell.Tab.1.center" timestamp="1635091997547">
-      <screen x="1920" y="155" width="1680" height="1010" />
+    <state width="1637" height="540" key="GridCell.Tab.1.center" timestamp="1639247064610">
+      <screen x="1920" y="130" width="1680" height="1010" />
     </state>
+    <state width="1637" height="540" key="GridCell.Tab.1.center/1920.130.1680.1010/0.0.1920.1040@1920.130.1680.1010" timestamp="1639247064610" />
     <state width="1877" height="315" key="GridCell.Tab.1.center/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
     <state width="1637" height="465" key="GridCell.Tab.1.center/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997547" />
-    <state width="1637" height="465" key="GridCell.Tab.1.left" timestamp="1635091997547">
-      <screen x="1920" y="155" width="1680" height="1010" />
+    <state width="1637" height="540" key="GridCell.Tab.1.left" timestamp="1639247064610">
+      <screen x="1920" y="130" width="1680" height="1010" />
     </state>
+    <state width="1637" height="540" key="GridCell.Tab.1.left/1920.130.1680.1010/0.0.1920.1040@1920.130.1680.1010" timestamp="1639247064610" />
     <state width="1877" height="315" key="GridCell.Tab.1.left/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
     <state width="1637" height="465" key="GridCell.Tab.1.left/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997547" />
-    <state width="1637" height="465" key="GridCell.Tab.1.right" timestamp="1635091997547">
-      <screen x="1920" y="155" width="1680" height="1010" />
+    <state width="1637" height="540" key="GridCell.Tab.1.right" timestamp="1639247064610">
+      <screen x="1920" y="130" width="1680" height="1010" />
     </state>
+    <state width="1637" height="540" key="GridCell.Tab.1.right/1920.130.1680.1010/0.0.1920.1040@1920.130.1680.1010" timestamp="1639247064610" />
     <state width="1877" height="315" key="GridCell.Tab.1.right/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851757" />
     <state width="1637" height="465" key="GridCell.Tab.1.right/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997547" />
     <state width="1637" height="312" key="GridCell.Tab.2.bottom" timestamp="1634415489957">
@@ -743,15 +758,6 @@
     <state x="2423" y="372" width="672" height="678" key="search.everywhere.popup/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091285129" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/s_mgen/src/me/iron/mGine/mod/quests/events/NPCSupportFleetEvent.java</url>
-          <line>111</line>
-          <option name="timeStamp" value="358" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="JarApplication">
         <watch expression="missions" language="JAVA" />
