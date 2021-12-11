@@ -31,11 +31,7 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f3eb8280-9571-4adc-bac7-66101878c882" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/mGine.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/mGine.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MissionGenerator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/MissionGenerator.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/s_mgen/src/me/iron/mGine/mod/ModMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/s_mgen/src/me/iron/mGine/mod/ModMain.java" afterDir="false" />
-    </list>
+    <list default="true" id="f3eb8280-9571-4adc-bac7-66101878c882" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -193,20 +189,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1633797486846</updated>
-    </task>
-    <task id="LOCAL-00023" summary="recolored open-&gt;bright orange, success-&gt;bright green">
-      <created>1634076199103</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1634076199103</updated>
-    </task>
-    <task id="LOCAL-00024" summary="fully working transport mission! hurray!">
-      <created>1634079137052</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1634079137052</updated>
     </task>
     <task id="LOCAL-00025" summary="removed debug messages from transport mission. jank &quot;show task&quot; button in selected tab. TODO update">
       <created>1634119988508</created>
@@ -537,7 +519,21 @@
       <option name="project" value="LOCAL" />
       <updated>1635093822606</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="using glossar lib">
+      <created>1639246681060</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1639246681061</updated>
+    </task>
+    <task id="LOCAL-00073" summary="workspace idk">
+      <created>1639246719942</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1639246719942</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -565,8 +561,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.0.2 hotfix, added debug command, made gameloop more resistant to errors" />
-    <MESSAGE value="fixed transport unloading, some databasemanager stuff" />
     <MESSAGE value="0.0.3 dev" />
     <MESSAGE value="removed obsolete stuff from transport MissionTransportCargo" />
     <MESSAGE value="testing out npc simulation" />
@@ -590,7 +584,9 @@
     <MESSAGE value="npc experiments" />
     <MESSAGE value="only navigate to selected marker if map is open" />
     <MESSAGE value="spawned NPC fleet does despawn on command.&#10;TODO: despawn on server shutdown" />
-    <option name="LAST_COMMIT_MESSAGE" value="spawned NPC fleet does despawn on command.&#10;TODO: despawn on server shutdown" />
+    <MESSAGE value="using glossar lib" />
+    <MESSAGE value="workspace idk" />
+    <option name="LAST_COMMIT_MESSAGE" value="workspace idk" />
   </component>
   <component name="WindowStateProjectService">
     <state x="2480" y="512" key="#BuildArtifactsBeforeRunChooser" timestamp="1635074442161">
