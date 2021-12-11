@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="mGine" />
+      <artifact name="mGineServer" />
+    </artifacts-to-build>
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f3eb8280-9571-4adc-bac7-66101878c882" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/mGine.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/mGine.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MissionGenerator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/MissionGenerator.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/s_mgen/src/me/iron/mGine/mod/ModMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/s_mgen/src/me/iron/mGine/mod/ModMain.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="f1454071c7a88ee669ab08dfaf6d72372e1aeeb3" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2020.2\plugins\maven\lib\maven3" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1zHGEDAXLkE1wqH9MR2dUGncSVO" />
+  <component name="ProjectViewState">
+    <option name="foldersAlwaysOnTop" value="false" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+    <option name="showVisibilityIcons" value="true" />
+    <option name="sortByType" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/s_mgen/src/me/iron/mGine/mod/res" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.15722656" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Max1M\IdeaProjects\MissionGenerator\s_mgen\src\me\iron\mGine\mod\res" />
+    </key>
+    <key name="MoveInnerDialog.RECENTS_KEY">
+      <recent name="me.iron.mGine.mod.missions" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Max1M\IdeaProjects\MissionGenerator\s_mgen\src\me\iron\mGine\mod\res" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JAR Application.client">
+    <configuration name="DiplomacyManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="me.iron.mGine.mod.DiplomacyManager" />
+      <module name="MissionGenerator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="me.iron.mGine.mod.quests.missions.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LoreGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="me.iron.mGine.mod.generator.LoreGenerator" />
+      <module name="MissionGenerator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="me.iron.mGine.mod.generator.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MissionUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="me.iron.mGine.mod.MissionUtil" />
+      <module name="MissionGenerator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="me.iron.mGine.mod.quests.missions.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SP" type="JarApplication">
+      <option name="JAR_PATH" value="$USER_HOME$/Desktop/Starmade/server testarea/client/StarMade/StarMade.jar" />
+      <option name="PROGRAM_PARAMETERS" value="-force -uplink localhost 4242 12345,-1" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\Max1M\Desktop\Starmade\server testarea\client\StarMade" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="1.7" />
+      <method v="2">
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="mGine" />
+        </option>
+      </method>
+    </configuration>
+    <configuration name="client" type="JarApplication">
+      <option name="JAR_PATH" value="$USER_HOME$/Desktop/Starmade/server testarea/client/StarMade/StarMade.jar" />
+      <option name="PROGRAM_PARAMETERS" value="-force -uplink 127.0.0.1 4242 8297,-1" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\Max1M\Desktop\Starmade\server testarea\client\StarMade" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="1.7" />
+      <method v="2">
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="mGine" />
+        </option>
+      </method>
+    </configuration>
+    <configuration name="server" type="JarApplication">
+      <option name="JAR_PATH" value="$USER_HOME$/Desktop/Starmade/server testarea/server/StarMade/StarMade.jar" />
+      <option name="PROGRAM_PARAMETERS" value="-force -server" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\Max1M\Desktop\Starmade\server testarea\server\StarMade" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="1.7" />
+      <method v="2">
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="mGineServer" />
+        </option>
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.DiplomacyManager" />
+      <item itemvalue="Application.LoreGenerator" />
+      <item itemvalue="Application.MissionUtil" />
+      <item itemvalue="JAR Application.SP" />
+      <item itemvalue="JAR Application.client" />
+      <item itemvalue="JAR Application.server" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.MissionUtil" />
+        <item itemvalue="Application.LoreGenerator" />
+        <item itemvalue="Application.DiplomacyManager" />
+        <item itemvalue="Application.DiplomacyManager" />
+        <item itemvalue="Application.LoreGenerator" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f3eb8280-9571-4adc-bac7-66101878c882" name="Default Changelist" comment="" />
+      <created>1633797486846</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1633797486846</updated>
+    </task>
+    <task id="LOCAL-00023" summary="recolored open-&gt;bright orange, success-&gt;bright green">
+      <created>1634076199103</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1634076199103</updated>
+    </task>
+    <task id="LOCAL-00024" summary="fully working transport mission! hurray!">
+      <created>1634079137052</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1634079137052</updated>
+    </task>
+    <task id="LOCAL-00025" summary="removed debug messages from transport mission. jank &quot;show task&quot; button in selected tab. TODO update">
+      <created>1634119988508</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1634119988508</updated>
+    </task>
+    <task id="LOCAL-00026" summary="&quot;success&quot; debug command fixed.">
+      <created>1634156369702</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1634156369702</updated>
+    </task>
+    <task id="LOCAL-00027" summary="added methods and fields for &quot;success&quot;+&quot;fail&quot; text displaying.">
+      <created>1634156408416</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1634156408416</updated>
+    </task>
+    <task id="LOCAL-00028" summary="synch stuff and &quot;avaialble quest here&quot; map markers and more">
+      <created>1634240617694</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1634240617694</updated>
+    </task>
+    <task id="LOCAL-00029" summary="questmarkers do draw, but selection/draw removing is broken now">
+      <created>1634242637401</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1634242637401</updated>
+    </task>
+    <task id="LOCAL-00030" summary="unfucked synching, didnt touch questMarker synching yet.">
+      <created>1634296351020</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1634296351020</updated>
+    </task>
+    <task id="LOCAL-00031" summary="special marker subclass for the quest markers, changed questmarker synch">
+      <created>1634311294728</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1634311294728</updated>
+    </task>
+    <task id="LOCAL-00032" summary="re-added hiding quest markers thorugh button">
+      <created>1634311855617</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1634311855617</updated>
+    </task>
+    <task id="LOCAL-00033" summary="mission marker functionality added: click questmarker to select mission">
+      <created>1634313123162</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1634313123162</updated>
+    </task>
+    <task id="LOCAL-00034" summary="selected (open) mission gets nulled now if you move out of the &quot;visibiltity&quot; range.">
+      <created>1634313917055</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1634313917055</updated>
+    </task>
+    <task id="LOCAL-00035" summary="todo update">
+      <created>1634314243621</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1634314243621</updated>
+    </task>
+    <task id="LOCAL-00036" summary="open markers get properly deleted now if the server kills a mission.">
+      <created>1634315218822</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1634315218822</updated>
+    </task>
+    <task id="LOCAL-00037" summary="finally an (almost) proper GUI list with dropdown etc.">
+      <created>1634386214424</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1634386214424</updated>
+    </task>
+    <task id="LOCAL-00038" summary="more randomzied garbage collection for unclaimed missions">
+      <created>1634387952290</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1634387952290</updated>
+    </task>
+    <task id="LOCAL-00039" summary="made patrol mission briefing, changed up lore generation a bit to be more modularized.">
+      <created>1634388599514</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1634388599514</updated>
+    </task>
+    <task id="LOCAL-00040" summary="mission now only claimable if you're not at war with client.">
+      <created>1634392069197</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1634392069197</updated>
+    </task>
+    <task id="LOCAL-00041" summary="consider personal enemies for mission claiming">
+      <created>1634392125637</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1634392125637</updated>
+    </task>
+    <task id="LOCAL-00042" summary="GUI list tiny change">
+      <created>1634392854863</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1634392854863</updated>
+    </task>
+    <task id="LOCAL-00043" summary="readme.md">
+      <created>1634399601921</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1634399601921</updated>
+    </task>
+    <task id="LOCAL-00044" summary="removing debugmessages, disable DebugUI, removing obselete import statements">
+      <created>1634400370214</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1634400370214</updated>
+    </task>
+    <task id="LOCAL-00045" summary="made mission duration and reward a bit more balanced">
+      <created>1634404813028</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1634404813028</updated>
+    </task>
+    <task id="LOCAL-00046" summary="version adjust 0.0.1">
+      <created>1634404979828</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1634404979828</updated>
+    </task>
+    <task id="LOCAL-00047" summary="0.0.2 hotfix, added debug command, made gameloop more resistant to errors">
+      <created>1634416614639</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1634416614639</updated>
+    </task>
+    <task id="LOCAL-00048" summary="fixed transport unloading, some databasemanager stuff">
+      <created>1634469581880</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1634469581880</updated>
+    </task>
+    <task id="LOCAL-00049" summary="0.0.3 dev">
+      <created>1634470234777</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1634470234777</updated>
+    </task>
+    <task id="LOCAL-00050" summary="removed obsolete stuff from transport MissionTransportCargo">
+      <created>1634471625989</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1634471625990</updated>
+    </task>
+    <task id="LOCAL-00051" summary="testing out npc simulation">
+      <created>1634475205942</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1634475205942</updated>
+    </task>
+    <task id="LOCAL-00052" summary="added start of &quot;destroy pirate station&quot; mission">
+      <created>1634568595939</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1634568595940</updated>
+    </task>
+    <task id="LOCAL-00053" summary="attack and defend icon">
+      <created>1634569027933</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1634569027933</updated>
+    </task>
+    <task id="LOCAL-00054" summary="first version of decent &quot;kill pirate station&quot; mission, with some lore and success+fail texts.">
+      <created>1634576267336</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1634576267336</updated>
+    </task>
+    <task id="LOCAL-00055" summary="dev 0.1.0 added kill-pirate-station-mission">
+      <created>1634576596341</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1634576596341</updated>
+    </task>
+    <task id="LOCAL-00056" summary="made transport mission only use worthless cargo, added threatening fail message on cargo-steal, changed boundingbox stuff to use root of dock for distance check in unloading">
+      <created>1634579148501</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1634579148501</updated>
+    </task>
+    <task id="LOCAL-00057" summary="0.1.1 transport improvement">
+      <created>1634579176830</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1634579176830</updated>
+    </task>
+    <task id="LOCAL-00058" summary="missions require ReputationRank now, based on diplomatic relation with clientfaction.&#10;missions influence reputation now onFail/onSuccess">
+      <created>1634657768314</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1634657768315</updated>
+    </task>
+    <task id="LOCAL-00059" summary="transport stealing has higher diplomatic penatly now.&#10;more transport lore">
+      <created>1634658184848</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1634658184848</updated>
+    </task>
+    <task id="LOCAL-00060" summary="dimplomacy update 0.2.0">
+      <created>1634658225307</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1634658225307</updated>
+    </task>
+    <task id="LOCAL-00061" summary="always use faction diplomacy points.">
+      <created>1634659165319</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1634659165319</updated>
+    </task>
+    <task id="LOCAL-00062" summary="mission default rank required now vagabond. scout mission now outcast">
+      <created>1634659545371</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1634659545372</updated>
+    </task>
+    <task id="LOCAL-00063" summary="made missions null safe for non-existent npc factions">
+      <created>1634665873652</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1634665873652</updated>
+    </task>
+    <task id="LOCAL-00064" summary="incremented version bc 0.2.0/0.2.1 refused to activate themselves on the server. wierd issue">
+      <created>1634922017227</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1634922017228</updated>
+    </task>
+    <task id="LOCAL-00065" summary="0.2.3 fixed missions not paying reward, mission now default pays the reward.">
+      <created>1635012150792</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1635012150792</updated>
+    </task>
+    <task id="LOCAL-00066" summary="fixed servermessage broadcasting to everyone (UNTESTED)">
+      <created>1635013551450</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1635013551450</updated>
+    </task>
+    <task id="LOCAL-00067" summary="more detailed info for mission claiming.&#10;servermessages are not broadcast to everyone anymore.">
+      <created>1635075423307</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1635075423308</updated>
+    </task>
+    <task id="LOCAL-00068" summary="version 0.2.4 bump">
+      <created>1635075441998</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1635075441998</updated>
+    </task>
+    <task id="LOCAL-00069" summary="npc experiments">
+      <created>1635089494583</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1635089494583</updated>
+    </task>
+    <task id="LOCAL-00070" summary="only navigate to selected marker if map is open">
+      <created>1635091685662</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1635091685662</updated>
+    </task>
+    <task id="LOCAL-00071" summary="spawned NPC fleet does despawn on command.&#10;TODO: despawn on server shutdown">
+      <created>1635093822605</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1635093822606</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="0.0.2 hotfix, added debug command, made gameloop more resistant to errors" />
+    <MESSAGE value="fixed transport unloading, some databasemanager stuff" />
+    <MESSAGE value="0.0.3 dev" />
+    <MESSAGE value="removed obsolete stuff from transport MissionTransportCargo" />
+    <MESSAGE value="testing out npc simulation" />
+    <MESSAGE value="added start of &quot;destroy pirate station&quot; mission" />
+    <MESSAGE value="attack and defend icon" />
+    <MESSAGE value="first version of decent &quot;kill pirate station&quot; mission, with some lore and success+fail texts." />
+    <MESSAGE value="dev 0.1.0 added kill-pirate-station-mission" />
+    <MESSAGE value="made transport mission only use worthless cargo, added threatening fail message on cargo-steal, changed boundingbox stuff to use root of dock for distance check in unloading" />
+    <MESSAGE value="0.1.1 transport improvement" />
+    <MESSAGE value="missions require ReputationRank now, based on diplomatic relation with clientfaction.&#10;missions influence reputation now onFail/onSuccess" />
+    <MESSAGE value="transport stealing has higher diplomatic penatly now.&#10;more transport lore" />
+    <MESSAGE value="dimplomacy update 0.2.0" />
+    <MESSAGE value="always use faction diplomacy points." />
+    <MESSAGE value="mission default rank required now vagabond. scout mission now outcast" />
+    <MESSAGE value="made missions null safe for non-existent npc factions" />
+    <MESSAGE value="incremented version bc 0.2.0/0.2.1 refused to activate themselves on the server. wierd issue" />
+    <MESSAGE value="0.2.3 fixed missions not paying reward, mission now default pays the reward." />
+    <MESSAGE value="fixed servermessage broadcasting to everyone (UNTESTED)" />
+    <MESSAGE value="more detailed info for mission claiming.&#10;servermessages are not broadcast to everyone anymore." />
+    <MESSAGE value="version 0.2.4 bump" />
+    <MESSAGE value="npc experiments" />
+    <MESSAGE value="only navigate to selected marker if map is open" />
+    <MESSAGE value="spawned NPC fleet does despawn on command.&#10;TODO: despawn on server shutdown" />
+    <option name="LAST_COMMIT_MESSAGE" value="spawned NPC fleet does despawn on command.&#10;TODO: despawn on server shutdown" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2480" y="512" key="#BuildArtifactsBeforeRunChooser" timestamp="1635074442161">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2480" y="512" key="#BuildArtifactsBeforeRunChooser/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635074442161" />
+    <state x="2154" y="338" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1635074443819">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2154" y="338" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635074443819" />
+    <state x="2589" y="353" width="733" height="568" key="#com.intellij.ide.util.MemberChooser" timestamp="1634654850192">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="765" y="204" key="#com.intellij.ide.util.MemberChooser/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634286941331" />
+    <state x="2589" y="353" width="733" height="568" key="#com.intellij.ide.util.MemberChooser/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634654850192" />
+    <state x="2591" y="586" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1634653648064">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2591" y="586" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634653648064" />
+    <state x="2541" y="556" width="437" height="214" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1633882723602">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2541" y="556" width="437" height="214" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1633882723602" />
+    <state x="2541" y="507" key="#com.intellij.refactoring.move.moveInner.MoveInnerDialog" timestamp="1634653658578">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2541" y="507" key="#com.intellij.refactoring.move.moveInner.MoveInnerDialog/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634653658578" />
+    <state x="2025" y="155" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1634296861990">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2025" y="155" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634296861990" />
+    <state x="616" y="261" key="#com.intellij.util.ui.classpath.ChooseLibrariesDialog" timestamp="1639239723251">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="261" key="#com.intellij.util.ui.classpath.ChooseLibrariesDialog/1920.130.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1639239723251" />
+    <state x="2012" y="247" width="1496" height="826" key="DiffContextDialog" timestamp="1634399465755">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2012" y="247" width="1496" height="826" key="DiffContextDialog/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634399465755" />
+    <state x="2449" y="401" key="FileChooserDialogImpl" timestamp="1634416017968">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="605" y="253" key="FileChooserDialogImpl/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634224257651" />
+    <state x="2449" y="401" key="FileChooserDialogImpl/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634416017968" />
+    <state width="1637" height="465" key="GridCell.Tab.0.bottom" timestamp="1635091997651">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1877" height="315" key="GridCell.Tab.0.bottom/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
+    <state width="1637" height="465" key="GridCell.Tab.0.bottom/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997651" />
+    <state width="1637" height="465" key="GridCell.Tab.0.center" timestamp="1635091997651">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1877" height="315" key="GridCell.Tab.0.center/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
+    <state width="1637" height="465" key="GridCell.Tab.0.center/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997651" />
+    <state width="1637" height="465" key="GridCell.Tab.0.left" timestamp="1635091997651">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1877" height="315" key="GridCell.Tab.0.left/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
+    <state width="1637" height="465" key="GridCell.Tab.0.left/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997651" />
+    <state width="1637" height="465" key="GridCell.Tab.0.right" timestamp="1635091997651">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1877" height="315" key="GridCell.Tab.0.right/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
+    <state width="1637" height="465" key="GridCell.Tab.0.right/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997651" />
+    <state width="1637" height="465" key="GridCell.Tab.1.bottom" timestamp="1635091997547">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1877" height="315" key="GridCell.Tab.1.bottom/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851757" />
+    <state width="1637" height="465" key="GridCell.Tab.1.bottom/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997547" />
+    <state width="1637" height="465" key="GridCell.Tab.1.center" timestamp="1635091997547">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1877" height="315" key="GridCell.Tab.1.center/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
+    <state width="1637" height="465" key="GridCell.Tab.1.center/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997547" />
+    <state width="1637" height="465" key="GridCell.Tab.1.left" timestamp="1635091997547">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1877" height="315" key="GridCell.Tab.1.left/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851756" />
+    <state width="1637" height="465" key="GridCell.Tab.1.left/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997547" />
+    <state width="1637" height="465" key="GridCell.Tab.1.right" timestamp="1635091997547">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1877" height="315" key="GridCell.Tab.1.right/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665851757" />
+    <state width="1637" height="465" key="GridCell.Tab.1.right/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091997547" />
+    <state width="1637" height="312" key="GridCell.Tab.2.bottom" timestamp="1634415489957">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1637" height="312" key="GridCell.Tab.2.bottom/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634415489957" />
+    <state width="1637" height="312" key="GridCell.Tab.2.center" timestamp="1634415489956">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1637" height="312" key="GridCell.Tab.2.center/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634415489956" />
+    <state width="1637" height="312" key="GridCell.Tab.2.left" timestamp="1634415489956">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1637" height="312" key="GridCell.Tab.2.left/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634415489956" />
+    <state width="1637" height="312" key="GridCell.Tab.2.right" timestamp="1634415489956">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="1637" height="312" key="GridCell.Tab.2.right/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634415489956" />
+    <state x="2398" y="422" key="MultipleFileMergeDialog" timestamp="1634470277222">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2398" y="422" key="MultipleFileMergeDialog/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634470277222" />
+    <state x="2489" y="363" key="RollbackChangesDialog" timestamp="1634568630569">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2489" y="363" key="RollbackChangesDialog/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634568630569" />
+    <state x="366" y="81" key="SettingsEditor" timestamp="1639240100830">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="366" y="81" key="SettingsEditor/1920.130.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1639240100830" />
+    <state x="366" y="81" key="SettingsEditor/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634224283542" />
+    <state x="2240" y="234" key="SettingsEditor/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635074138538" />
+    <state x="2352" y="393" key="Vcs.Push.Dialog.v2" timestamp="1634416616059">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2352" y="393" key="Vcs.Push.Dialog.v2/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634416616059" />
+    <state width="848" height="513" key="XDebugger.FullValuePopup" timestamp="1634037508705">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state width="848" height="513" key="XDebugger.FullValuePopup/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634037508705" />
+    <state x="2576" y="575" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1634563812567">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2576" y="575" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634563812567" />
+    <state x="2235" y="389" width="1049" height="617" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1635088783272">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2235" y="389" width="1049" height="617" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635088783272" />
+    <state x="2053" y="133" width="1217" height="1027" key="dock-window-1" timestamp="1639244874823">
+      <screen x="1920" y="130" width="1680" height="1010" />
+    </state>
+    <state x="2053" y="133" width="1217" height="1027" key="dock-window-1/1920.130.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1639244874823" />
+    <state x="635" y="236" width="648" height="804" key="find.popup" timestamp="1638807167389">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="635" y="236" width="648" height="804" key="find.popup/1920.130.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1638807167389" />
+    <state x="2476" y="360" width="567" height="780" key="find.popup/1920.130.1680.1010/0.0.1920.1040@1920.130.1680.1010" timestamp="1638738970429" />
+    <state x="2476" y="400" width="567" height="520" key="find.popup/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091295331" />
+    <state x="2203" y="281" key="new project wizard" timestamp="1634744125148">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2203" y="281" key="new project wizard/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634744125148" />
+    <state x="2416" y="310" key="run.anything.popup" timestamp="1634390529044">
+      <screen x="1920" y="155" width="1680" height="1010" />
+    </state>
+    <state x="2416" y="310" key="run.anything.popup/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1634390529044" />
+    <state x="575" y="223" width="768" height="699" key="search.everywhere.popup" timestamp="1638803609192">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="575" y="223" width="768" height="699" key="search.everywhere.popup/1920.130.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1638803609192" />
+    <state x="575" y="223" width="768" height="699" key="search.everywhere.popup/1920.155.1680.1010/0.0.1920.1040@0.0.1920.1040" timestamp="1634665990385" />
+    <state x="2423" y="372" width="672" height="678" key="search.everywhere.popup/1920.155.1680.1010/0.0.1920.1040@1920.155.1680.1010" timestamp="1635091285129" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/s_mgen/src/me/iron/mGine/mod/quests/events/NPCSupportFleetEvent.java</url>
+          <line>111</line>
+          <option name="timeStamp" value="358" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="JarApplication">
+        <watch expression="missions" language="JAVA" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>
