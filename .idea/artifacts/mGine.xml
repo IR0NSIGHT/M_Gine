@@ -3,6 +3,7 @@
     <output-path>$USER_HOME$/Desktop/Starmade/server testarea/client/StarMade/mods</output-path>
     <root id="archive" name="mGine.jar">
       <element id="module-output" name="MissionGenerator" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../ModGlossar/out/artifacts/ModGlossar/ModGlossar.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
