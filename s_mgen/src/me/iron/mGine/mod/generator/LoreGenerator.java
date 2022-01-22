@@ -73,7 +73,7 @@ public class LoreGenerator {
     }
 
     public String generateTransportName(DataBaseStation from, DataBaseStation to, String cargoName,int cargoUnits,long seed) {
-        String[] transportSs = new String[]{"Transport "," Ferry "," Bring "," Move "," Ship "};
+        String[] transportSs = new String[]{"Transport ","Ferry ","Bring ","Move ","Ship "};
         Random random = new Random(seed);
         return getRand(transportSs,random)+ MissionUtil.formatMoney(cargoUnits)+"x "+cargoName+" from "+from.getName()+" ("+from.getPosition().toStringPure() +") to "+ to.getName()+" (" +to.getPosition().toStringPure()+")";
     }

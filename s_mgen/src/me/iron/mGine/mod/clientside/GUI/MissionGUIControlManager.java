@@ -26,8 +26,8 @@ public class MissionGUIControlManager extends GUIControlManager {
     public static GUIMenuPanel p;
     public static MissionGUIControlManager instance;
 
-    public static int windowWidth = (int) (GLFrame.getWidth()*0.5);
-    public static int windowHeight = (int) (GLFrame.getHeight()*0.5);
+    public static int windowWidth = (int) (GLFrame.getWidth()*0.75);
+    public static int windowHeight = (int) (GLFrame.getHeight()*0.75);
     public MissionGUIControlManager(GameClientState state) {
         super(state);
         instance = this;
@@ -37,9 +37,7 @@ public class MissionGUIControlManager extends GUIControlManager {
     @Override
     public GUIMenuPanel createMenuPanel() { //gets called twice
         created ++;
-        int width = GLFrame.getWidth();
-        int heigt = GLFrame.getHeight();
-        p = new MissionMenuPanel(getState(),"menu panel",width/2, heigt/2);
+        p = new MissionMenuPanel(getState(),"menu panel", windowWidth,windowHeight);
         p.onInit();
         p.recreateTabs();
         return p;

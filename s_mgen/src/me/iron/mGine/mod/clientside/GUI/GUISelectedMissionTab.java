@@ -33,26 +33,24 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
     @Override
     public void onInit() {
         MissionClient.instance.selectedMissionTab = this;
-
-        GUIAncor testPanel = new GUIAncor(getState(),getWidth(),getHeight());
-        testPanel.onInit();
+        float width = getWidth(), height = getHeight();
+        GUIAncor contentPanel = new GUIAncor(getState(),width,getHeight());
+        contentPanel.onInit();
 
         //width and height stuff for sizing and playing objects
-        int textWidth = (int) getWidth()*3/4;
+        int textWidth = (int) (width*0.75f);
         int buttonY = 90;
-        int buttonWidth = (int) getWidth()-textWidth;
+        int buttonWidth = (int) width-textWidth;
         int buttonHeight = buttonY;
-
-        Vector4f backGroundColor = new Vector4f(0.08f,0.2f,0.2f,1);
 
         UnicodeFont buttonFont = FontLibrary.getBlenderProHeavy20();
         UnicodeFont textFont = FontLibrary.getBlenderProMedium20();
 
         //missionTextOverlay field that shows mission description
-        GUIColoredRectangle textBackground = new GUIColoredRectangle(getState(), textWidth,testPanel.getHeight()/2,new Vector4f(backGroundColor));
+        GUIColoredRectangle textBackground = new GUIColoredRectangle(getState(), textWidth,height/2,new Vector4f(1,0,0,0f));
         textBackground.onInit();
 
-        GUITextOverlay missionTextOverlay = new GUITextOverlay(textWidth, (int) testPanel.getHeight()/2,textFont,getState());
+        GUITextOverlay missionTextOverlay = new GUITextOverlay(textWidth, (int) height/2,textFont,getState());
         missionTextOverlay.onInit();
         missionTextOverlay.getText().add(new Object(){
             @Override
@@ -74,10 +72,10 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
         //missionTextOverlay.setLimitTextDraw(3);
         textBackground.attach(missionTextOverlay);
 
-        GUIColoredRectangle partyBackground = new GUIColoredRectangle(getState(), textWidth,testPanel.getHeight()/2,new Vector4f(backGroundColor));
+        GUIColoredRectangle partyBackground = new GUIColoredRectangle(getState(), textWidth,height,new Vector4f(0,1,0,0f));
         textBackground.onInit();
 
-        GUITextOverlay partyTextOverlay = new GUITextOverlay(textWidth, (int) (testPanel.getHeight()/2), textFont,getState());
+        GUITextOverlay partyTextOverlay = new GUITextOverlay(textWidth, (int) (height/2), textFont,getState());
         partyTextOverlay.onInit();
         partyTextOverlay.getText().add(new Object(){
             @Override
@@ -211,27 +209,27 @@ public class GUISelectedMissionTab extends GUIScrollablePanel {
         });
 
         textBackground.setPos(0,0,0);
-        partyBackground.setPos(0,(int) (testPanel.getHeight()/2),0);
+        partyBackground.setPos(0,(int) (height/2),0);
         acceptAndAbortButton.setPos(textWidth,0,0);
         delayButton.setPos(textWidth,buttonY,0);
         showTasksButton.setPos(textWidth,buttonY*2,0);
 
-        inviteToPartyButton.setPos(textWidth,testPanel.getHeight()/2,0);
-        removeFromPartyButton.setPos(textWidth,testPanel.getHeight()/2+buttonY,0);
-        toggleOpenMarkers.setPos(textWidth,testPanel.getHeight()/2+buttonY*2,0);
+        inviteToPartyButton.setPos(textWidth,height/2,0);
+        removeFromPartyButton.setPos(textWidth,height/2+buttonY,0);
+        toggleOpenMarkers.setPos(textWidth,height/2+buttonY*2,0);
 
-        testPanel.attach(textBackground);
-        testPanel.attach(partyBackground);
+        contentPanel.attach(textBackground);
+        contentPanel.attach(partyBackground);
 
-        testPanel.attach(acceptAndAbortButton);
-        testPanel.attach(delayButton);
-        testPanel.attach(showTasksButton);
+        contentPanel.attach(acceptAndAbortButton);
+        contentPanel.attach(delayButton);
+        contentPanel.attach(showTasksButton);
 
-        testPanel.attach(inviteToPartyButton);
-        testPanel.attach(removeFromPartyButton);
-        testPanel.attach(toggleOpenMarkers);
+        contentPanel.attach(inviteToPartyButton);
+        contentPanel.attach(removeFromPartyButton);
+        contentPanel.attach(toggleOpenMarkers);
 
-        setContent(testPanel);
+        setContent(contentPanel);
 
 
         //make textfield placeholder for later
