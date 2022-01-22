@@ -60,7 +60,7 @@ public class MissionMenuPanel extends GUIMenuPanel {
         GUIContentPane tab = guiWindow.addTab("Selected");
 
         //background colored instantiation, so it can be used as a parent for auto resizing
-        final GUIColoredRectangle background = new GUIColoredRectangle(getState(),50,50, tab.getContent(0),new Vector4f(0,1,1,0));
+        final GUIColoredRectangle background = new GUIColoredRectangle(getState(),50,50, tab.getContent(0),GUIMissionListTab.unselectedColor);
         background.onInit();
         tab.getContent(0).attach(background);
         GUISelectedMissionTab selected = new GUISelectedMissionTab(width,height,tab, getState());

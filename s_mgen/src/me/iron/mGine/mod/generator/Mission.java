@@ -9,6 +9,7 @@ import me.iron.mGine.mod.MissionUtil;
 import me.iron.mGine.mod.ReputationRank;
 import org.schema.common.util.linAlg.Vector3i;
 import org.schema.game.common.data.player.PlayerState;
+import org.schema.game.common.data.world.VoidSystem;
 import org.schema.game.server.data.GameServerState;
 import org.schema.schine.network.server.ServerMessage;
 
@@ -398,7 +399,7 @@ public class Mission implements Serializable {
      * @return true=show mission, false=dont show mission.
      */
     public boolean isVisibleFor(PlayerState p) {
-        boolean canSeeOpen = state.equals(MissionState.OPEN) && (getSector() == null || (getSector()!=null && MissionUtil.getDistance(p.getCurrentSector(),getSector())<16));
+        boolean canSeeOpen = state.equals(MissionState.OPEN) && (getSector() == null || (getSector()!=null && MissionUtil.getDistance(p.getCurrentSector(),getSector())< VoidSystem.SYSTEM_SIZE*5));
         return (canSeeOpen || party.contains(p.getName()));
     }
 
