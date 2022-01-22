@@ -5,7 +5,6 @@ import me.iron.mGine.mod.generator.Mission;
 import me.iron.mGine.mod.generator.MissionTask;
 import me.iron.mGine.mod.DataBaseManager;
 import me.iron.mGine.mod.MissionUtil;
-import me.iron.mGine.mod.quests.events.NPCSupportFleetEvent;
 import me.iron.mGine.mod.quests.tasks.MissionTaskUnloadCargo;
 import me.iron.mGine.mod.quests.wrappers.DataBaseStation;
 import me.iron.mGine.mod.quests.wrappers.DataBaseSystem;
@@ -175,8 +174,6 @@ public class MissionTransportCargo extends Mission {
             if (start == null || target == null)
                 throw new NullPointerException("start or target sector for transport mission is null");
 
-
-        //    new NPCSupportFleetEvent((NPCFaction)client,start,target,seed);
         }
 
     }
