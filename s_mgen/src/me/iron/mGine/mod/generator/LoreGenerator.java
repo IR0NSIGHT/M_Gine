@@ -29,16 +29,16 @@ public class LoreGenerator {
         List<Faction> enemies = GameServerState.instance.getFactionManager().getFaction(factionID).getEnemies();
         Faction enemyF = null;
         for (Faction f: enemies) {
-            if (f.getName().toLowerCase().contains("enemy")) {
+            if (f.getName().toLowerCase().contains("enemy")) { //filter out enemy fauna and stuff.
                 continue;
             }
             enemyF = f;
         }
-        assert enemyF != null;
-        String enemy = enemyF.getName();
 
         String[] spotter = {"A faring trader","A spy satellite","An intelligence service source","A patrol"};
-        String[] faction = {"pirate","scavenger","dutch"};
+        String[] faction = {"pirate","scavenger","insurgent","terrorist","criminal","dutch"};
+        String enemy = (enemyF != null)?enemyF.getName():getRand(faction,rand);
+
         String[] location = {"in our system","near our territory","in the asteroid belt nearby","at yo mama's ass"};
         String[] spotted = {"spotted","reported","seen","identified","made out"};
         String[] causes = new String[]{
