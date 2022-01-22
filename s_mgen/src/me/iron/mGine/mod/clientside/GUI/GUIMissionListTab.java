@@ -96,7 +96,6 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
         }
         list.height = 10000; //doesnt autoresize, idk what //TODO
         super.onInit();
-
     }
 
     private void updateList() {
@@ -140,7 +139,7 @@ public class GUIMissionListTab extends GUIScrollablePanel implements DrawerObser
                     });
 
                     textBox1.setPos(0,0,0);
-                    dropButton.setPos(blockWidth-blockSize,0,0);
+                    dropButton.setPos(blockWidth-blockSize-blockSize,0,0);
                     background.attach(textBox1);
                     background.attach(dropButton);
                     list.addWithoutUpdate(new GUIListElement(background,getState())); //wrap text in list element, and add to list
