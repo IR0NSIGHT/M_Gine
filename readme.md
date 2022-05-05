@@ -1,7 +1,6 @@
 # Overview
 M_Gine ("mission engine") is a framework that will procedurally generate missions. Players can accept these missions, usually provided by NPC factions, and do them alone or in groups. The mod is fully multiplayer/server capable.
 
-#### THIS IS AN ALPHA VERSION, BUGS MIGHT OCCUR
 ## Basic structure
 - Every mission has one or more tasks.
 - Tasks can be mandatory or optional
@@ -45,7 +44,8 @@ More types of missions are planned/in developement.
 - missions do not get saved across server/game restarts
 - finished missions do not show up in their GUI list.
 - the "invite" and "kick" buttons dont work
-
+- super rare: missions get desynched between players and 2 players get shown different info.
+- 
 ## Planned for the near future:
 - "Search and destroy" mission
 - Multiple players per party
